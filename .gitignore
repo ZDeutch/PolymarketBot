@@ -2,3 +2,4 @@ venv/
 .env
 credentials.json
 __pycache__/
+pnl_chart.png
