@@ -51,6 +51,22 @@ def fetch_all_events():
     return all_events
 
 
+EXCLUDE_KEYWORDS = [
+    "enter parliament",
+    "win a seat",
+    "qualify",
+    "advance to",
+    "make it",
+    "reach the",
+    "how many",
+    "number of",
+    "at least",
+    "or more",
+    "points or",
+    "seats",
+]
+
+
 def filter_exhaustive_sets(events):
     valid = []
 
@@ -63,6 +79,10 @@ def filter_exhaustive_sets(events):
         if event.get("closed", False):
             continue
         if not all(m.get("active", False) for m in markets):
+            continue
+
+        title = event.get("title", "").lower()
+        if any(kw in title for kw in EXCLUDE_KEYWORDS):
             continue
 
         valid.append(event)
