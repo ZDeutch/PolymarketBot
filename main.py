@@ -12,7 +12,15 @@ from sheets_logger import get_sheet, log_opportunity
 
 BANKROLL = 10000.0
 POLL_INTERVAL = 5    # seconds between scans
-COOLDOWN = 60        # seconds before re-logging same set
+COOLDOWN = 3600      # seconds before re-logging same set (1 hour)
+
+
+def slug_to_name(slug: str) -> str:
+    """Convert a slug like 'will-lindsey-graham-be-the-...' to 'Lindsey Graham'."""
+    parts = slug.split("-")
+    if parts[0] == "will":
+        parts = parts[1:]
+    return " ".join(word.capitalize() for word in parts[:2])
 
 
 def run():
@@ -27,6 +35,7 @@ def run():
         return
 
     last_logged = {}
+    logged_this_session = set()
 
     # ── STEP 2: Polling loop ─────────────────────────────────────────────────
     try:
@@ -51,7 +60,12 @@ def run():
                             print(f"  WARNING: no prices returned for slug '{slug}' — skipping set.")
                             skip_set = True
                             break
-                        prices.update(result)
+                        yes_price = result.get("Yes")
+                        if yes_price is None:
+                            print(f"  WARNING: no 'Yes' price for slug '{slug}' — skipping set.")
+                            skip_set = True
+                            break
+                        prices[slug_to_name(slug)] = yes_price
                     if skip_set:
                         continue
 
@@ -70,9 +84,12 @@ def run():
                     stakes_result = calculate_stakes(prices, cycle_sum, BANKROLL)
                     profit = stakes_result["expected_profit"]
                     print(f"  {set_data['name']:<35} sum={cycle_sum:.4f}  ← ARB DETECTED  profit=${profit:.2f}")
-                    if not on_cooldown:
+                    if set_name in logged_this_session:
+                        print("  (already logged this session — skipping)")
+                    elif not on_cooldown:
                         log_opportunity(sheet, set_data["name"], stakes_result, prices)
                         last_logged[set_name] = now
+                        logged_this_session.add(set_name)
                     else:
                         print("  (cooldown active — not logging)")
                 else:

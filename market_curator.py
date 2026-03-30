@@ -1,37 +1,61 @@
 """Stores a hardcoded dictionary of curated exhaustive market sets targeting low-liquidity political markets on Polymarket."""
 
 EXHAUSTIVE_SETS = {
-    "german_election_2025": {
+    "sc_senate_republican_primary": {
         "slugs": [
-            "will-the-afd-win-the-most-seats-in-the-2025-german-federal-election",
-            "will-the-cdu-csu-win-the-most-seats-in-the-2025-german-federal-election",
-            "will-the-spd-win-the-most-seats-in-the-2025-german-federal-election"
+            "will-lindsey-graham-be-the-republican-nominee-for-senate-in-south-carolina",
+            "will-paul-dans-be-the-republican-nominee-for-senate-in-south-carolina",
+            "will-mark-lynch-be-the-republican-nominee-for-senate-in-south-carolina",
+            "will-thomas-murphy-be-the-republican-nominee-for-senate-in-south-carolina",
         ],
-        "threshold": 0.94,
-        "name": "German Federal Election 2025 — most seats"
+        "threshold": 0.92,
+        "name": "SC Senate Republican Primary",
     },
-    "france_president_2027": {
+    "az_05_republican_primary": {
         "slugs": [
-            "will-marine-le-pen-win-the-2027-french-presidential-election",
-            "will-emmanuel-macron-win-the-2027-french-presidential-election",
-            "will-someone-else-win-the-2027-french-presidential-election"
+            "will-mark-lamb-be-the-republican-nominee-for-az-05",
+            "will-travis-grantham-be-the-republican-nominee-for-az-05",
+            "will-jay-feely-be-the-republican-nominee-for-az-05",
         ],
         "threshold": 0.94,
-        "name": "French Presidential Election 2027"
+        "name": "AZ-05 Republican Primary",
+    },
+    "fide_candidates_2026": {
+        "slugs": [
+            "will-fabiano-caruana-win-the-2026-fide-candidates-tournament",
+            "will-hikaru-nakamura-win-the-2026-fide-candidates-tournament",
+            "will-javokhir-sindarov-win-the-2026-fide-candidates-tournament",
+            "will-praggnanandhaa-r-win-the-2026-fide-candidates-tournament",
+            "will-anish-giri-win-the-2026-fide-candidates-tournament",
+            "will-wei-yi-win-the-2026-fide-candidates-tournament",
+            "will-andrey-esipenko-win-the-2026-fide-candidates-tournament",
+        ],
+        "threshold": 0.86,
+        "name": "FIDE Candidates Tournament 2026",
     },
 }
 
 SYNTHETIC_PRICES = {
-    "german_election_2025": {
-        "AFD wins most seats": 0.40,
-        "CDU/CSU wins most seats": 0.35,
-        "SPD wins most seats": 0.15
+    "sc_senate_republican_primary": {
+        "Lindsey Graham": 0.70,
+        "Paul Dans": 0.08,
+        "Mark Lynch": 0.06,
+        "Thomas Murphy": 0.03,
     },
-    "france_president_2027": {
-        "Le Pen wins": 0.42,
-        "Macron wins": 0.38,
-        "Other wins": 0.10
+    "az_05_republican_primary": {
+        "Mark Lamb": 0.75,
+        "Travis Grantham": 0.06,
+        "Jay Feely": 0.05,
+    },
+    "fide_candidates_2026": {
+        "Fabiano Caruana": 0.24,
+        "Hikaru Nakamura": 0.17,
+        "Javokhir Sindarov": 0.11,
+        "Praggnanandhaa R": 0.10,
+        "Anish Giri": 0.07,
+        "Wei Yi": 0.07,
+        "Andrey Esipenko": 0.02,
     },
 }
 
-TEST_MODE = True
+TEST_MODE = False
