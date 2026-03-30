@@ -179,10 +179,6 @@ def extract_prices_from_event(event: dict) -> dict:
         except (ValueError, TypeError):
             return {}
 
-        # Skip prices at the extremes — market not yet active or already resolved
-        if yes_price <= 0.01 or yes_price >= 0.99:
-            return {}
-
         name = slug_to_name(slug)
         if name in prices:
             # Two markets in this event share the same short name —
