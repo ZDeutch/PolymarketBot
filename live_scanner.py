@@ -1,11 +1,11 @@
 """Continuously scans ALL open Polymarket events for exhaustive sets and logs
-genuine arb opportunities to Google Sheets. Replaces hardcoded market_curator.py."""
+genuine arb opportunities to Google Sheets. Replaces hardcoded market_curator.py.
+Prices are read from outcomePrices embedded in the Gamma API event response —
+no CLOB calls needed."""
 
 import requests
 import json
 import time
-import asyncio
-import aiohttp
 from datetime import datetime
 from sheets_logger import get_sheet, log_opportunity
 from position_sizer import calculate_stakes
@@ -146,90 +146,92 @@ def filter_exhaustive_sets(events: list) -> list:
     return after_volume
 
 
-# ─── Step 3: Fetch All Prices Concurrently (async) ───────────────────────────
+# ─── Step 3: Extract Prices from Gamma Event Data (sync) ─────────────────────
 
-async def fetch_midpoint(session: aiohttp.ClientSession, token_id: str):
-    url = "https://clob.polymarket.com/midpoint"
-    params = {"token_id": token_id}
-    try:
-        async with session.get(url, params=params) as resp:
-            if resp.status != 200:
-                return None
-            data = await resp.json()
-            return float(data.get("mid", 0))
-    except Exception:
-        return None
-
-
-async def fetch_token_ids(session: aiohttp.ClientSession, slug: str) -> dict:
-    url = f"https://gamma-api.polymarket.com/markets/slug/{slug}"
-    try:
-        async with session.get(url) as resp:
-            if resp.status != 200:
-                return {}
-            data = await resp.json()
-            outcomes = json.loads(data["outcomes"])
-            token_ids = json.loads(data["clobTokenIds"])
-            return dict(zip(outcomes, token_ids))
-    except Exception:
-        return {}
-
-
-async def fetch_prices_for_event(session: aiohttp.ClientSession, event: dict):
+def extract_prices_from_event(event: dict) -> dict:
+    """Reads Yes prices from outcomePrices already embedded in the Gamma event
+    response. No additional API calls needed — all data is in hand from
+    fetch_all_events(). Returns {} if any market is missing prices, has no
+    Yes outcome, or produces a slug_to_name collision."""
     prices = {}
+
     for market in event["markets"]:
-        slug = market.get("slug")
+        slug = market.get("slug", "")
         if not slug:
-            return None
+            return {}
 
-        token_map = await fetch_token_ids(session, slug)
-        if not token_map:
-            return None
+        try:
+            outcomes = json.loads(market.get("outcomes", "[]"))
+            outcome_prices = json.loads(market.get("outcomePrices", "[]"))
+        except (json.JSONDecodeError, TypeError):
+            return {}
 
-        yes_token = token_map.get("Yes")
-        if not yes_token:
-            return None
+        if not outcomes or not outcome_prices or len(outcomes) != len(outcome_prices):
+            return {}
 
-        price = await fetch_midpoint(session, yes_token)
-        if price is None:
-            return None
+        price_map = dict(zip(outcomes, outcome_prices))
+        yes_str = price_map.get("Yes")
+        if yes_str is None:
+            return {}
+
+        try:
+            yes_price = float(yes_str)
+        except (ValueError, TypeError):
+            return {}
+
+        # Skip prices at the extremes — market not yet active or already resolved
+        if yes_price <= 0.01 or yes_price >= 0.99:
+            return {}
 
         name = slug_to_name(slug)
-        prices[name] = price
+        if name in prices:
+            # Two markets in this event share the same short name —
+            # not a true exhaustive set (e.g. deadline variants).
+            return {}
+        prices[name] = yes_price
+
+    if len(prices) < MIN_MARKETS_PER_SET:
+        return {}
 
     return prices
-
-
-async def fetch_all_prices(valid_events: list) -> list:
-    semaphore = asyncio.Semaphore(20)
-
-    async def fetch_with_semaphore(session, event):
-        async with semaphore:
-            return await fetch_prices_for_event(session, event)
-
-    connector = aiohttp.TCPConnector(limit=20)
-    async with aiohttp.ClientSession(connector=connector) as session:
-        tasks = [
-            fetch_with_semaphore(session, event)
-            for event in valid_events
-        ]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-    return results
-
-
-def fetch_all_prices_concurrent(valid_events: list) -> list:
-    return asyncio.run(fetch_all_prices(valid_events))
 
 
 # ─── Step 4: Score and Filter (sync) ─────────────────────────────────────────
 
 def score_and_filter(valid_events: list, price_results: list) -> list:
+    # ── Debug breakdown ───────────────────────────────────────────────────────
+    total = 0
+    dropped_no_prices = 0
+    dropped_min_sum = 0
+    dropped_max_sum = 0
+    kept = 0
+
+    for event, prices in zip(valid_events, price_results):
+        total += 1
+        if not prices:
+            dropped_no_prices += 1
+            continue
+        cycle_sum = round(sum(prices.values()), 4)
+        if cycle_sum < MIN_CYCLE_SUM:
+            dropped_min_sum += 1
+            continue
+        if cycle_sum > MAX_CYCLE_SUM:
+            dropped_max_sum += 1
+            continue
+        kept += 1
+
+    print(f"  Score breakdown:")
+    print(f"    Total sets attempted:      {total}")
+    print(f"    Dropped (no prices/empty): {dropped_no_prices}")
+    print(f"    Dropped (sum < {MIN_CYCLE_SUM}):        {dropped_min_sum}")
+    print(f"    Dropped (sum > {MAX_CYCLE_SUM}):       {dropped_max_sum}")
+    print(f"    Kept for scoring:          {kept}")
+    # ─────────────────────────────────────────────────────────────────────────
+
     scored = []
 
     for event, prices in zip(valid_events, price_results):
-        if not prices or isinstance(prices, Exception):
-            continue
-        if len(prices) < MIN_MARKETS_PER_SET:
+        if not prices:
             continue
 
         n = len(prices)
@@ -237,7 +239,6 @@ def score_and_filter(valid_events: list, price_results: list) -> list:
         threshold = calculate_threshold(n)
         edge = round(threshold - cycle_sum, 4)
 
-        # Skip sets with implausibly low or high sums
         if cycle_sum < MIN_CYCLE_SUM:
             continue
         if cycle_sum > MAX_CYCLE_SUM:
@@ -285,11 +286,8 @@ def run():
             valid = filter_exhaustive_sets(events)
             print(f"  {len(events)} events → {len(valid)} valid exhaustive sets")
 
-            # Fetch all prices concurrently
-            print(f"  Fetching prices concurrently...")
-            price_results = fetch_all_prices_concurrent(valid)
-
-            # Score and filter
+            # Extract inline Gamma prices (no CLOB calls) then score
+            price_results = [extract_prices_from_event(event) for event in valid]
             scored = score_and_filter(valid, price_results)
             scan_duration = round(time.time() - scan_start, 1)
 
