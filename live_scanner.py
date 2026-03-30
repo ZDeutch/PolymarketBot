@@ -18,6 +18,13 @@ COOLDOWN = 3600           # seconds before re-logging same set
 MAX_MARKETS_PER_SET = 12  # maximum candidates in a set
 MIN_MARKETS_PER_SET = 2   # minimum candidates in a set
 FEE_RATE = 0.02           # per-trade fee rate
+MIN_CYCLE_SUM = 0.5       # skip sets with implausibly low sums (stale/non-exclusive)
+
+REQUIRED_KEYWORDS = [
+    "winner", "win", "president", "senator",
+    "governor", "primary", "election", "nominee",
+    "championship", "champion", "tournament",
+]
 
 EXCLUDE_KEYWORDS = [
     "enter parliament",
@@ -32,6 +39,8 @@ EXCLUDE_KEYWORDS = [
     "or more",
     "points or",
     "seats",
+    "margin of victory",
+    "margin",
 ]
 
 # ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -90,26 +99,47 @@ def fetch_all_events() -> list:
 # ─── Step 2: Filter Exhaustive Sets (sync) ───────────────────────────────────
 
 def filter_exhaustive_sets(events: list) -> list:
-    valid = []
+    # Stage 1: market count (2–MAX_MARKETS_PER_SET)
+    after_count = [
+        e for e in events
+        if MIN_MARKETS_PER_SET <= len(e.get("markets", [])) <= MAX_MARKETS_PER_SET
+    ]
+    print(f"  After market count filter:   {len(after_count)}")
 
-    for event in events:
-        markets = event.get("markets", [])
-        n = len(markets)
+    # Stage 2: not closed
+    after_closed = [e for e in after_count if not e.get("closed", False)]
+    print(f"  After closed filter:         {len(after_closed)}")
 
-        if not (MIN_MARKETS_PER_SET <= n <= MAX_MARKETS_PER_SET):
-            continue
-        if event.get("closed", False):
-            continue
-        if not all(m.get("active", False) for m in markets):
-            continue
+    # Stage 3: all markets active
+    after_active = [
+        e for e in after_closed
+        if all(m.get("active", False) for m in e.get("markets", []))
+    ]
+    print(f"  After active filter:         {len(after_active)}")
 
-        title = event.get("title", "").lower()
-        if any(kw in title for kw in EXCLUDE_KEYWORDS):
-            continue
+    # Stage 4: title must contain a required keyword
+    after_required = [
+        e for e in after_active
+        if any(kw in e.get("title", "").lower() for kw in REQUIRED_KEYWORDS)
+    ]
+    print(f"  After required keywords:     {len(after_required)}")
 
-        valid.append(event)
+    # Stage 5: title must not contain an excluded keyword
+    after_exclude = [
+        e for e in after_required
+        if not any(kw in e.get("title", "").lower() for kw in EXCLUDE_KEYWORDS)
+    ]
+    print(f"  After exclude keywords:      {len(after_exclude)}")
 
-    return valid
+    # Stage 6: at least some trading volume across all markets
+    after_volume = [
+        e for e in after_exclude
+        if sum(float(m.get("volumeNum", 0)) for m in e.get("markets", [])) > 0
+    ]
+    print(f"  After zero volume filter:    {len(after_volume)}")
+    print(f"  Final valid sets:            {len(after_volume)}")
+
+    return after_volume
 
 
 # ─── Step 3: Fetch All Prices Concurrently (async) ───────────────────────────
@@ -167,10 +197,16 @@ async def fetch_prices_for_event(session: aiohttp.ClientSession, event: dict):
 
 
 async def fetch_all_prices(valid_events: list) -> list:
-    connector = aiohttp.TCPConnector(limit=50)
+    semaphore = asyncio.Semaphore(20)
+
+    async def fetch_with_semaphore(session, event):
+        async with semaphore:
+            return await fetch_prices_for_event(session, event)
+
+    connector = aiohttp.TCPConnector(limit=20)
     async with aiohttp.ClientSession(connector=connector) as session:
         tasks = [
-            fetch_prices_for_event(session, event)
+            fetch_with_semaphore(session, event)
             for event in valid_events
         ]
         results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -198,7 +234,7 @@ def score_and_filter(valid_events: list, price_results: list) -> list:
         edge = round(threshold - cycle_sum, 4)
 
         # Skip sets with implausibly low sums (bad data, not real arb)
-        if cycle_sum < 0.3:
+        if cycle_sum < MIN_CYCLE_SUM:
             continue
 
         scored.append({
