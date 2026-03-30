@@ -19,6 +19,7 @@ MAX_MARKETS_PER_SET = 12  # maximum candidates in a set
 MIN_MARKETS_PER_SET = 2   # minimum candidates in a set
 FEE_RATE = 0.02           # per-trade fee rate
 MIN_CYCLE_SUM = 0.5       # skip sets with implausibly low sums (stale/non-exclusive)
+MAX_CYCLE_SUM = 1.15      # skip sets where sum > 1.15 (structurally non-exclusive)
 
 REQUIRED_KEYWORDS = [
     "winner", "win", "president", "senator",
@@ -41,6 +42,9 @@ EXCLUDE_KEYWORDS = [
     "seats",
     "margin of victory",
     "margin",
+    "winners",
+    "primary winners",
+    "which candidates",
 ]
 
 # ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -233,8 +237,10 @@ def score_and_filter(valid_events: list, price_results: list) -> list:
         threshold = calculate_threshold(n)
         edge = round(threshold - cycle_sum, 4)
 
-        # Skip sets with implausibly low sums (bad data, not real arb)
+        # Skip sets with implausibly low or high sums
         if cycle_sum < MIN_CYCLE_SUM:
+            continue
+        if cycle_sum > MAX_CYCLE_SUM:
             continue
 
         scored.append({
