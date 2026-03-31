@@ -12,9 +12,10 @@ from bs4 import BeautifulSoup
 
 # ─── Constants ────────────────────────────────────────────────────────────────
 
-DRAW_RATE   = 0.58
-SIMULATIONS = 10000
-MIN_EDGE    = 0.05
+DRAW_RATE    = 0.58
+SIMULATIONS  = 10000
+MIN_EDGE     = 0.05
+WHITE_BONUS  = 35   # Elo points added to white's effective rating
 
 FIDE_IDS = {
     "Fabiano Caruana":   2020009,
@@ -192,13 +193,22 @@ def scrape_fide_rating(fide_id: int, name: str = "") -> int | None:
 # ─── Function 2: Get All Ratings ──────────────────────────────────────────────
 
 def get_all_ratings() -> dict:
-    """Scrapes ratings for all 8 players with fallbacks."""
+    """Scrapes ratings for all 8 players with fallbacks.
+    Prints a warning for any player where scraped rating differs
+    from the fallback by more than 30 points."""
     ratings = {}
     for player, fide_id in FIDE_IDS.items():
         rating = scrape_fide_rating(fide_id, name=player)
         if rating is None:
             rating = FALLBACK_RATINGS[player]
         ratings[player] = rating
+
+    for player, rating in ratings.items():
+        fallback = FALLBACK_RATINGS[player]
+        diff = abs(rating - fallback)
+        if diff > 30:
+            print(f"  WARNING: {player} scraped={rating} fallback={fallback} diff={diff}")
+
     return ratings
 
 
@@ -212,8 +222,9 @@ def elo_win_prob(rating_a: int, rating_b: int) -> float:
 # ─── Function 4: Simulate One Game ────────────────────────────────────────────
 
 def simulate_game(player_a: str, player_b: str, ratings: dict) -> tuple:
-    """Simulates one game. Returns (score_a, score_b)."""
-    p_a_wins = elo_win_prob(ratings[player_a], ratings[player_b])
+    """Simulates one game. Returns (score_a, score_b).
+    player_a is white; WHITE_BONUS is added to white's effective rating."""
+    p_a_wins = elo_win_prob(ratings[player_a] + WHITE_BONUS, ratings[player_b])
 
     p_a_decisive = p_a_wins * (1 - DRAW_RATE)
     p_b_decisive = (1 - p_a_wins) * (1 - DRAW_RATE)
@@ -264,7 +275,7 @@ def run_simulation(ratings: dict) -> dict:
 
 def get_polymarket_prices() -> dict:
     """Fetches live YES prices for all players from the Gamma API.
-    Reads outcomePrices inline from the market response — no CLOB calls needed."""
+    Tries lastTradePrice → bestAsk → outcomePrices in order of freshness."""
     prices = {}
     for player, slug in POLYMARKET_SLUGS.items():
         try:
@@ -273,16 +284,33 @@ def get_polymarket_prices() -> dict:
             response.raise_for_status()
             data = response.json()
 
-            outcomes = json.loads(data.get("outcomes", "[]"))
-            outcome_prices = json.loads(data.get("outcomePrices", "[]"))
+            price = None
 
-            outcome_map = dict(zip(outcomes, outcome_prices))
-            yes_price = outcome_map.get("Yes")
+            # Option 1: lastTradePrice (most recent)
+            if data.get("lastTradePrice") is not None:
+                price = float(data["lastTradePrice"])
 
-            if yes_price is not None:
-                prices[player] = float(yes_price)
+            # Option 2: bestAsk (current market)
+            elif data.get("bestAsk") is not None:
+                price = float(data["bestAsk"])
+
+            # Option 3: outcomePrices Yes value
+            elif data.get("outcomePrices"):
+                outcomes = json.loads(data.get("outcomes", "[]"))
+                outcome_prices = json.loads(data["outcomePrices"])
+                outcome_map = dict(zip(outcomes, outcome_prices))
+                yes_val = outcome_map.get("Yes")
+                if yes_val is not None:
+                    price = float(yes_val)
+
+            if price is not None:
+                prices[player] = price
+                print(f"  {player}: {price:.3f}")
+            else:
+                print(f"  {player}: no price found")
+
         except Exception as e:
-            print(f"  Error fetching {player}: {e}")
+            print(f"  Error {player}: {e}")
 
     return prices
 
