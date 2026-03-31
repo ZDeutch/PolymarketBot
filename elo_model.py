@@ -274,40 +274,34 @@ def run_simulation(ratings: dict) -> dict:
 # ─── Function 6: Fetch Polymarket Prices ──────────────────────────────────────
 
 def get_polymarket_prices() -> dict:
-    """Fetches live YES prices for all players from the Gamma API.
-    Tries lastTradePrice → bestAsk → outcomePrices in order of freshness."""
+    """Fetches live YES midpoint prices for all players via the CLOB API.
+    Step 1: resolve Yes token ID from Gamma API.
+    Step 2: fetch live midpoint from CLOB /midpoint endpoint."""
     prices = {}
     for player, slug in POLYMARKET_SLUGS.items():
         try:
+            # Step 1: get token IDs from Gamma API
             url = f"https://gamma-api.polymarket.com/markets/slug/{slug}"
-            response = requests.get(url, timeout=10)
-            response.raise_for_status()
-            data = response.json()
+            r = requests.get(url, timeout=10)
+            r.raise_for_status()
+            data = r.json()
 
-            price = None
+            outcomes   = json.loads(data.get("outcomes",     "[]"))
+            token_ids  = json.loads(data.get("clobTokenIds", "[]"))
+            token_map  = dict(zip(outcomes, token_ids))
+            yes_token  = token_map.get("Yes")
 
-            # Option 1: lastTradePrice (most recent)
-            if data.get("lastTradePrice") is not None:
-                price = float(data["lastTradePrice"])
+            if not yes_token:
+                print(f"  {player}: no Yes token found")
+                continue
 
-            # Option 2: bestAsk (current market)
-            elif data.get("bestAsk") is not None:
-                price = float(data["bestAsk"])
-
-            # Option 3: outcomePrices Yes value
-            elif data.get("outcomePrices"):
-                outcomes = json.loads(data.get("outcomes", "[]"))
-                outcome_prices = json.loads(data["outcomePrices"])
-                outcome_map = dict(zip(outcomes, outcome_prices))
-                yes_val = outcome_map.get("Yes")
-                if yes_val is not None:
-                    price = float(yes_val)
-
-            if price is not None:
-                prices[player] = price
-                print(f"  {player}: {price:.3f}")
-            else:
-                print(f"  {player}: no price found")
+            # Step 2: get live midpoint from CLOB
+            clob_url = "https://clob.polymarket.com/midpoint"
+            cr = requests.get(clob_url, params={"token_id": yes_token}, timeout=10)
+            cr.raise_for_status()
+            price = float(cr.json()["mid"])
+            prices[player] = price
+            print(f"  {player}: {price:.3f}")
 
         except Exception as e:
             print(f"  Error {player}: {e}")
