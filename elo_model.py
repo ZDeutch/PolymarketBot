@@ -3,6 +3,7 @@ simulation to estimate each player's win probability, then compares to
 Polymarket prices to find edges."""
 
 import requests
+import json
 import re
 import random
 import math
@@ -42,7 +43,7 @@ POLYMARKET_SLUGS = {
     "Andrey Esipenko":
         "will-andrey-esipenko-win-the-2026-fide-candidates-tournament",
     "Matthias Bluebaum":
-        "will-matthias-blubaum-win-the-2026-fide-candidates-tournament",
+        "will-matthias-bluebaum-win-the-2026-fide-candidates-tournament",
 }
 
 # Completed game results: (white, black, white_score, black_score)
@@ -262,17 +263,26 @@ def run_simulation(ratings: dict) -> dict:
 # ─── Function 6: Fetch Polymarket Prices ──────────────────────────────────────
 
 def get_polymarket_prices() -> dict:
-    """Fetches live YES prices for all players from Polymarket."""
-    from polymarket_client import get_prices_for_market
-
+    """Fetches live YES prices for all players from the Gamma API.
+    Reads outcomePrices inline from the market response — no CLOB calls needed."""
     prices = {}
     for player, slug in POLYMARKET_SLUGS.items():
-        result = get_prices_for_market(slug)
-        if result is None:
-            continue
-        yes_price = result.get("Yes")
-        if yes_price is not None:
-            prices[player] = float(yes_price)
+        try:
+            url = f"https://gamma-api.polymarket.com/markets/slug/{slug}"
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+
+            outcomes = json.loads(data.get("outcomes", "[]"))
+            outcome_prices = json.loads(data.get("outcomePrices", "[]"))
+
+            outcome_map = dict(zip(outcomes, outcome_prices))
+            yes_price = outcome_map.get("Yes")
+
+            if yes_price is not None:
+                prices[player] = float(yes_price)
+        except Exception as e:
+            print(f"  Error fetching {player}: {e}")
 
     return prices
 
