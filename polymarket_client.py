@@ -45,6 +45,3 @@ def get_prices_for_market(slug: str) -> dict:
     return {outcome: prices[token_id] for outcome, token_id in outcome_to_token.items() if token_id in prices}
 
 
-if __name__ == "__main__":
-    result = get_prices_for_market("will-there-be-a-us-recession-in-2025")
-    print(result)

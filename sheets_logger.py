@@ -89,10 +89,3 @@ def log_opportunity(sheet, market_name: str, stakes_result: dict, prices: dict):
         print(f"Error logging opportunity to Sheets: {e}")
 
 
-if __name__ == "__main__":
-    sheet = get_sheet()
-    if sheet:
-        print("Connected to Google Sheets successfully.")
-        print(f"Sheet: {sheet.title}")
-    else:
-        print("Failed to connect.")

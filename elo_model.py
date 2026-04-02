@@ -432,9 +432,3 @@ def run() -> list:
     print("  Edges >10% may still reflect model limitations")
 
     return edges
-
-
-# ─── Entry Point ──────────────────────────────────────────────────────────────
-
-if __name__ == "__main__":
-    run()

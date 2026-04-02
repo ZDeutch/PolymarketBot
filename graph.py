@@ -41,31 +41,3 @@ def detect_arbitrage(prices: dict, threshold: float) -> dict:
         }
 
 
-if __name__ == "__main__":
-
-    # Test 1: should detect opportunity (sum = 0.90, threshold = 0.94)
-    test_prices_1 = {
-        "Le Pen wins": 0.42,
-        "Macron wins": 0.38,
-        "Other wins": 0.10
-    }
-    result1 = detect_arbitrage(test_prices_1, 0.94)
-    print("Test 1 (expect opportunity=True):", result1)
-
-    # Test 2: should NOT detect opportunity (sum = 0.99, threshold = 0.94)
-    test_prices_2 = {
-        "Le Pen wins": 0.50,
-        "Macron wins": 0.40,
-        "Other wins": 0.09
-    }
-    result2 = detect_arbitrage(test_prices_2, 0.94)
-    print("Test 2 (expect opportunity=False):", result2)
-
-    # Test 3: sum exactly at threshold (sum = 0.94, threshold = 0.94)
-    test_prices_3 = {
-        "Le Pen wins": 0.45,
-        "Macron wins": 0.35,
-        "Other wins": 0.14
-    }
-    result3 = detect_arbitrage(test_prices_3, 0.94)
-    print("Test 3 (expect opportunity=True):", result3)

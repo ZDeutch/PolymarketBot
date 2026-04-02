@@ -77,5 +77,3 @@ def generate_chart():
     plt.show()
 
 
-if __name__ == "__main__":
-    generate_chart()

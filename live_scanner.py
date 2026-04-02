@@ -199,35 +199,6 @@ def extract_prices_from_event(event: dict) -> dict:
 # ─── Step 4: Score and Filter (sync) ─────────────────────────────────────────
 
 def score_and_filter(valid_events: list, price_results: list) -> list:
-    # ── Debug breakdown ───────────────────────────────────────────────────────
-    total = 0
-    dropped_no_prices = 0
-    dropped_min_sum = 0
-    dropped_max_sum = 0
-    kept = 0
-
-    for event, prices in zip(valid_events, price_results):
-        total += 1
-        if not prices:
-            dropped_no_prices += 1
-            continue
-        cycle_sum = round(sum(prices.values()), 4)
-        if cycle_sum < MIN_CYCLE_SUM:
-            dropped_min_sum += 1
-            continue
-        if cycle_sum > MAX_CYCLE_SUM:
-            dropped_max_sum += 1
-            continue
-        kept += 1
-
-    print(f"  Score breakdown:")
-    print(f"    Total sets attempted:      {total}")
-    print(f"    Dropped (no prices/empty): {dropped_no_prices}")
-    print(f"    Dropped (sum < {MIN_CYCLE_SUM}):        {dropped_min_sum}")
-    print(f"    Dropped (sum > {MAX_CYCLE_SUM}):       {dropped_max_sum}")
-    print(f"    Kept for scoring:          {kept}")
-    # ─────────────────────────────────────────────────────────────────────────
-
     scored = []
 
     for event, prices in zip(valid_events, price_results):
