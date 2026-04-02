@@ -12,10 +12,14 @@ from bs4 import BeautifulSoup
 
 # ─── Constants ────────────────────────────────────────────────────────────────
 
-DRAW_RATE    = 0.58
-SIMULATIONS  = 10000
+SIMULATIONS  = 50000
 MIN_EDGE     = 0.05
-WHITE_BONUS  = 35   # Elo points added to white's effective rating
+WHITE_BONUS  = 35    # Elo points added to white's effective rating (Sonas, 266k games)
+
+# Pav logistic draw-rate model (gilgamath.com, fitted on 1.18 M rated games)
+DRAW_LOGIT_INTERCEPT  = -0.0198
+DRAW_LOGIT_RDIFF_COEF =  0.00687
+DRAW_LOGIT_MEAN_COEF  = -0.000421
 
 FIDE_IDS = {
     "Fabiano Caruana":   2020009,
@@ -212,9 +216,24 @@ def get_all_ratings() -> dict:
     return ratings
 
 
-# ─── Function 3: Elo Win Probability ──────────────────────────────────────────
+# ─── Function 3a: Pav Draw Rate ───────────────────────────────────────────────
 
-def elo_win_prob(rating_a: int, rating_b: int) -> float:
+def pav_draw_rate(rating_a: float, rating_b: float) -> float:
+    """Returns P(draw) for a single game using the Pav logistic model
+    (gilgamath.com, fitted on 1.18 million rated games).
+    Inputs are the effective ratings (white already boosted by WHITE_BONUS)."""
+    delta = abs(rating_a - rating_b)
+    mean  = (rating_a + rating_b) / 2.0
+    logit_decisive = (DRAW_LOGIT_INTERCEPT
+                      + DRAW_LOGIT_RDIFF_COEF * delta
+                      + DRAW_LOGIT_MEAN_COEF  * mean)
+    p_decisive = 1.0 / (1.0 + math.exp(-logit_decisive))
+    return round(1.0 - p_decisive, 4)
+
+
+# ─── Function 3b: Elo Win Probability ─────────────────────────────────────────
+
+def elo_win_prob(rating_a: float, rating_b: float) -> float:
     """Returns P(A wins) in a single game against B (excluding draws)."""
     return 1.0 / (1.0 + 10 ** ((rating_b - rating_a) / 400))
 
@@ -223,12 +242,17 @@ def elo_win_prob(rating_a: int, rating_b: int) -> float:
 
 def simulate_game(player_a: str, player_b: str, ratings: dict) -> tuple:
     """Simulates one game. Returns (score_a, score_b).
-    player_a is white; WHITE_BONUS is added to white's effective rating."""
-    p_a_wins = elo_win_prob(ratings[player_a] + WHITE_BONUS, ratings[player_b])
+    player_a is white; WHITE_BONUS is added to white's effective rating.
+    Draw rate is computed per-game from the Pav logistic model."""
+    white_rating = ratings[player_a] + WHITE_BONUS
+    black_rating = ratings[player_b]
 
-    p_a_decisive = p_a_wins * (1 - DRAW_RATE)
-    p_b_decisive = (1 - p_a_wins) * (1 - DRAW_RATE)
-    p_draw = DRAW_RATE
+    p_a_wins  = elo_win_prob(white_rating, black_rating)
+    draw_rate = pav_draw_rate(white_rating, black_rating)
+
+    p_a_decisive = p_a_wins * (1 - draw_rate)
+    p_b_decisive = (1 - p_a_wins) * (1 - draw_rate)
+    p_draw       = draw_rate
 
     r = random.random()
     if r < p_a_decisive:
@@ -242,11 +266,16 @@ def simulate_game(player_a: str, player_b: str, ratings: dict) -> tuple:
 # ─── Function 5: Run Monte Carlo Simulation ───────────────────────────────────
 
 def run_simulation(ratings: dict) -> dict:
-    """Runs Monte Carlo simulation of the remaining tournament games."""
+    """Runs Monte Carlo simulation of the remaining tournament games.
+    Each iteration samples per-player performance ratings from N(rating, σ=50)
+    to capture tournament-to-tournament form variation (XanthH/candidates_simulation)."""
     players = list(FIDE_IDS.keys())
     win_counts = {p: 0 for p in players}
 
     for _ in range(SIMULATIONS):
+
+        # Sample performance ratings for this simulation (σ=50 per XanthH model)
+        perf_ratings = {p: random.gauss(ratings[p], 50) for p in players}
 
         # Start with actual scores from completed games
         scores = {p: 0.0 for p in players}
@@ -254,9 +283,9 @@ def run_simulation(ratings: dict) -> dict:
             scores[white] += ws
             scores[black] += bs
 
-        # Simulate remaining games
+        # Simulate remaining games using this iteration's performance ratings
         for white, black in REMAINING_GAMES:
-            ws, bs = simulate_game(white, black, ratings)
+            ws, bs = simulate_game(white, black, perf_ratings)
             scores[white] += ws
             scores[black] += bs
 
@@ -346,8 +375,13 @@ def find_edges(model_probs: dict, market_prices: dict) -> list:
 def run() -> list:
     """Main function. Returns edge list for integration."""
     print("FIDE Candidates 2026 — Elo Model")
-    print(f"Simulations: {SIMULATIONS} | Draw rate: {DRAW_RATE} | Min edge: {MIN_EDGE}")
+    print(f"Simulations: {SIMULATIONS} | Draw model: Pav logistic | Min edge: {MIN_EDGE}")
     print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print()
+
+    # Verify Pav draw rate at Candidates level: two equal 2760-rated players
+    sample_draw = pav_draw_rate(2760 + WHITE_BONUS, 2760)
+    print(f"Draw rate check: two 2760-rated players (white +{WHITE_BONUS}) → {sample_draw:.4f}")
     print()
 
     print("Scraping FIDE ratings...")
@@ -385,6 +419,17 @@ def run() -> list:
 
     actionable = [e for e in edges if e["action"] != "neutral"]
     print(f"\nActionable edges (>{MIN_EDGE * 100:.0f}%): {len(actionable)}")
+
+    print()
+    print("Model methodology:")
+    print("  Draw rate:            Pav logistic model (rating diff + avg rating)")
+    print("  White bonus:          +35 Elo (Sonas, 266k games)")
+    print("  Performance variance: N(rating, sigma=50) per iteration")
+    print(f"  Simulations:          {SIMULATIONS}")
+    print("  Tiebreak:             random (simplified — rapid/blitz not modeled)")
+    print("  Independent games:    momentum effects not modeled")
+    print("    (Kalwij 2025: no detectable sequential effects)")
+    print("  Edges >10% may still reflect model limitations")
 
     return edges
 
