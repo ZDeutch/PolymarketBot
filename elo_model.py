@@ -54,28 +54,30 @@ POLYMARKET_SLUGS = {
 # Completed game results: (white, black, white_score, black_score)
 # white_score: 1.0=win, 0.5=draw, 0.0=loss
 COMPLETED_GAMES = [
+    # Round 1
     ("Javokhir Sindarov",  "Andrey Esipenko",   1.0, 0.0),
     ("Matthias Bluebaum",  "Wei Yi",             0.5, 0.5),
     ("Praggnanandhaa R",   "Anish Giri",         1.0, 0.0),
     ("Fabiano Caruana",    "Hikaru Nakamura",    1.0, 0.0),
+    # Round 2
     ("Andrey Esipenko",    "Hikaru Nakamura",    0.5, 0.5),
     ("Anish Giri",         "Fabiano Caruana",    0.5, 0.5),
     ("Wei Yi",             "Praggnanandhaa R",   0.5, 0.5),
     ("Javokhir Sindarov",  "Matthias Bluebaum",  0.5, 0.5),
+    # Round 3
+    ("Matthias Bluebaum",  "Andrey Esipenko",    0.5, 0.5),
+    ("Praggnanandhaa R",   "Javokhir Sindarov",  0.0, 1.0),
+    ("Fabiano Caruana",    "Wei Yi",             1.0, 0.0),
+    ("Hikaru Nakamura",    "Anish Giri",         0.5, 0.5),
+    # Round 4
+    ("Andrey Esipenko",    "Anish Giri",         0.0, 1.0),
+    ("Wei Yi",             "Hikaru Nakamura",    0.5, 0.5),
+    ("Javokhir Sindarov",  "Fabiano Caruana",    1.0, 0.0),
+    ("Matthias Bluebaum",  "Praggnanandhaa R",   0.5, 0.5),
 ]
 
-# Remaining rounds 3-14 pairings: (white, black)
+# Remaining rounds 5-14 pairings: (white, black)
 REMAINING_GAMES = [
-    # Round 3
-    ("Matthias Bluebaum",  "Andrey Esipenko"),
-    ("Praggnanandhaa R",   "Javokhir Sindarov"),
-    ("Fabiano Caruana",    "Wei Yi"),
-    ("Hikaru Nakamura",    "Anish Giri"),
-    # Round 4
-    ("Andrey Esipenko",    "Anish Giri"),
-    ("Wei Yi",             "Hikaru Nakamura"),
-    ("Javokhir Sindarov",  "Fabiano Caruana"),
-    ("Matthias Bluebaum",  "Praggnanandhaa R"),
     # Round 5
     ("Praggnanandhaa R",   "Andrey Esipenko"),
     ("Fabiano Caruana",    "Matthias Bluebaum"),
