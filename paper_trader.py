@@ -17,9 +17,39 @@ import re
 import math
 import random
 import time
+import os
+import gspread
+from google.oauth2.service_account import Credentials
+from dotenv import load_dotenv
 from datetime import datetime
 from bs4 import BeautifulSoup
-from sheets_logger import get_sheet
+
+load_dotenv()
+
+# ─── Direct Sheets connection (no header enforcement) ─────────────────────────
+
+_SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive",
+]
+_SHEET_NAME       = os.getenv("GOOGLE_SHEET_NAME", "ArbBotLog")
+_CREDENTIALS_FILE = os.path.join(os.path.dirname(__file__), "credentials.json")
+
+PAPER_HEADERS = [
+    "Timestamp", "Round", "Player", "Side",
+    "Entry Price", "Model Fair", "Edge %",
+    "Stake $", "Exit Price", "P&L $", "Status",
+]
+
+def connect_sheet():
+    """Connects directly to Google Sheets without enforcing any header row."""
+    try:
+        creds  = Credentials.from_service_account_file(_CREDENTIALS_FILE, scopes=_SCOPES)
+        client = gspread.authorize(creds)
+        return client.open(_SHEET_NAME).sheet1
+    except Exception as e:
+        print(f"Error connecting to Google Sheets: {e}")
+        return None
 
 # ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -455,19 +485,28 @@ def calculate_half_kelly(edge: float, market_price: float,
 
 def settle_open_positions(sheet, current_prices: dict) -> int:
     """Marks every OPEN row as SETTLED, filling Exit Price and P&L."""
-    rows    = sheet.get_all_records()
+    all_values = sheet.get_all_values()
+    if len(all_values) < 2:
+        return 0
+
+    # Build column index from actual header row
+    header  = all_values[0]
+    col     = {name: idx for idx, name in enumerate(header)}
     settled = 0
 
-    for i, row in enumerate(rows):
-        if row.get("Status") != "OPEN":
+    for i, values in enumerate(all_values[1:], start=1):
+        # Pad short rows
+        row = values + [""] * (len(header) - len(values))
+
+        if row[col.get("Status", 10)] != "OPEN":
             continue
-        player = row.get("Player", "")
+        player = row[col.get("Player", 2)]
         if player not in current_prices:
             continue
 
-        side         = row["Side"]
-        entry_price  = float(row["Entry Price"])
-        stake        = float(row["Stake $"])
+        side         = row[col.get("Side", 3)]
+        entry_price  = float(row[col.get("Entry Price", 4)] or 0)
+        stake        = float(row[col.get("Stake $", 7)] or 0)
         exit_price   = current_prices[player]
 
         if side == "YES":
@@ -478,7 +517,7 @@ def settle_open_positions(sheet, current_prices: dict) -> int:
             current_value = stake * (no_current / no_entry) if no_entry else 0.0
 
         pnl       = round(current_value - stake, 2)
-        sheet_row = i + 2               # +1 for header, +1 for 1-based index
+        sheet_row = i + 1               # all_values[1:] means i=1 → sheet row 2
 
         sheet.update_cell(sheet_row, 9,  exit_price)   # Exit Price
         sheet.update_cell(sheet_row, 10, pnl)          # P&L $
@@ -542,14 +581,14 @@ def run() -> None:
 
     # ── Step 1: Connect to Google Sheets ──────────────────────────────────────
     print("Connecting to Google Sheets...")
-    sheet = get_sheet()
+    sheet = connect_sheet()
     if sheet is None:
         print("ERROR: Could not connect to Google Sheets. Exiting.")
         return
 
-    existing_rows = sheet.get_all_records()
-    if not existing_rows:
-        print("  Empty sheet — writing headers.")
+    all_values = sheet.get_all_values()
+    if not all_values or all_values[0] != PAPER_HEADERS:
+        print("  Writing paper-trader headers.")
         setup_sheet(sheet)
 
     # ── Step 2: Fetch live prices (needed for settlement and new positions) ───
