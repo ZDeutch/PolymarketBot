@@ -45,6 +45,7 @@ standardized formats used by chess_simulator.py:
 """
 
 import re
+import json
 import time
 import requests
 from itertools import permutations
@@ -109,48 +110,44 @@ def _normalize_pgn_name(name: str) -> str:
 
 # ─── Lichess broadcast functions ──────────────────────────────────────────────
 
-def _resolve_broadcast_id(slug_or_id: str) -> str | None:
-    """Returns the Lichess tour ID for a given slug or ID.
+def _resolve_broadcast_id(tournament_id: str) -> str | None:
+    """Returns the Lichess tour ID for a given tour ID or slug.
 
-    Tries the input as a tour ID directly; if that 404s, pages through
-    the broadcast list looking for a matching slug.
+    Lichess tour IDs are always exactly 8 alphanumeric characters
+    (e.g. '3COxSfdj'). Anything else is treated as a slug and
+    searched for in the broadcast list.
+
     Returns the tour ID string, or None if not found.
     """
-    # Try direct ID lookup first
-    url = f"{LICHESS_BASE}/broadcast/{slug_or_id}"
+    # 8-char alphanumeric → treat directly as a tour ID
+    if re.match(r'^[A-Za-z0-9]{8}$', tournament_id):
+        return tournament_id
+
+    # Otherwise search the broadcast list (NDJSON) for a slug match
+    url = f"{LICHESS_BASE}/broadcast?nb=100"
     try:
-        r = requests.get(url, headers=HEADERS, timeout=10)
-        if r.status_code == 200:
-            return slug_or_id   # it's already a valid tour ID
-    except Exception:
-        pass
-
-    # Search broadcast list by slug (NDJSON, paged)
-    print(f"  '{slug_or_id}' not found as tour ID — searching by slug...")
-    for page in range(1, 6):
-        try:
-            r = requests.get(
-                f"{LICHESS_BASE}/broadcast",
-                params={"page": page},
-                headers={**HEADERS, "Accept": "application/x-ndjson"},
-                timeout=10,
-            )
-            r.raise_for_status()
-        except Exception:
-            break
-        lines = [l for l in r.text.strip().split("\n") if l]
-        if not lines:
-            break
-        for line in lines:
-            try:
-                item = __import__("json").loads(line)
-                tour = item.get("tour", {})
-                if tour.get("slug") == slug_or_id or tour.get("id") == slug_or_id:
-                    return tour["id"]
-            except Exception:
+        r = requests.get(
+            url,
+            headers={**HEADERS, "Accept": "application/x-ndjson"},
+            timeout=15,
+        )
+        for line in r.text.strip().split("\n"):
+            if not line.strip():
                 continue
+            obj  = json.loads(line)
+            tour = obj.get("tour", obj)
+            if tour.get("slug") == tournament_id:
+                return tour["id"]
 
-    return None
+        print(f"  '{tournament_id}' not found in broadcast list.")
+        print(f"  Tip: use the 8-char tour ID from the Lichess URL instead.")
+        print(f"  e.g. lichess.org/broadcast/tata-steel-chess-2026--masters/3COxSfdj")
+        print(f"       tour ID = '3COxSfdj'")
+        return None
+
+    except Exception as e:
+        print(f"  Error searching broadcasts: {e}")
+        return None
 
 
 def get_tournament(tournament_id: str) -> dict:
@@ -214,19 +211,20 @@ def get_tournament(tournament_id: str) -> dict:
     }
 
 
-def get_round_games(round_url: str) -> list:
+def get_round_games(round_id: str) -> list:
     """Fetches all completed games from a Lichess broadcast round.
 
-    round_url is the full Lichess broadcast round URL
-    (e.g. https://lichess.org/broadcast/.../round-1/uLCZwqAK).
-    Appends '.pgn' to download the PGN file.
+    round_id is the 8-char Lichess round ID (e.g. 'uLCZwqAK').
+    Lichess routes by ID — the slug portions of the URL are ignored,
+    so placeholder dashes are used to construct the PGN endpoint:
+      https://lichess.org/broadcast/-/-/{round_id}.pgn
 
     Parses White/Black/Result headers.
     Skips in-progress games (Result = '*').
 
     Returns [(white_name, black_name, white_score, black_score)].
     """
-    pgn_url = round_url.rstrip("/") + ".pgn"
+    pgn_url = f"https://lichess.org/broadcast/-/-/{round_id}.pgn"
     try:
         resp = requests.get(
             pgn_url,
@@ -289,7 +287,7 @@ def get_completed_results(tournament_id: str) -> dict:
         if not round_info["finished"]:
             continue
         round_num = round_info["number"]
-        games     = get_round_games(round_info["url"])
+        games     = get_round_games(round_info["id"])
         if games:
             completed[round_num] = games
             total_games += len(games)
@@ -307,8 +305,8 @@ def get_players(tournament_id: str) -> list:
     if not tournament or not tournament["rounds"]:
         return []
 
-    round1_url = tournament["rounds"][0]["url"]
-    games      = get_round_games(round1_url)
+    round1_id = tournament["rounds"][0]["id"]
+    games     = get_round_games(round1_id)
 
     names = set()
     for white, black, _ws, _bs in games:
