@@ -222,7 +222,8 @@ if __name__ == "__main__":
         description="PolymarketBot — Multi-Sport Tournament Simulator"
     )
     parser.add_argument("--tournament", required=True,
-                        help="Tournament name or Chess.com tournament ID")
+                        help="Lichess broadcast tour ID or slug "
+                             "e.g. BLA70Vds or fide-candidates-2026-open")
     parser.add_argument("--sport", required=True,
                         choices=["chess", "tennis", "golf"],
                         help="Sport type")
