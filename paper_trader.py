@@ -11,6 +11,7 @@ Each run:
 Usage: python paper_trader.py
 """
 
+import sys
 import requests
 import json
 import re
@@ -179,7 +180,7 @@ FULL_SCHEDULE = [
     ("Javokhir Sindarov",  "Wei Yi"),
 ]
 
-# Hardcoded fallback through Round 4 — used if live scrape fails
+# Hardcoded results through Round 8 (April 8, 2026)
 HARDCODED_COMPLETED_ROUNDS = {
     1: [
         ("Javokhir Sindarov",  "Andrey Esipenko",   1.0, 0.0),
@@ -205,6 +206,30 @@ HARDCODED_COMPLETED_ROUNDS = {
         ("Javokhir Sindarov",  "Fabiano Caruana",    1.0, 0.0),
         ("Matthias Bluebaum",  "Praggnanandhaa R",   0.5, 0.5),
     ],
+    5: [
+        ("Praggnanandhaa R",   "Andrey Esipenko",    0.5, 0.5),
+        ("Fabiano Caruana",    "Matthias Bluebaum",  1.0, 0.0),
+        ("Hikaru Nakamura",    "Javokhir Sindarov",  0.0, 1.0),
+        ("Anish Giri",         "Wei Yi",             0.5, 0.5),
+    ],
+    6: [
+        ("Fabiano Caruana",    "Andrey Esipenko",    0.5, 0.5),
+        ("Hikaru Nakamura",    "Praggnanandhaa R",   0.5, 0.5),
+        ("Anish Giri",         "Matthias Bluebaum",  0.5, 0.5),
+        ("Wei Yi",             "Javokhir Sindarov",  0.0, 1.0),
+    ],
+    7: [
+        ("Andrey Esipenko",    "Wei Yi",             0.0, 1.0),
+        ("Javokhir Sindarov",  "Anish Giri",         0.5, 0.5),
+        ("Matthias Bluebaum",  "Hikaru Nakamura",    0.5, 0.5),
+        ("Praggnanandhaa R",   "Fabiano Caruana",    0.5, 0.5),
+    ],
+    8: [
+        ("Andrey Esipenko",    "Javokhir Sindarov",  0.5, 0.5),
+        ("Wei Yi",             "Matthias Bluebaum",  0.5, 0.5),
+        ("Anish Giri",         "Praggnanandhaa R",   1.0, 0.0),
+        ("Hikaru Nakamura",    "Fabiano Caruana",    1.0, 0.0),
+    ],
 }
 
 
@@ -221,63 +246,15 @@ def setup_sheet(sheet) -> None:
     print("  Sheet cleared and headers written.")
 
 
-# ─── Pairings scraper ─────────────────────────────────────────────────────────
+# ─── Pairings (hardcoded — FIDE page requires JS rendering) ──────────────────
 
 def scrape_pairings() -> dict:
-    """Scrapes candidates2026.fide.com/pairings and returns completed games
-    grouped by round number: {round_num: [(white, black, ws, bs), ...]}"""
-    response = requests.get(
-        PAIRINGS_URL,
-        headers={"User-Agent": "Mozilla/5.0"},
-        timeout=15,
-    )
-    response.raise_for_status()
-    soup = BeautifulSoup(response.text, "html.parser")
-    text = soup.get_text(" ", strip=True)
-
-    # Score tokens that appear in the page
-    result_map = {
-        "1\u20140": (1.0, 0.0),   # 1—0
-        "0\u20141": (0.0, 1.0),   # 0—1
-        "\u00bd\u2014\u00bd": (0.5, 0.5),  # ½—½
-        "1-0":   (1.0, 0.0),
-        "0-1":   (0.0, 1.0),
-        "1/2-1/2": (0.5, 0.5),
-        "draw":  (0.5, 0.5),
-    }
-
-    # Pattern: captures "Player A  <result>  Player B"
-    pattern = re.compile(
-        r'([A-Z][A-Za-z\s,\.]+?)\s+'
-        r'(1\u20140|0\u20141|\u00bd\u2014\u00bd|1-0|0-1|1/2-1/2)'
-        r'\s+([A-Z][A-Za-z\s,\.]+)',
-        re.UNICODE,
-    )
-
-    # Locate round headers and bucket games under them
-    round_pattern = re.compile(r'Round\s+(\d+)', re.IGNORECASE)
-    completed: dict[int, list] = {}
-    current_round = None
-
-    for line in text.split("\n"):
-        line = line.strip()
-        m_round = round_pattern.search(line)
-        if m_round:
-            current_round = int(m_round.group(1))
-            continue
-        m_game = pattern.search(line)
-        if m_game and current_round is not None:
-            white_raw, result_str, black_raw = m_game.groups()
-            white = white_raw.strip()
-            black = black_raw.strip()
-            ws, bs = result_map.get(result_str, (None, None))
-            if ws is not None:
-                completed.setdefault(current_round, []).append(
-                    (white, black, ws, bs)
-                )
-
-    total_games = sum(len(v) for v in completed.values())
-    print(f"  Scraped {len(completed)} completed round(s), {total_games} total game(s)")
+    """Returns hardcoded completed results through Round 8 (April 8, 2026).
+    The FIDE pairings page uses JavaScript rendering so requests+BS4 cannot parse it."""
+    print("  Using hardcoded results through Round 8")
+    completed = HARDCODED_COMPLETED_ROUNDS
+    total = sum(len(g) for g in completed.values())
+    print(f"  {len(completed)} rounds complete, {total} games")
     return completed
 
 
@@ -434,28 +411,43 @@ def run_simulation(ratings: dict, completed_rounds: dict,
 
 # ─── Live price fetcher ───────────────────────────────────────────────────────
 
+MAX_RETRIES = 3
+BASE_DELAY  = 2   # seconds
+
 def get_live_prices() -> dict:
-    """Fetches live YES midpoint prices via CLOB API (token ID from Gamma)."""
+    """Fetches live YES midpoint prices via CLOB API (token ID from Gamma).
+    Each player's fetch retries up to MAX_RETRIES times with exponential backoff.
+    A 0.5 s pause between players avoids rate-limiting."""
     prices = {}
     for player, slug in POLYMARKET_SLUGS.items():
-        try:
-            url  = f"https://gamma-api.polymarket.com/markets/slug/{slug}"
-            data = requests.get(url, timeout=10).json()
+        for attempt in range(MAX_RETRIES):
+            try:
+                url  = f"https://gamma-api.polymarket.com/markets/slug/{slug}"
+                data = requests.get(url, timeout=10).json()
 
-            outcomes  = json.loads(data.get("outcomes",     "[]"))
-            token_ids = json.loads(data.get("clobTokenIds", "[]"))
-            yes_token = dict(zip(outcomes, token_ids)).get("Yes")
-            if not yes_token:
-                print(f"  {player}: no Yes token")
-                continue
+                outcomes  = json.loads(data.get("outcomes",     "[]"))
+                token_ids = json.loads(data.get("clobTokenIds", "[]"))
+                yes_token = dict(zip(outcomes, token_ids)).get("Yes")
+                if not yes_token:
+                    print(f"  {player}: no Yes token")
+                    break
 
-            cr    = requests.get("https://clob.polymarket.com/midpoint",
-                                 params={"token_id": yes_token}, timeout=10)
-            price = float(cr.json()["mid"])
-            prices[player] = price
-            print(f"  {player}: {price:.3f}")
-        except Exception as e:
-            print(f"  Error {player}: {e}")
+                cr    = requests.get("https://clob.polymarket.com/midpoint",
+                                     params={"token_id": yes_token}, timeout=10)
+                price = float(cr.json()["mid"])
+                prices[player] = price
+                print(f"  {player}: {price:.3f}")
+                break                              # success — exit retry loop
+
+            except Exception as e:
+                if attempt < MAX_RETRIES - 1:
+                    wait = BASE_DELAY * (2 ** attempt)
+                    print(f"    Retry {attempt + 1} for {player} in {wait}s... ({e})")
+                    time.sleep(wait)
+                else:
+                    print(f"    Failed {player} after {MAX_RETRIES} attempts: {e}")
+
+        time.sleep(0.5)                            # rate-limit buffer between players
     return prices
 
 
@@ -568,6 +560,73 @@ def log_new_positions(sheet, round_num: int, edges: dict,
               f"stake=${stake:,.2f}")
 
     return logged
+
+
+# ─── P&L checker (read-only) ──────────────────────────────────────────────────
+
+def check_pnl(sheet, current_prices: dict) -> None:
+    """Prints unrealized P&L for all OPEN positions WITHOUT modifying the sheet."""
+    all_values = sheet.get_all_values()
+    if len(all_values) < 2:
+        print("No positions in sheet.")
+        return
+
+    header = all_values[0]
+    col    = {name: idx for idx, name in enumerate(header)}
+
+    open_rows = []
+    for values in all_values[1:]:
+        row = values + [""] * (len(header) - len(values))
+        if row[col.get("Status", 10)] != "OPEN":
+            continue
+        open_rows.append(row)
+
+    if not open_rows:
+        print("No OPEN positions found.")
+        return
+
+    print()
+    print("─" * 74)
+    print(f"  {'Player':<23}  {'Side':<4}  {'Entry':>7}  "
+          f"{'Current':>7}  {'Stake':>9}  {'Unreal P&L':>11}")
+    print("─" * 74)
+
+    total_unrealized = 0.0
+
+    for row in open_rows:
+        player      = row[col.get("Player", 2)]
+        side        = row[col.get("Side", 3)]
+        entry_price = float(row[col.get("Entry Price", 4)] or 0)
+        stake       = float(row[col.get("Stake $", 7)] or 0)
+
+        if player not in current_prices:
+            print(f"  {player:<23}  {side:<4}  {entry_price:>7.3f}  "
+                  f"{'N/A':>7}  ${stake:>8,.2f}  {'N/A':>11}")
+            continue
+
+        exit_price = current_prices[player]
+
+        if side == "YES":
+            current_value = stake * (exit_price / entry_price) if entry_price else 0.0
+        else:                             # NO
+            no_entry   = 1 - entry_price
+            no_current = 1 - exit_price
+            current_value = stake * (no_current / no_entry) if no_entry else 0.0
+
+        pnl  = round(current_value - stake, 2)
+        total_unrealized += pnl
+        sign = "+" if pnl >= 0 else ""
+
+        print(f"  {player:<23}  {side:<4}  {entry_price:>7.3f}  "
+              f"{exit_price:>7.3f}  ${stake:>8,.2f}  "
+              f"{sign}${pnl:>8,.2f}")
+
+    print("─" * 74)
+    total_sign = "+" if total_unrealized >= 0 else ""
+    print(f"  {'TOTAL UNREALIZED P&L':<52}  "
+          f"{total_sign}${total_unrealized:>8,.2f}")
+    print()
+    print("  Sheet not modified — run full script to settle.")
 
 
 # ─── Main orchestration ───────────────────────────────────────────────────────
@@ -713,4 +772,18 @@ def run() -> None:
 # ─── Entry point ──────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    run()
+    if len(sys.argv) > 1 and sys.argv[1] == "check":
+        print("PolymarketBot — P&L Check (read-only)")
+        print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        print()
+        print("Fetching live Polymarket prices...")
+        _prices = get_live_prices()
+        print()
+        print("Reading sheet...")
+        _sheet  = connect_sheet()
+        if _sheet is None:
+            print("ERROR: Could not connect to Google Sheets.")
+            sys.exit(1)
+        check_pnl(_sheet, _prices)
+    else:
+        run()

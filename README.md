@@ -32,6 +32,28 @@ Generate P/L chart from logged sessions:
 python visualizer.py
 ```
 
+## Multi-Sport Architecture (In Progress)
+
+PolymarketBot is being extended to support
+three tournament formats:
+
+| Sport  | Rating System | Format            | Data Source      |
+|--------|---------------|-------------------|------------------|
+| Chess  | FIDE Elo      | Round robin       | Chess.com API    |
+| Tennis | UTR           | Knockout bracket  | UTR Sports API   |
+| Golf   | OWGR/DataGolf | Stroke play       | DataGolf API     |
+
+Each sport has a dedicated fetcher (data) and
+simulator (Monte Carlo engine). The edge
+calculator and paper trader are sport-agnostic.
+
+### Usage
+```
+python main.py --tournament "..." \
+               --sport [chess|tennis|golf] \
+               --polymarket "event-slug"
+```
+
 ## Time Complexity
 
 - `polymarket_client.get_prices_for_market()`: O(n) where n = number of outcomes
