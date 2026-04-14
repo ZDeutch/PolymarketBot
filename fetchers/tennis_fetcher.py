@@ -1,18 +1,19 @@
 """
-Fetches tennis tournament data from the UTR
-Sports API.
+Fetches tennis tournament data from the UTR Sports
+unofficial API.
 
-UTR API base URL: https://app.utrsports.net/api
+UTR API base URL: https://app.universaltennis.com/api
 
-Authentication: JWT token obtained by logging in
-with UTR_EMAIL and UTR_PASSWORD from config.
+Authentication: JWT token from UTR user session.
+Store as UTR_JWT_TOKEN in .env file.
+Obtain by: logging into utrsports.net, opening
+browser DevTools → Application → Cookies →
+copy the value of the 'jwt' cookie.
+
+No paid plan required — free UTR account sufficient.
 
 Key data contract — all functions return
 standardized formats used by tennis_simulator.py:
-
-  authenticate() -> str
-    Logs in to UTR API and returns JWT token.
-    Token should be cached and reused within session.
 
   get_tournament(tournament_id: str, token: str) -> dict
     Fetches tournament metadata including draw size,

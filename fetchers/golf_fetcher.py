@@ -1,21 +1,25 @@
 """
-Fetches golf tournament data from the DataGolf API.
+Fetches golf tournament data from free public sources.
 
-DataGolf API base URL: https://feeds.datagolf.com
-Authentication: API key passed as query parameter.
+Data sources:
+  - PGA Tour internal JSON API (no auth required)
+    Base: https://statdata.pgatour.com/r/{tournament_id}/
+    Endpoints:
+      leaderboard-v2.json  — live scores and standings
+      field.json           — tournament field/players
 
-Key data contract — all functions return
-standardized formats used by golf_simulator.py:
+  - OWGR website scraping (no auth required)
+    URL: https://www.owgr.com/ranking
+    Provides: Official World Golf Rankings for all players
+
+Key data contract:
 
   get_field(tournament_id: str) -> dict
-    Fetches current tournament field with
-    player ratings and rankings.
+    Fetches current tournament field.
     Returns: {
       player_name: {
         "owgr": int,
-        "datagolf_rank": int,
-        "baseline_avg": float,
-        "scoring_avg": float
+        "country": str,
       }
     }
 
@@ -34,13 +38,13 @@ standardized formats used by golf_simulator.py:
     }
 
   get_completed_rounds(tournament_id: str) -> int
-    Returns the number of fully completed rounds.
+    Returns number of fully completed rounds (0-4).
 
-  get_model_predictions(tournament_id: str) -> dict
-    Fetches DataGolf's own win probability model
-    for comparison against our simulation.
-    Returns: {player_name: win_probability}
+  get_owgr_rankings() -> dict
+    Scrapes current OWGR rankings.
+    Returns: {player_name: owgr_rank}
 
-Note: DataGolf free tier allows 100 API calls/day.
-Cache responses locally to avoid hitting limits.
+Note: PGA Tour tournament IDs are numeric strings
+like "034" for RBC Heritage. Find them in the
+PGA Tour schedule URL structure.
 """
