@@ -1,0 +1,40 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Main Bot Loop",
+      "runtimeExecutable": "venv/bin/python",
+      "runtimeArgs": ["main.py"],
+      "port": 0,
+      "autoPort": true
+    },
+    {
+      "name": "Research - Market Discovery",
+      "runtimeExecutable": "venv/bin/python",
+      "runtimeArgs": ["research.py"],
+      "port": 0,
+      "autoPort": true
+    },
+    {
+      "name": "Visualizer - P&L Chart",
+      "runtimeExecutable": "venv/bin/python",
+      "runtimeArgs": ["visualizer.py"],
+      "port": 0,
+      "autoPort": true
+    },
+    {
+      "name": "Validate Market Slugs",
+      "runtimeExecutable": "venv/bin/python",
+      "runtimeArgs": ["validate_slugs.py"],
+      "port": 0,
+      "autoPort": true
+    },
+    {
+      "name": "Test Sheet Logging",
+      "runtimeExecutable": "venv/bin/python",
+      "runtimeArgs": ["sheets_logger.py"],
+      "port": 0,
+      "autoPort": true
+    }
+  ]
+}
