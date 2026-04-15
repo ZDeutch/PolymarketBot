@@ -56,29 +56,56 @@ HEADERS = {
     "User-Agent": "PolymarketBot/1.0 tournament-simulator"
 }
 
-# Maps real player names → Chess.com usernames
+# Maps real player names → Chess.com usernames.
+# Includes PGN name variants (Last, First reversed; diacritics; etc.)
+# so that names extracted directly from PGN headers resolve correctly.
 PLAYER_NAME_TO_USERNAME = {
+    # Candidates 2026 players
     "Fabiano Caruana":       "fabianocaruana",
     "Hikaru Nakamura":       "hikaru",
-    "Javokhir Sindarov":     "sindarov_j",
+    "Javokhir Sindarov":     "sindarov2005",
     "Praggnanandhaa R":      "rpraggnanandhaa",
+    "Praggnanandhaa":        "rpraggnanandhaa",
+    "R Praggnanandhaa":      "rpraggnanandhaa",
     "Anish Giri":            "anishgiri",
     "Wei Yi":                "weiyi_chess",
     "Andrey Esipenko":       "andrey_esipenko",
     "Matthias Bluebaum":     "matthiasbluebaum",
-    "Magnus Carlsen":        "magnuscarlsen",
-    "Ian Nepomniachtchi":    "lachessis",
-    "Gukesh Dommaraju":      "gukeshdommaraju",
-    "Alireza Firouzja":      "firouzja2003",
-    "Vidit Gujrathi":        "viditchess",
-    "Nijat Abasov":          "nijatabasov",
-    "Ding Liren":            "dinglirenofficial",
-    "Arjun Erigaisi":        "arjunerigaisi",
-    "Vincent Keymer":        "vincentkeymer",
-    "Nodirbek Abdusattorov": "nodirbek_abdusattorov",
-    "Alexei Shirov":         "alexeishipov",
-    "Max Warmerdam":         "maxwarmerdam",
-    "Jorden van Foreest":    "jordenvanforeest",
+    "Matthias Blübaum":      "matthiasbluebaum",
+
+    # Tata Steel / other elite players
+    "Gukesh D":                   "gukeshdommaraju",
+    "Gukesh Dommaraju":           "gukeshdommaraju",
+    "D Gukesh":                   "gukeshdommaraju",
+    "Arjun Erigaisi":             "arjunerigaisi",
+    "Erigaisi Arjun":             "arjunerigaisi",
+    "Vincent Keymer":             "vincentkeymer",
+    "Nodirbek Abdusattorov":      "abdusattorov",
+    "Abdusattorov Nodirbek":      "abdusattorov",
+    "Jorden van Foreest":         "jordanvanforeest",
+    "Jorden Van Foreest":         "jordanvanforeest",
+    "Magnus Carlsen":             "magnuscarlsen",
+    "Ian Nepomniachtchi":         "lachessis",
+    "Nepomniachtchi Ian":         "lachessis",
+    "Alireza Firouzja":           "firouzja2003",
+    "Firouzja Alireza":           "firouzja2003",
+    "Vidit Gujrathi":             "viditchess",
+    "Nijat Abasov":               "nijatabasov",
+    "Abasov Nijat":               "nijatabasov",
+    "Hans Moke Niemann":          "hansniemann",
+    "Niemann Hans Moke":          "hansniemann",
+    "Vladimir Fedoseev":          "v_fedoseev",
+    "Fedoseev Vladimir":          "v_fedoseev",
+    "Chithambaram VR. Aravindh":  "aravindh_chithambaram",
+    "Aravindh Chithambaram":      "aravindh_chithambaram",
+    "Thai Dai Van Nguyen":        "thaidaiannguyen",
+    "Nguyen Thai Dai Van":        "thaidaiannguyen",
+    "Yagiz Kaan Erdogmus":        "yagiz_kaan_erdogmus",
+    "Erdogmus Yagiz Kaan":        "yagiz_kaan_erdogmus",
+    "Max Warmerdam":              "maxwarmerdam",
+    "Warmerdam Max":              "maxwarmerdam",
+    "Alexei Shirov":              "alexeishipov",
+    "Ding Liren":                 "dinglirenofficial",
 }
 
 
@@ -321,8 +348,10 @@ def get_players(tournament_id: str) -> list:
 def get_player_rating(username: str) -> int | None:
     """Fetches current Elo from Chess.com player stats.
 
-    Tries classical first, falls back to rapid.
-    Returns None on failure.
+    Tries classical first, then rapid. Validates that the returned
+    rating is > 2500 — anything lower is likely stale/wrong data for
+    a top GM and we fall through to FIDE scraping instead.
+    Returns None on failure or implausibly low rating.
     """
     url = f"{CHESSCOM_BASE}/player/{username}/stats"
     try:
@@ -330,19 +359,19 @@ def get_player_rating(username: str) -> int | None:
         resp.raise_for_status()
         data = resp.json()
 
+        # Classical first
         classical = data.get("chess_classical", {})
-        if classical:
-            rating = classical.get("last", {}).get("rating")
-            if rating:
-                return int(rating)
+        rating    = classical.get("last", {}).get("rating")
+        if rating and int(rating) > 2500:
+            return int(rating)
 
-        rapid = data.get("chess_rapid", {})
-        if rapid:
-            rating = rapid.get("last", {}).get("rating")
-            if rating:
-                return int(rating)
+        # Rapid fallback
+        rapid  = data.get("chess_rapid", {})
+        rating = rapid.get("last", {}).get("rating")
+        if rating and int(rating) > 2500:
+            return int(rating)
 
-        print(f"  WARNING: no rating found for {username}")
+        # Both missing or implausibly low — signal fallback
         return None
 
     except Exception as e:
@@ -350,11 +379,44 @@ def get_player_rating(username: str) -> int | None:
         return None
 
 
+# Hardcoded fallback ratings for players not reachable via Chess.com
+# or FIDE scraping (e.g. missing classical games, scrape failures).
+# Updated from FIDE rating list — refresh periodically.
+KNOWN_RATINGS = {
+    "Nodirbek Abdusattorov":      2764,
+    "Abdusattorov Nodirbek":      2764,
+    "Arjun Erigaisi":             2777,
+    "Erigaisi Arjun":             2777,
+    "Gukesh D":                   2783,
+    "Gukesh Dommaraju":           2783,
+    "D Gukesh":                   2783,
+    "Vincent Keymer":             2726,
+    "Chithambaram VR. Aravindh":  2603,
+    "Aravindh Chithambaram":      2603,
+    "Hans Moke Niemann":          2663,
+    "Niemann Hans Moke":          2663,
+    "Vladimir Fedoseev":          2674,
+    "Fedoseev Vladimir":          2674,
+    "Matthias Bluebaum":          2700,
+    "Matthias Blübaum":           2700,
+    "Jorden van Foreest":         2645,
+    "Jorden Van Foreest":         2645,
+    "Thai Dai Van Nguyen":        2612,
+    "Nguyen Thai Dai Van":        2612,
+    "Yagiz Kaan Erdogmus":        2610,
+    "Erdogmus Yagiz Kaan":        2610,
+    "Max Warmerdam":              2598,
+    "Warmerdam Max":              2598,
+}
+
+
 def get_player_ratings(players: list) -> dict:
     """Fetches ratings for a list of real player names.
 
-    Primary:  Chess.com via PLAYER_NAME_TO_USERNAME lookup.
-    Fallback: FIDE profile scrape for players in elo_model.FIDE_IDS.
+    Tries in order:
+      1. Chess.com (classical, then rapid — must be > 2500)
+      2. FIDE profile scrape via elo_model.FIDE_IDS
+      3. KNOWN_RATINGS hardcoded fallback table
 
     Returns {real_name: elo_rating}.
     """
@@ -363,25 +425,37 @@ def get_player_ratings(players: list) -> dict:
     for name in players:
         rating = None
 
+        # 1. Chess.com
         username = PLAYER_NAME_TO_USERNAME.get(name)
         if username:
             rating = get_player_rating(username)
+            if rating:
+                print(f"  {name}: {rating} (chess.com)")
             time.sleep(0.5)
 
-        # FIDE scrape fallback
-        if rating is None:
+        # 2. FIDE scrape
+        if not rating:
             try:
                 from elo_model import scrape_fide_rating, FIDE_IDS
-                if name in FIDE_IDS:
-                    rating = scrape_fide_rating(FIDE_IDS[name], name=name)
+                fide_id = FIDE_IDS.get(name)
+                if fide_id:
+                    rating = scrape_fide_rating(fide_id)
+                    if rating:
+                        print(f"  {name}: {rating} (fide)")
             except Exception:
                 pass
 
-        if rating is not None:
-            ratings[name] = rating
-            print(f"  {name}: {rating}")
-        else:
+        # 3. Hardcoded fallback
+        if not rating:
+            rating = KNOWN_RATINGS.get(name)
+            if rating:
+                print(f"  {name}: {rating} (hardcoded fallback)")
+
+        if not rating:
             print(f"  WARNING: no rating found for '{name}', skipping")
+            continue
+
+        ratings[name] = rating
 
     return ratings
 
