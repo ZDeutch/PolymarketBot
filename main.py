@@ -224,8 +224,49 @@ def run(tournament_name: str, sport: str,
             field, scores, completed_rounds, SIMULATIONS
         )
 
+    elif sport == "tennis":
+        # ── Tennis pipeline (bracket knockout) ───────────────────────────────
+
+        # ── Step 2: Bracket (completed matches) ───────────────────────────────
+        print(f"\nFetching bracket...")
+        bracket = fetcher.get_bracket(tournament_name)
+        rounds_done = max(bracket.keys()) if bracket else 0
+        total_matches = sum(len(v) for v in bracket.values())
+        print(f"  Rounds with results: {rounds_done}")
+        print(f"  Completed matches:   {total_matches}")
+
+        # ── Step 3: Players ───────────────────────────────────────────────────
+        print(f"\nFetching players...")
+        players = fetcher.get_players(tournament_name)
+        print(f"  Players in field: {len(players)}")
+
+        if not players:
+            print("ERROR: No players found. Cannot simulate.")
+            sys.exit(1)
+
+        # ── Step 4: ATP rankings + ratings ────────────────────────────────────
+        print(f"\nFetching ATP rankings...")
+        rankings = fetcher.get_atp_rankings()
+        ratings  = fetcher.get_player_ratings(players, rankings)
+        ranked   = sum(1 for v in ratings.values() if v > 100)
+        print(f"  Players with ATP data: {ranked}/{len(players)}")
+
+        # ── Step 4b: Seeds ────────────────────────────────────────────────────
+        print(f"\nFetching seeds...")
+        seeds = fetcher.get_seeds(tournament_name)
+        seeded = sum(1 for v in seeds.values() if v is not None)
+        print(f"  Seeded players: {seeded}/{len(players)}")
+
+        # ── Step 5: Monte Carlo simulation ───────────────────────────────────
+        surface = tournament.get("surface", "hard")
+        print(f"\nRunning {SIMULATIONS:,} Monte Carlo simulations "
+              f"(surface: {surface})...")
+        model_probs = simulator.simulate_tournament(
+            players, ratings, seeds, bracket, surface, SIMULATIONS
+        )
+
     else:
-        # ── Chess / Tennis pipeline (pairings-based) ──────────────────────────
+        # ── Chess pipeline ────────────────────────────────────────────────────
 
         # ── Step 2: Completed results ─────────────────────────────────────────
         print(f"\nFetching completed results...")
