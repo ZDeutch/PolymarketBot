@@ -72,6 +72,33 @@ POLYMARKET_SLUGS_CHESS = {
         "will-matthias-bluebaum-win-the-2026-fide-candidates-tournament",
 }
 
+# ─── Golf Polymarket slugs (Masters 2026) ─────────────────────────────────────
+# Slug pattern: "will-{name-hyphenated}-win-the-2026-masters"
+# Update event suffix when switching tournaments.
+
+POLYMARKET_SLUGS_GOLF = {
+    "Scottie Scheffler":  "will-scottie-scheffler-win-the-2026-masters",
+    "Rory McIlroy":       "will-rory-mcilroy-win-the-2026-masters",
+    "Xander Schauffele":  "will-xander-schauffele-win-the-2026-masters",
+    "Collin Morikawa":    "will-collin-morikawa-win-the-2026-masters",
+    "Ludvig Aberg":       "will-ludvig-aberg-win-the-2026-masters",
+    "Jon Rahm":           "will-jon-rahm-win-the-2026-masters",
+    "Bryson DeChambeau":  "will-bryson-dechambeau-win-the-2026-masters",
+    "Tommy Fleetwood":    "will-tommy-fleetwood-win-the-2026-masters",
+    "Viktor Hovland":     "will-viktor-hovland-win-the-2026-masters",
+    "Patrick Cantlay":    "will-patrick-cantlay-win-the-2026-masters",
+    "Shane Lowry":        "will-shane-lowry-win-the-2026-masters",
+    "Hideki Matsuyama":   "will-hideki-matsuyama-win-the-2026-masters",
+    "Justin Thomas":      "will-justin-thomas-win-the-2026-masters",
+    "Jordan Spieth":      "will-jordan-spieth-win-the-2026-masters",
+    "Brooks Koepka":      "will-brooks-koepka-win-the-2026-masters",
+    "Max Homa":           "will-max-homa-win-the-2026-masters",
+    "Cameron Young":      "will-cameron-young-win-the-2026-masters",
+    "Akshay Bhatia":      "will-akshay-bhatia-win-the-2026-masters",
+    "Tony Finau":         "will-tony-finau-win-the-2026-masters",
+    "Jason Day":          "will-jason-day-win-the-2026-masters",
+}
+
 MAX_RETRIES = 3
 BASE_DELAY  = 2  # seconds
 
@@ -106,13 +133,24 @@ def _fetch_clob_price(slug: str) -> float | None:
 def get_market_prices(sport: str, polymarket_slug: str) -> dict:
     """Fetches live Polymarket YES midpoint prices for all players.
 
-    For chess, uses POLYMARKET_SLUGS_CHESS per-player slugs.
-    For other sports, uses polymarket_slug as the event slug (future use).
+    Chess: uses POLYMARKET_SLUGS_CHESS per-player slugs.
+    Golf:  uses POLYMARKET_SLUGS_GOLF per-player slugs.
+    Other sports: reserved for future use.
     """
     prices = {}
 
     if sport == "chess":
         for player, slug in POLYMARKET_SLUGS_CHESS.items():
+            price = _fetch_clob_price(slug)
+            if price is not None:
+                prices[player] = price
+                print(f"  {player}: {price:.3f}")
+            else:
+                print(f"  {player}: failed to fetch")
+            time.sleep(0.5)
+
+    elif sport == "golf":
+        for player, slug in POLYMARKET_SLUGS_GOLF.items():
             price = _fetch_clob_price(slug)
             if price is not None:
                 prices[player] = price
@@ -151,33 +189,71 @@ def run(tournament_name: str, sport: str,
     print(f"  Rounds:  {tournament.get('rounds_complete', 0)}"
           f" / {tournament.get('total_rounds', '?')} complete")
 
-    # ── Step 2: Completed results ─────────────────────────────────────────────
-    print(f"\nFetching completed results...")
-    completed = fetcher.get_completed_results(tournament_name)
+    if sport == "golf":
+        # ── Golf pipeline (stroke play) ───────────────────────────────────────
 
-    # ── Step 3: Player ratings ────────────────────────────────────────────────
-    print(f"\nFetching player ratings...")
-    players = fetcher.get_players(tournament_name)
-    print(f"  Players found: {len(players)}")
-    ratings = fetcher.get_player_ratings(players)
-    print(f"  Ratings fetched: {len(ratings)}/{len(players)}")
+        # ── Step 2: Live scores ───────────────────────────────────────────────
+        print(f"\nFetching live scores...")
+        scores = fetcher.get_live_scores(tournament_name)
+        completed_rounds = fetcher.get_completed_rounds(scores)
+        survivors = sum(1 for d in scores.values() if d.get("made_cut", True))
+        print(f"  Players in field:   {len(scores)}")
+        print(f"  Rounds complete:    {completed_rounds}/4")
+        if completed_rounds >= 2:
+            print(f"  Players made cut:   {survivors}/{len(scores)}")
 
-    if not ratings:
-        print("ERROR: No ratings available. Cannot simulate.")
-        sys.exit(1)
+        # ── Step 3: OWGR rankings ─────────────────────────────────────────────
+        print(f"\nFetching OWGR rankings...")
+        rankings = fetcher.get_owgr_rankings()
+        print(f"  OWGR players loaded: {len(rankings)}")
 
-    # ── Step 4: Remaining schedule ────────────────────────────────────────────
-    total_rounds = tournament.get("total_rounds")
-    remaining = fetcher.get_remaining_schedule(
-        tournament_name, completed, players, total_rounds
-    )
-    print(f"  Remaining games: {len(remaining)}")
+        # Build field from tournament players × OWGR rankings.
+        # Players not in OWGR top-list get a default rank of 100.
+        field_players = tournament.get("players") or list(scores.keys())
+        field = {p: rankings.get(p, 100) for p in field_players if p}
+        ranked = sum(1 for v in field.values() if v <= len(rankings))
+        print(f"  Field with OWGR data: {ranked}/{len(field)}")
 
-    # ── Step 5: Monte Carlo simulation ───────────────────────────────────────
-    print(f"\nRunning {SIMULATIONS:,} Monte Carlo simulations...")
-    model_probs = simulator.simulate_tournament(
-        ratings, completed, remaining, SIMULATIONS
-    )
+        if not field:
+            print("ERROR: Empty field — cannot simulate.")
+            sys.exit(1)
+
+        # ── Step 5: Monte Carlo simulation ───────────────────────────────────
+        print(f"\nRunning {SIMULATIONS:,} Monte Carlo simulations...")
+        model_probs = simulator.simulate_tournament(
+            field, scores, completed_rounds, SIMULATIONS
+        )
+
+    else:
+        # ── Chess / Tennis pipeline (pairings-based) ──────────────────────────
+
+        # ── Step 2: Completed results ─────────────────────────────────────────
+        print(f"\nFetching completed results...")
+        completed = fetcher.get_completed_results(tournament_name)
+
+        # ── Step 3: Player ratings ────────────────────────────────────────────
+        print(f"\nFetching player ratings...")
+        players = fetcher.get_players(tournament_name)
+        print(f"  Players found: {len(players)}")
+        ratings = fetcher.get_player_ratings(players)
+        print(f"  Ratings fetched: {len(ratings)}/{len(players)}")
+
+        if not ratings:
+            print("ERROR: No ratings available. Cannot simulate.")
+            sys.exit(1)
+
+        # ── Step 4: Remaining schedule ────────────────────────────────────────
+        total_rounds = tournament.get("total_rounds")
+        remaining = fetcher.get_remaining_schedule(
+            tournament_name, completed, players, total_rounds
+        )
+        print(f"  Remaining games: {len(remaining)}")
+
+        # ── Step 5: Monte Carlo simulation ───────────────────────────────────
+        print(f"\nRunning {SIMULATIONS:,} Monte Carlo simulations...")
+        model_probs = simulator.simulate_tournament(
+            ratings, completed, remaining, SIMULATIONS
+        )
 
     # ── Step 6: Polymarket prices ─────────────────────────────────────────────
     print(f"\nFetching Polymarket prices...")
@@ -190,17 +266,19 @@ def run(tournament_name: str, sport: str,
     sized = size_positions(edges)
 
     print()
+    col = 30 if sport == "golf" else 23   # golf names are longer
     if not market_prices:
         # Model-only output: no market prices available
-        print("─" * 42)
-        print(f"  {'Player':<23}  {'Model':>7}  {'Rank':>5}")
-        print("─" * 42)
+        sep = "─" * (col + 20)
+        print(sep)
+        print(f"  {'Player':<{col}}  {'Model':>7}  {'Rank':>5}")
+        print(sep)
         for rank, (player, prob) in enumerate(
             sorted(model_probs.items(), key=lambda x: x[1], reverse=True), 1
         ):
             if prob > 0.0001:
-                print(f"  {player:<23}  {prob*100:>6.1f}%  #{rank}")
-        print("─" * 42)
+                print(f"  {player:<{col}}  {prob*100:>6.1f}%  #{rank}")
+        print(sep)
     else:
         print("─" * 68)
         print(f"  {'Player':<23}  {'Model':>7}  {'Market':>7}  "
