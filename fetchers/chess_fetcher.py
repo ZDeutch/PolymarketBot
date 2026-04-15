@@ -74,9 +74,7 @@ PLAYER_NAME_TO_USERNAME = {
     "Matthias Blübaum":      "matthiasbluebaum",
 
     # Tata Steel / other elite players
-    "Gukesh D":                   "gukeshdommaraju",
-    "Gukesh Dommaraju":           "gukeshdommaraju",
-    "D Gukesh":                   "gukeshdommaraju",
+    # Gukesh omitted — Chess.com returns online rating (too low); falls through to FIDE scrape
     "Arjun Erigaisi":             "arjunerigaisi",
     "Erigaisi Arjun":             "arjunerigaisi",
     "Vincent Keymer":             "vincentkeymer",
@@ -464,16 +462,43 @@ def get_player_ratings(players: list) -> dict:
 
 def get_remaining_schedule(tournament_id: str,
                            completed_results: dict,
-                           all_players: list) -> list:
+                           all_players: list,
+                           total_rounds: int = None) -> list:
     """Returns all unplayed games for a round-robin tournament.
 
-    Generates the full double round-robin schedule (every ordered pair),
-    subtracts completed pairs, returns remaining (white, black) tuples.
+    Generates the full schedule (ordered pairs) and subtracts completed pairs.
+    Names are normalised (strip + lower) before comparison so minor
+    case/spacing differences between PGN names and the players list never
+    cause a completed game to count as remaining.
+
+    total_rounds is used to detect single vs double round-robin:
+      - single RR: total_rounds == n-1   (e.g. Tata Steel: 13 rounds, 14 players)
+      - double RR: total_rounds == 2*(n-1) (e.g. Candidates: 14 rounds, 8 players)
+    In a single RR, completing game (A, B) also removes (B, A) from the schedule
+    since each pair only plays once.
     """
+    n = len(all_players)
+    is_single_rr = (total_rounds is not None and total_rounds == n - 1)
+
     completed_pairs = set()
     for games in completed_results.values():
         for white, black, _ws, _bs in games:
-            completed_pairs.add((white, black))
+            wl = white.strip().lower()
+            bl = black.strip().lower()
+            completed_pairs.add((wl, bl))
+            if is_single_rr:
+                # Each pair only plays once — reverse ordering also done
+                completed_pairs.add((bl, wl))
 
-    full_schedule = [(a, b) for a, b in permutations(all_players, 2)]
-    return [(w, b) for w, b in full_schedule if (w, b) not in completed_pairs]
+    all_games = [(a, b) for a, b in permutations(all_players, 2)]
+
+    # Debug: show sample pairs from each side so mismatches are visible
+    print(f"  Sample completed pair: {list(completed_pairs)[:2]}")
+    print(f"  Sample schedule pair:  {all_games[:2]}")
+    print(f"  Format: {'single' if is_single_rr else 'double'} round-robin "
+          f"({total_rounds} rounds, {n} players)")
+
+    return [
+        (w, b) for w, b in all_games
+        if (w.strip().lower(), b.strip().lower()) not in completed_pairs
+    ]

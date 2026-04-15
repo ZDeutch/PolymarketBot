@@ -30,6 +30,10 @@ FIDE_IDS = {
     "Wei Yi":            8603677,
     "Andrey Esipenko":   24175439,
     "Matthias Bluebaum": 24638479,
+    # Tata Steel / other elite players
+    "Gukesh D":          46616543,
+    "Gukesh Dommaraju":  46616543,
+    "D Gukesh":          46616543,
 }
 
 POLYMARKET_SLUGS = {

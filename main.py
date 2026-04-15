@@ -157,7 +157,8 @@ def run(tournament_name: str, sport: str,
 
     # ── Step 3: Player ratings ────────────────────────────────────────────────
     print(f"\nFetching player ratings...")
-    players = tournament.get("players", [])
+    players = fetcher.get_players(tournament_name)
+    print(f"  Players found: {len(players)}")
     ratings = fetcher.get_player_ratings(players)
     print(f"  Ratings fetched: {len(ratings)}/{len(players)}")
 
@@ -166,7 +167,10 @@ def run(tournament_name: str, sport: str,
         sys.exit(1)
 
     # ── Step 4: Remaining schedule ────────────────────────────────────────────
-    remaining = fetcher.get_remaining_schedule(tournament_name, completed, players)
+    total_rounds = tournament.get("total_rounds")
+    remaining = fetcher.get_remaining_schedule(
+        tournament_name, completed, players, total_rounds
+    )
     print(f"  Remaining games: {len(remaining)}")
 
     # ── Step 5: Monte Carlo simulation ───────────────────────────────────────
@@ -186,23 +190,35 @@ def run(tournament_name: str, sport: str,
     sized = size_positions(edges)
 
     print()
-    print("─" * 68)
-    print(f"  {'Player':<23}  {'Model':>7}  {'Market':>7}  "
-          f"{'Edge':>7}  {'Action':<8}  {'Stake':>8}")
-    print("─" * 68)
+    if not market_prices:
+        # Model-only output: no market prices available
+        print("─" * 42)
+        print(f"  {'Player':<23}  {'Model':>7}  {'Rank':>5}")
+        print("─" * 42)
+        for rank, (player, prob) in enumerate(
+            sorted(model_probs.items(), key=lambda x: x[1], reverse=True), 1
+        ):
+            if prob > 0.0001:
+                print(f"  {player:<23}  {prob*100:>6.1f}%  #{rank}")
+        print("─" * 42)
+    else:
+        print("─" * 68)
+        print(f"  {'Player':<23}  {'Model':>7}  {'Market':>7}  "
+              f"{'Edge':>7}  {'Action':<8}  {'Stake':>8}")
+        print("─" * 68)
 
-    for e in sized:
-        flag      = " ★" if e["action"] != "neutral" else ""
-        stake_str = f"${e['stake']:>7,.0f}" if e["stake"] > 0 else "       —"
-        sign      = "+" if e["edge"] >= 0 else ""
-        print(f"  {e['player']:<23}  "
-              f"{e['model']*100:>6.1f}%  "
-              f"{e['market']*100:>6.1f}%  "
-              f"{sign}{e['edge']*100:>5.1f}%  "
-              f"{e['action']:<8}  "
-              f"{stake_str}{flag}")
+        for e in sized:
+            flag      = " ★" if e["action"] != "neutral" else ""
+            stake_str = f"${e['stake']:>7,.0f}" if e["stake"] > 0 else "       —"
+            sign      = "+" if e["edge"] >= 0 else ""
+            print(f"  {e['player']:<23}  "
+                  f"{e['model']*100:>6.1f}%  "
+                  f"{e['market']*100:>6.1f}%  "
+                  f"{sign}{e['edge']*100:>5.1f}%  "
+                  f"{e['action']:<8}  "
+                  f"{stake_str}{flag}")
 
-    print("─" * 68)
+        print("─" * 68)
 
     actionable  = [e for e in sized if e["action"] != "neutral" and e["stake"] > 0]
     total_stake = sum(e["stake"] for e in actionable)
