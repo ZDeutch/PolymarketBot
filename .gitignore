@@ -3,3 +3,4 @@ venv/
 credentials.json
 __pycache__/
 pnl_chart.png
+.claude/\nbot.pid\n*.log\n*.txt
