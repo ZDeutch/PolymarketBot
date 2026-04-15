@@ -1,66 +1,65 @@
 """
-Fetches tennis tournament data from the UTR Sports
-unofficial API.
+Fetches tennis tournament data from ESPN ATP scoreboard.
 
-UTR API base URL: https://app.universaltennis.com/api
+ESPN API base URL:
+  https://site.api.espn.com/apis/site/v2/sports/tennis
 
-Authentication: JWT token from UTR user session.
-Store as UTR_JWT_TOKEN in .env file.
-Obtain by: logging into utrsports.net, opening
-browser DevTools → Application → Cookies →
-copy the value of the 'jwt' cookie.
+No authentication required.
 
-No paid plan required — free UTR account sufficient.
+Player ratings use a hardcoded ATP rankings dict
+(ATP_RANKINGS_2026) rather than a live data fetch.
+Update the dict before each major tournament.
 
 Key data contract — all functions return
-standardized formats used by tennis_simulator.py:
+standardised formats used by tennis_simulator.py:
 
-  get_tournament(tournament_id: str, token: str) -> dict
+  get_atp_rankings() -> dict
+    Returns {full_name: {"rank": int, "points": int}}
+    from the hardcoded ATP_RANKINGS_2026 dict.
+
+  get_tournament(tournament_id: str) -> dict
     Fetches tournament metadata including draw size,
-    round structure, and player list.
+    round structure, and surface.
     Returns: {
       "name": str,
-      "players": [str],
-      "format": "single_elimination" | "round_robin",
+      "id": str,
+      "status": "pre" | "in" | "post",
+      "surface": "hard" | "clay" | "grass",
+      "rounds_complete": int,
       "total_rounds": int,
-      "rounds_complete": int
+      "players": []
     }
 
-  get_bracket(tournament_id: str, token: str) -> dict
-    Fetches the full bracket structure including
-    completed and pending matches.
+  get_bracket(tournament_id: str) -> dict
+    Fetches completed match results.
     Returns: {
       round_number: [
         {
           "player_a": str,
           "player_b": str,
           "winner": str | None,
-          "score": str | None,
-          "position": int
+          "completed": bool
         }
       ]
     }
 
-  get_player_ratings(players: list,
-                     token: str) -> dict
-    Fetches current UTR rating for each player.
-    Returns: {player_name: utr_rating}
+  get_players(tournament_id: str) -> list[str]
+    All named (non-TBD) competitors in the field.
 
-Note: UTR ratings are on a 0-16.5 scale.
-A 1-point UTR difference is meaningful at elite level.
+  get_player_ratings(players: list,
+                     rankings=None) -> dict
+    Maps player names to ATP points from
+    ATP_RANKINGS_2026.
+    Returns: {player_name: atp_points}
+
+  get_seeds(tournament_id: str) -> dict
+    Returns {player_name: seed_number | None}.
 """
 
 import requests
-import csv
-import io
-import math
-import time
-from datetime import datetime
 
-ESPN_BASE         = "https://site.api.espn.com/apis/site/v2/sports/tennis"
-SACKMANN_RANKINGS = "https://raw.githubusercontent.com/JeffSackmann/tennis_atp/master/atp_rankings_current.csv"
-SACKMANN_PLAYERS  = "https://raw.githubusercontent.com/JeffSackmann/tennis_atp/master/atp_players.csv"
-HEADERS           = {"User-Agent": "Mozilla/5.0 (compatible; PolymarketBot/1.0)"}
+ESPN_BASE = "https://site.api.espn.com/apis/site/v2/sports/tennis"
+HEADERS   = {"User-Agent": "Mozilla/5.0 (compatible; PolymarketBot/1.0)"}
 
 # Surface keywords (checked case-insensitively against tournament name)
 _GRASS_KEYWORDS = ["wimbledon", "queen's", "queens", "halle", "nottingham",
@@ -68,6 +67,120 @@ _GRASS_KEYWORDS = ["wimbledon", "queen's", "queens", "halle", "nottingham",
 _CLAY_KEYWORDS  = ["roland garros", "french open", "monte-carlo", "monte carlo",
                    "madrid", "rome", "barcelona", "hamburg", "rio",
                    "estoril", "lyon", "munich", "bucharest", "marrakech"]
+
+
+# ─── Hardcoded ATP rankings ────────────────────────────────────────────────────
+
+ATP_RANKINGS_2026 = {
+    "Jannik Sinner": 13350,
+    "Carlos Alcaraz": 13240,
+    "Alexander Zverev": 5555,
+    "Novak Djokovic": 4710,
+    "Felix Auger-Aliassime": 4100,
+    "Ben Shelton": 3900,
+    "Alex de Minaur": 3895,
+    "Taylor Fritz": 3870,
+    "Lorenzo Musetti": 3625,
+    "Daniil Medvedev": 3560,
+    "Alexander Bublik": 3445,
+    "Casper Ruud": 2625,
+    "Jiri Lehecka": 2540,
+    "Karen Khachanov": 2410,
+    "Andrey Rublev": 2350,
+    "Flavio Cobolli": 2320,
+    "Valentin Vacherot": 2168,
+    "Tommy Paul": 2065,
+    "Francisco Cerundolo": 2020,
+    "Frances Tiafoe": 1965,
+    "Luciano Darderi": 1920,
+    "Learner Tien": 1885,
+    "Alejandro Davidovich Fokina": 1870,
+    "Cameron Norrie": 1778,
+    "Jakub Mensik": 1700,
+    "Arthur Rinderknech": 1676,
+    "Holger Rune": 1620,
+    "Jack Draper": 1610,
+    "Tomas Martin Etcheverry": 1590,
+    "Arthur Fils": 1440,
+    "Corentin Moutet": 1433,
+    "Tallon Griekspoor": 1430,
+    "Brandon Nakashima": 1385,
+    "Ugo Humbert": 1320,
+    "Joao Fonseca": 1315,
+    "Alex Michelsen": 1200,
+    "Gabriel Diallo": 1175,
+    "Jaume Munar": 1175,
+    "Denis Shapovalov": 1120,
+    "Zizou Bergs": 1110,
+    "Terence Atmane": 1108,
+    "Fabian Marozsan": 1105,
+    "Sebastian Korda": 1100,
+    "Mariano Navone": 1085,
+    "Alejandro Tabilo": 1068,
+    "Adrian Mannarino": 1025,
+    "Tomas Machac": 980,
+    "Marin Cilic": 950,
+    "Botic Van De Zandschulp": 931,
+    "Ethan Quinn": 927,
+    "Yannick Hanfmann": 899,
+    "Nuno Borges": 895,
+    "Giovanni Mpetshi Perricard": 890,
+    "Marton Fucsovics": 887,
+    "Rafael Jodar": 886,
+    "Daniel Altmaier": 880,
+    "Sebastian Baez": 880,
+    "Miomir Kecmanovic": 875,
+    "Alexei Popyrin": 870,
+    "Ignacio Buse": 864,
+    "Roman Andres Burruchaga": 860,
+    "Jenson Brooksby": 852,
+    "Hubert Hurkacz": 845,
+    "Camilo Ugo Carabelli": 825,
+    "Raphael Collignon": 818,
+    "Lorenzo Sonego": 810,
+    "Stefanos Tsitsipas": 805,
+    "Reilly Opelka": 803,
+    "Juan Manuel Cerundolo": 803,
+    "Arthur Cazaux": 777,
+    "Alexander Blockx": 772,
+    "Kamil Majchrzak": 767,
+    "Thiago Agustin Tirante": 765,
+    "Alexander Shevchenko": 751,
+    "Marcos Giron": 750,
+    "Valentin Royer": 742,
+    "Vit Kopriva": 738,
+    "Mattia Bellucci": 734,
+    "Marco Trungelliti": 732,
+    "James Duckworth": 723,
+    "Jan-Lennard Struff": 709,
+    "Damir Dzumhur": 694,
+    "Cristian Garin": 679,
+    "Zachary Svajda": 674,
+    "Eliot Spizzirri": 674,
+    "Sebastian Ofner": 673,
+    "Dino Prizmic": 670,
+    "Hamad Medjedovic": 664,
+    "Aleksandar Vukic": 663,
+    "Quentin Halys": 650,
+    "Matteo Berrettini": 650,
+    "Francisco Comesana": 649,
+    "Roberto Bautista Agut": 649,
+    "Pablo Carreno Busta": 646,
+    "Alexandre Muller": 641,
+    "Patrick Kypson": 640,
+    "Jacob Fearnley": 639,
+    "Aleksandar Kovacevic": 636,
+    "Luca Van Assche": 635,
+    "Wu Yibing": 634,
+    "Rinky Hijikata": 632,
+    "Matteo Arnaldi": 621,
+    "Benjamin Bonzi": 616,
+    "Stan Wawrinka": 608,
+    "Jesper de Jong": 600,
+    "Zhang Zhizhen": 595,
+}
+# Last updated: April 15, 2026
+# Update before each major tournament
 
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -171,80 +284,23 @@ def _parse_competition(comp: dict) -> dict | None:
     }
 
 
-# ─── ATP rankings (Sackmann GitHub) ───────────────────────────────────────────
+# ─── ATP rankings ─────────────────────────────────────────────────────────────
 
 def get_atp_rankings() -> dict:
-    """Fetches current ATP rankings from the Sackmann GitHub repository.
+    """Returns ATP rankings from the hardcoded ATP_RANKINGS_2026 dict.
 
-    Joins atp_rankings_current.csv with atp_players.csv to produce:
-      {full_name: {"rank": int, "points": int}}
-
-    Uses only the most recent ranking week in the file.
-    Prints a summary line and returns the joined dict.
+    Returns {full_name: {"rank": int, "points": int}}.
+    Rank is determined by insertion order of ATP_RANKINGS_2026
+    (rank 1 = first entry, rank 2 = second, etc.).
     """
-    # ── Step 1: rankings CSV ──────────────────────────────────────────────
-    try:
-        r = requests.get(SACKMANN_RANKINGS, headers=HEADERS, timeout=15)
-        r.raise_for_status()
-        reader = csv.DictReader(io.StringIO(r.text))
-        rows = list(reader)
-    except Exception as e:
-        print(f"  Sackmann rankings fetch failed: {e}")
-        return {}
-
-    # Keep only the most recent ranking_date
-    dates = [row.get("ranking_date", "") for row in rows if row.get("ranking_date")]
-    if not dates:
-        print("  No ranking dates found in CSV.")
-        return {}
-    latest_date = max(dates)
-    latest_rows = [row for row in rows if row.get("ranking_date") == latest_date]
-
-    by_id: dict[str, dict] = {}
-    for row in latest_rows:
-        pid  = row.get("player", "").strip()
-        rank = row.get("rank", "").strip()
-        pts  = row.get("points", "").strip()
-        if pid and rank:
-            try:
-                by_id[pid] = {
-                    "rank":   int(rank),
-                    "points": int(pts) if pts else 0,
-                }
-            except ValueError:
-                pass
-
-    # ── Step 2: players CSV ───────────────────────────────────────────────
-    try:
-        r = requests.get(SACKMANN_PLAYERS, headers=HEADERS, timeout=15)
-        r.raise_for_status()
-        reader = csv.DictReader(io.StringIO(r.text))
-        id_to_name: dict[str, str] = {}
-        for row in reader:
-            pid   = row.get("player_id", "").strip()
-            first = row.get("name_first", "").strip()
-            last  = row.get("name_last", "").strip()
-            if pid and (first or last):
-                id_to_name[pid] = f"{first} {last}".strip()
-    except Exception as e:
-        print(f"  Sackmann players fetch failed: {e}")
-        id_to_name = {}
-
-    # ── Step 3: join ──────────────────────────────────────────────────────
-    rankings: dict[str, dict] = {}
-    for pid, data in by_id.items():
-        full_name = id_to_name.get(pid)
-        if full_name:
-            rankings[full_name] = data
-
-    try:
-        date_obj = datetime.strptime(latest_date, "%Y%m%d")
-        date_str = date_obj.strftime("%Y-%m-%d")
-    except ValueError:
-        date_str = latest_date
-
-    print(f"  Fetched {len(rankings)} ATP rankings (as of {date_str})")
-    return rankings
+    result = {}
+    for rank, (name, pts) in enumerate(
+        ATP_RANKINGS_2026.items(), start=1
+    ):
+        result[name] = {"rank": rank, "points": pts}
+    print(f"  Using hardcoded ATP rankings "
+          f"(April 2026, {len(result)} players)")
+    return result
 
 
 # ─── ESPN tournament functions ────────────────────────────────────────────────
@@ -368,56 +424,29 @@ def get_players(tournament_id: str) -> list:
     return sorted(names)
 
 
-def get_player_ratings(players: list, rankings: dict) -> dict:
-    """Matches ESPN display names to Sackmann ATP ranking points.
+def get_player_ratings(players: list, rankings=None) -> dict:
+    """Maps player names to ATP points from ATP_RANKINGS_2026.
 
     Name matching strategy (in order of preference):
-      1. Exact match
-      2. Unique last-name match
-      3. First-initial + last-name fuzzy match
+      1. Exact match against ATP_RANKINGS_2026
+      2. Last-name match (first entry with matching surname wins)
+
+    The rankings parameter is accepted but ignored — ratings always
+    come from the hardcoded ATP_RANKINGS_2026 dict.
 
     Returns {player_name: atp_points}.
     Players with no match get 100 points (fringe player fallback).
     """
-    # Build last-name lookup from full rankings dict
-    by_last: dict[str, list] = {}
-    for full_name, data in rankings.items():
-        last = full_name.split()[-1].lower() if full_name.split() else ""
-        by_last.setdefault(last, []).append((full_name, data))
-
     ratings = {}
-    for player in players:
-        matched = False
-        player_parts = player.split()
-        player_last  = player_parts[-1].lower() if player_parts else ""
-
-        # 1. Exact match
-        if player in rankings:
-            ratings[player] = rankings[player]["points"]
-            matched = True
-
-        # 2. Unique last-name match
-        if not matched:
-            candidates = by_last.get(player_last, [])
-            if len(candidates) == 1:
-                ratings[player] = candidates[0][1]["points"]
-                matched = True
-
-        # 3. First initial + last name ("J. Sinner" → "Jannik Sinner")
-        if not matched and len(player_parts) >= 2:
-            first_initial = player_parts[0].rstrip(".")
-            for full_name, data in rankings.items():
-                full_parts = full_name.split()
-                if (len(full_parts) >= 2
-                        and full_parts[-1].lower() == player_last
-                        and full_parts[0].lower().startswith(first_initial.lower())):
-                    ratings[player] = data["points"]
-                    matched = True
+    for name in players:
+        points = ATP_RANKINGS_2026.get(name)
+        if not points:
+            last = name.split()[-1].lower()
+            for full, pts in ATP_RANKINGS_2026.items():
+                if full.split()[-1].lower() == last:
+                    points = pts
                     break
-
-        if not matched:
-            ratings[player] = 100   # fringe player / not ranked
-
+        ratings[name] = points if points else 100
     return ratings
 
 
@@ -469,12 +498,8 @@ def get_seeds(tournament_id: str) -> dict:
     except Exception:
         pass
 
-    # Fallback: derive seeds from ATP ranking of field
-    rankings = get_atp_rankings()
-    if not rankings:
-        return {p: None for p in players}
-
-    field_ratings = get_player_ratings(players, rankings)
+    # Fallback: derive seeds from ATP ranking points of field
+    field_ratings  = get_player_ratings(players)
     sorted_players = sorted(players, key=lambda p: -field_ratings.get(p, 0))
     max_seed = 32 if len(players) >= 65 else 16
 
