@@ -1,11 +1,10 @@
 """
-Sport-agnostic edge calculator. Compares model
-win probabilities to Polymarket market prices
-and identifies actionable positions.
+Edge calculator. Compares model win probabilities
+to Polymarket market prices and identifies
+actionable positions.
 
-Works identically for chess, tennis, and golf —
-the sport-specific simulation is already done
-upstream and this module only sees probabilities.
+The simulation is done upstream; this module
+only receives {player: probability} dicts.
 
 Functions:
 

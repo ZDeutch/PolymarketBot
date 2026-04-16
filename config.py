@@ -5,9 +5,7 @@ Loads all API keys and shared constants from .env.
 Import this module anywhere you need API credentials
 or system-wide settings.
 
-Environment variables required:
-  DATAGOLF_API_KEY     - DataGolf API key (free tier)
-  UTR_JWT_TOKEN        - UTR Sports JWT token (from browser cookie)
+Environment variables:
   CHESS_COM_USER_AGENT - Chess.com API user agent string
   GOOGLE_SHEET_NAME    - Name of the Google Sheet for logging
 
@@ -27,8 +25,6 @@ load_dotenv()
 
 # ─── API credentials ──────────────────────────────────────────────────────────
 
-DATAGOLF_API_KEY     = os.getenv("DATAGOLF_API_KEY", "")
-UTR_JWT_TOKEN        = os.getenv("UTR_JWT_TOKEN", "")
 CHESS_COM_USER_AGENT = os.getenv(
     "CHESS_COM_USER_AGENT",
     "PolymarketBot/1.0 tournament-simulator"
