@@ -27,20 +27,23 @@ Functions:
       }
     ]
 
-  calculate_half_kelly(edge: float,
-                       market_price: float,
-                       bankroll: float) -> float
-    Calculates half-Kelly stake size.
+  calculate_kelly(edge: float,
+                  market_price: float,
+                  bankroll: float) -> float
+    Calculates fractional-Kelly stake (KELLY_FRACTION of full Kelly).
     Returns 0 if Kelly is negative.
     Enforces MIN_STAKE floor.
 
   size_positions(edges: list,
                  bankroll: float) -> list
-    Adds stake sizing to each edge dict.
+    Adds Kelly stake sizing to each edge dict.
+    After per-position sizing, applies a proportional scale-down
+    if total exposure exceeds MAX_TOURNAMENT_EXPOSURE × bankroll.
     Returns same list with "stake" key added.
 """
 
-from config import MIN_EDGE, MIN_MARKET_PRICE, MIN_STAKE, KELLY_FRACTION, BANKROLL
+from config import (MIN_EDGE, MIN_MARKET_PRICE, MIN_STAKE,
+                    KELLY_FRACTION, BANKROLL, MAX_TOURNAMENT_EXPOSURE)
 
 
 def find_edges(model_probs: dict,
@@ -90,10 +93,10 @@ def find_edges(model_probs: dict,
     return sorted(edges, key=lambda x: abs(x["edge"]), reverse=True)
 
 
-def calculate_half_kelly(edge: float,
-                         market_price: float,
-                         bankroll: float) -> float:
-    """Returns half-Kelly stake in dollars.
+def calculate_kelly(edge: float,
+                    market_price: float,
+                    bankroll: float) -> float:
+    """Returns fractional-Kelly stake in dollars (KELLY_FRACTION × full Kelly).
 
     For BET YES (edge > 0): buying YES at market_price.
     For BET NO  (edge < 0): buying NO at (1 - market_price).
@@ -125,10 +128,13 @@ def calculate_half_kelly(edge: float,
 
 
 def size_positions(edges: list, bankroll: float = None) -> list:
-    """Adds half-Kelly stake sizing to each edge dict in place.
+    """Sizes each edge with fractional Kelly, then caps total tournament exposure.
+
+    Step 1: compute per-position Kelly stakes (neutral positions → 0).
+    Step 2: if total actionable stake exceeds MAX_TOURNAMENT_EXPOSURE × bankroll,
+            scale all stakes down proportionally so the cap is respected exactly.
 
     Returns the same list with a 'stake' key added to every entry.
-    Neutral positions get stake=0.
     """
     if bankroll is None:
         bankroll = BANKROLL
@@ -137,8 +143,16 @@ def size_positions(edges: list, bankroll: float = None) -> list:
         if e["action"] == "neutral":
             e["stake"] = 0.0
         else:
-            e["stake"] = calculate_half_kelly(
-                e["edge"], e["market"], bankroll
-            )
+            e["stake"] = calculate_kelly(e["edge"], e["market"], bankroll)
+
+    # ── Exposure cap ──────────────────────────────────────────────────────────
+    max_exposure  = bankroll * MAX_TOURNAMENT_EXPOSURE
+    total_stake   = sum(e["stake"] for e in edges if e["stake"] > 0)
+
+    if total_stake > max_exposure:
+        scale = max_exposure / total_stake
+        for e in edges:
+            if e["stake"] > 0:
+                e["stake"] = round(e["stake"] * scale, 2)
 
     return edges
