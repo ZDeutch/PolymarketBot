@@ -30,24 +30,28 @@ from collections import defaultdict
 HEADERS     = {"User-Agent": "PolymarketBot/1.0"}
 LICHESS_API = "https://lichess.org/api"
 
-# Major elite tournaments on Lichess 2024-2025.
+# Major elite tournaments on Lichess 2024-2026.
 # Tour IDs extracted from broadcast URLs.
 # Format: (tour_slug_or_id, display_name, year)
+# Notes:
+#   - Sinquefield Cup 2024/2025 omitted — not on Lichess (USCF broadcast ban)
+#   - WCC 2024 omitted — only 14 classical games, insufficient data
+#   - 8-char IDs (e.g. ycy5D2r8) bypass slug search entirely
 ELITE_TOURNAMENTS = [
     # 2024 events
-    ("tata-steel-masters-2024",          "Tata Steel 2024",        2024),
-    ("fide-candidates-2024",              "Candidates 2024",        2024),
-    ("norway-chess-2024",                 "Norway Chess 2024",      2024),
-    ("sinquefield-cup-2024",              "Sinquefield Cup 2024",   2024),
-    ("fide-grand-swiss-2024",             "Grand Swiss 2024",       2024),
-    ("fide-world-chess-championship-2024","WCC 2024",               2024),
+    ("ycy5D2r8",                    "Tata Steel 2024",      2024),
+    ("fide-candidates-2024--open",  "Candidates 2024",      2024),
+    ("norway-chess-2024--open",     "Norway Chess 2024",    2024),
+    ("fide-grand-swiss-2024--open", "Grand Swiss 2024",     2024),
+
     # 2025 events
-    ("tata-steel-chess-2025--masters",    "Tata Steel 2025",        2025),
-    ("superbet-chess-classic-2025",       "Superbet 2025",          2025),
-    ("norway-chess-2025",                 "Norway Chess 2025",      2025),
-    ("sinquefield-cup-2025",              "Sinquefield Cup 2025",   2025),
-    ("fide-grand-swiss-2025",             "Grand Swiss 2025",       2025),
-    ("fide-world-cup-2025",               "World Cup 2025",         2025),
+    ("3COxSfdj",                    "Tata Steel 2025",      2025),
+    ("norway-chess-2025--open",     "Norway Chess 2025",    2025),
+    ("fide-grand-swiss-2025--open", "Grand Swiss 2025",     2025),
+    ("fide-world-cup-2025",         "World Cup 2025",       2025),
+
+    # 2026 events
+    ("fide-candidates-2026--open",  "Candidates 2026",      2026),
 ]
 
 MIN_OPPONENT_RATING = 2600
@@ -75,7 +79,8 @@ def _resolve_broadcast_id(tour_slug: str) -> str | None:
         r = requests.get(
             url,
             headers={**HEADERS, "Accept": "application/x-ndjson"},
-            timeout=15,
+            timeout=10,
+            stream=False,
         )
         for line in r.text.strip().split("\n"):
             if not line.strip():
