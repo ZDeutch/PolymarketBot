@@ -1,0 +1,757 @@
+{
+  "generated_at": "2026-04-15T18:14:45.934766",
+  "tournaments_scanned": 7,
+  "total_elite_games": 669,
+  "players": {
+    "Abasov, Nijat": {
+      "tpr": 2547.2,
+      "draw_rate": 0.4444,
+      "elite_games": 9,
+      "avg_opponent": 2765.6
+    },
+    "Abdisalimov, Abdimalik": {
+      "tpr": 2460.1,
+      "draw_rate": 0.1667,
+      "elite_games": 6,
+      "avg_opponent": 2652.0
+    },
+    "Aditya Mittal": {
+      "tpr": 2688.7,
+      "draw_rate": 0.625,
+      "elite_games": 8,
+      "avg_opponent": 2645.0
+    },
+    "Alireza Firouzja": {
+      "tpr": 2789.4,
+      "draw_rate": 0.3611,
+      "elite_games": 38,
+      "avg_opponent": 2739.4
+    },
+    "Amin, Bassem": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2682.2
+    },
+    "Andrey Esipenko": {
+      "tpr": 2737.5,
+      "draw_rate": 0.6667,
+      "elite_games": 8,
+      "avg_opponent": 2617.0
+    },
+    "Anish Giri": {
+      "tpr": 2748.8,
+      "draw_rate": 0.5185,
+      "elite_games": 29,
+      "avg_opponent": 2708.9
+    },
+    "Anton Guijarro, David": {
+      "tpr": 2697.0,
+      "draw_rate": 0.3333,
+      "elite_games": 8,
+      "avg_opponent": 2697.0
+    },
+    "Aravindh, Chithambaram VR.": {
+      "tpr": 2595.3,
+      "draw_rate": 0.625,
+      "elite_games": 8,
+      "avg_opponent": 2733.6
+    },
+    "Aronian, Levon": {
+      "tpr": 2644.2,
+      "draw_rate": 1.0,
+      "elite_games": 8,
+      "avg_opponent": 2644.2
+    },
+    "Artemiev, Vladislav": {
+      "tpr": 2617.3,
+      "draw_rate": 0.7143,
+      "elite_games": 8,
+      "avg_opponent": 2617.3
+    },
+    "Aryan Chopra": {
+      "tpr": 2623.6,
+      "draw_rate": 0.625,
+      "elite_games": 8,
+      "avg_opponent": 2667.4
+    },
+    "Bacrot, Etienne": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2696.8
+    },
+    "Bartel, Mateusz": {
+      "tpr": 2664.8,
+      "draw_rate": 0.5,
+      "elite_games": 8,
+      "avg_opponent": 2665.0
+    },
+    "Bjerre, Jonas Buhl": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2615.2
+    },
+    "Carlsen, Magnus": {
+      "tpr": 2856.8,
+      "draw_rate": 0.4615,
+      "elite_games": 13,
+      "avg_opponent": 2774.8
+    },
+    "Cheparinov, Ivan": {
+      "tpr": 2722.4,
+      "draw_rate": 0.7143,
+      "elite_games": 8,
+      "avg_opponent": 2722.4
+    },
+    "Chigaev, Maksim": {
+      "tpr": 2558.0,
+      "draw_rate": 0.6,
+      "elite_games": 8,
+      "avg_opponent": 2708.4
+    },
+    "Daneshvar, Bardiya": {
+      "tpr": 2495.5,
+      "draw_rate": 0.5714,
+      "elite_games": 7,
+      "avg_opponent": 2655.0
+    },
+    "Dardha, Daniel": {
+      "tpr": 2568.9,
+      "draw_rate": 0.6667,
+      "elite_games": 8,
+      "avg_opponent": 2690.0
+    },
+    "Deac, Bogdan-Daniel": {
+      "tpr": 2528.0,
+      "draw_rate": 0.75,
+      "elite_games": 8,
+      "avg_opponent": 2616.8
+    },
+    "Demchenko, Anton": {
+      "tpr": 2666.7,
+      "draw_rate": 0.375,
+      "elite_games": 8,
+      "avg_opponent": 2710.8
+    },
+    "Ding, Liren": {
+      "tpr": 2716.4,
+      "draw_rate": 0.5789,
+      "elite_games": 19,
+      "avg_opponent": 2753.7
+    },
+    "Divya Deshmukh": {
+      "tpr": 2593.4,
+      "draw_rate": 0.375,
+      "elite_games": 8,
+      "avg_opponent": 2637.1
+    },
+    "Donchenko, Alexander": {
+      "tpr": 2610.8,
+      "draw_rate": 0.4667,
+      "elite_games": 17,
+      "avg_opponent": 2707.5
+    },
+    "Dubov, Daniil": {
+      "tpr": 2676.0,
+      "draw_rate": 0.8333,
+      "elite_games": 8,
+      "avg_opponent": 2617.5
+    },
+    "Eljanov, Pavel": {
+      "tpr": 2483.3,
+      "draw_rate": 0.375,
+      "elite_games": 8,
+      "avg_opponent": 2620.2
+    },
+    "Erdogmus, Yagiz Kaan": {
+      "tpr": 2712.5,
+      "draw_rate": 0.6429,
+      "elite_games": 16,
+      "avg_opponent": 2737.4
+    },
+    "Erigaisi Arjun": {
+      "tpr": 2802.9,
+      "draw_rate": 0.55,
+      "elite_games": 20,
+      "avg_opponent": 2712.3
+    },
+    "Fabiano Caruana": {
+      "tpr": 2806.9,
+      "draw_rate": 0.4583,
+      "elite_games": 24,
+      "avg_opponent": 2762.4
+    },
+    "Fedoseev, Vladimir": {
+      "tpr": 2627.6,
+      "draw_rate": 0.4375,
+      "elite_games": 17,
+      "avg_opponent": 2695.4
+    },
+    "Gelfand, Boris": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2667.7
+    },
+    "Goryachkina, Aleksandra": {
+      "tpr": 2603.7,
+      "draw_rate": 0.375,
+      "elite_games": 8,
+      "avg_opponent": 2647.8
+    },
+    "Grandelius, Nils": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2613.0
+    },
+    "Grischuk, Alexander": {
+      "tpr": 2683.5,
+      "draw_rate": 0.8,
+      "elite_games": 8,
+      "avg_opponent": 2613.0
+    },
+    "Gukesh D": {
+      "tpr": 2756.8,
+      "draw_rate": 0.4286,
+      "elite_games": 43,
+      "avg_opponent": 2722.5
+    },
+    "Gumularz, Szymon": {
+      "tpr": 2678.9,
+      "draw_rate": 0.5,
+      "elite_games": 8,
+      "avg_opponent": 2679.0
+    },
+    "Gurel, Ediz": {
+      "tpr": 2724.9,
+      "draw_rate": 0.6,
+      "elite_games": 8,
+      "avg_opponent": 2724.8
+    },
+    "Hakobyan, Aram": {
+      "tpr": 2688.7,
+      "draw_rate": 0.75,
+      "elite_games": 8,
+      "avg_opponent": 2688.8
+    },
+    "Hammer, Jon Ludvig": {
+      "tpr": 2437.4,
+      "draw_rate": 0.4286,
+      "elite_games": 8,
+      "avg_opponent": 2664.0
+    },
+    "Harikrishna, Pentala": {
+      "tpr": 2538.4,
+      "draw_rate": 0.7143,
+      "elite_games": 9,
+      "avg_opponent": 2642.1
+    },
+    "Henriquez Villagra, Cristobal": {
+      "tpr": 2704.8,
+      "draw_rate": 0.625,
+      "elite_games": 8,
+      "avg_opponent": 2661.1
+    },
+    "Hikaru Nakamura": {
+      "tpr": 2795.4,
+      "draw_rate": 0.5,
+      "elite_games": 24,
+      "avg_opponent": 2765.4
+    },
+    "Hovhannisyan, Robert": {
+      "tpr": 2633.4,
+      "draw_rate": 0.4286,
+      "elite_games": 8,
+      "avg_opponent": 2735.9
+    },
+    "Ian Nepomniachtchi": {
+      "tpr": 2746.2,
+      "draw_rate": 0.6,
+      "elite_games": 26,
+      "avg_opponent": 2688.7
+    },
+    "Indjic, Aleksandar": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2616.0
+    },
+    "Ivanchuk, Vasyl": {
+      "tpr": 2713.7,
+      "draw_rate": 0.625,
+      "elite_games": 8,
+      "avg_opponent": 2669.9
+    },
+    "Ivic, Velimir": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2748.0
+    },
+    "Javokhir Sindarov": {
+      "tpr": 2750.6,
+      "draw_rate": 0.6667,
+      "elite_games": 16,
+      "avg_opponent": 2678.7
+    },
+    "Jobava, Baadur": {
+      "tpr": 2550.5,
+      "draw_rate": 0.75,
+      "elite_games": 8,
+      "avg_opponent": 2639.4
+    },
+    "Ju, Wenjun": {
+      "tpr": 2611.8,
+      "draw_rate": 0.4444,
+      "elite_games": 9,
+      "avg_opponent": 2733.4
+    },
+    "Karthikeyan, Murali": {
+      "tpr": 2493.4,
+      "draw_rate": 0.3333,
+      "elite_games": 8,
+      "avg_opponent": 2613.8
+    },
+    "Kollars, Dmitrij": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2611.0
+    },
+    "Korobov, Anton": {
+      "tpr": 2584.2,
+      "draw_rate": 0.25,
+      "elite_games": 8,
+      "avg_opponent": 2673.1
+    },
+    "Kuzubov, Yuriy": {
+      "tpr": 2667.0,
+      "draw_rate": 0.5,
+      "elite_games": 8,
+      "avg_opponent": 2667.0
+    },
+    "Lagarde, Maxime": {
+      "tpr": 2666.7,
+      "draw_rate": 1.0,
+      "elite_games": 8,
+      "avg_opponent": 2666.8
+    },
+    "Liang, Awonder": {
+      "tpr": 2690.3,
+      "draw_rate": 0.625,
+      "elite_games": 8,
+      "avg_opponent": 2646.5
+    },
+    "Lu, Shanglei": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2608.7
+    },
+    "Madaminov, Mukhiddin": {
+      "tpr": 2541.7,
+      "draw_rate": 0.7143,
+      "elite_games": 7,
+      "avg_opponent": 2643.9
+    },
+    "Maghsoodloo, Parham": {
+      "tpr": 2735.1,
+      "draw_rate": 0.4706,
+      "elite_games": 17,
+      "avg_opponent": 2713.9
+    },
+    "Mamedov, Rauf": {
+      "tpr": 2696.6,
+      "draw_rate": 0.6,
+      "elite_games": 8,
+      "avg_opponent": 2696.4
+    },
+    "Mamedyarov, Shakhriyar": {
+      "tpr": 2773.1,
+      "draw_rate": 0.625,
+      "elite_games": 8,
+      "avg_opponent": 2636.0
+    },
+    "Martirosyan, Haik M.": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2713.5
+    },
+    "Matlakov, Maxim": {
+      "tpr": 2615.7,
+      "draw_rate": 0.875,
+      "elite_games": 8,
+      "avg_opponent": 2659.4
+    },
+    "Matthias Bluebaum": {
+      "tpr": 2801.0,
+      "draw_rate": 0.6,
+      "elite_games": 16,
+      "avg_opponent": 2702.7
+    },
+    "Maurizzi, MarcAndria": {
+      "tpr": 2709.0,
+      "draw_rate": 0.25,
+      "elite_games": 8,
+      "avg_opponent": 2709.0
+    },
+    "Mendonca, Leon Luke": {
+      "tpr": 2666.7,
+      "draw_rate": 0.4444,
+      "elite_games": 9,
+      "avg_opponent": 2705.9
+    },
+    "Mishra, Abhimanyu": {
+      "tpr": 2861.5,
+      "draw_rate": 0.625,
+      "elite_games": 8,
+      "avg_opponent": 2722.9
+    },
+    "Moussard, Jules": {
+      "tpr": 2612.8,
+      "draw_rate": 0.625,
+      "elite_games": 8,
+      "avg_opponent": 2656.5
+    },
+    "Muradli, Mahammad": {
+      "tpr": 2495.4,
+      "draw_rate": 0.6,
+      "elite_games": 5,
+      "avg_opponent": 2642.8
+    },
+    "Murzin, Volodar": {
+      "tpr": 2671.3,
+      "draw_rate": 0.8333,
+      "elite_games": 8,
+      "avg_opponent": 2612.8
+    },
+    "Najer, Evgeniy": {
+      "tpr": 2662.5,
+      "draw_rate": 0.75,
+      "elite_games": 8,
+      "avg_opponent": 2662.5
+    },
+    "Narayanan S L": {
+      "tpr": 2650.0,
+      "draw_rate": 1.0,
+      "elite_games": 8,
+      "avg_opponent": 2650.0
+    },
+    "Nguyen, Thai Dai Van": {
+      "tpr": 2582.3,
+      "draw_rate": 0.625,
+      "elite_games": 8,
+      "avg_opponent": 2720.8
+    },
+    "Niemann, Hans Moke": {
+      "tpr": 2788.8,
+      "draw_rate": 0.5625,
+      "elite_games": 16,
+      "avg_opponent": 2673.9
+    },
+    "Nigmatov, Ortik": {
+      "tpr": 2568.5,
+      "draw_rate": 0.25,
+      "elite_games": 8,
+      "avg_opponent": 2658.1
+    },
+    "Nihal Sarin": {
+      "tpr": 2773.9,
+      "draw_rate": 0.3333,
+      "elite_games": 8,
+      "avg_opponent": 2651.0
+    },
+    "Nodirbek Abdusattorov": {
+      "tpr": 2740.2,
+      "draw_rate": 0.6071,
+      "elite_games": 28,
+      "avg_opponent": 2702.2
+    },
+    "Olisa, Tennyson Ewomazino": {
+      "tpr": 1800.0,
+      "draw_rate": 0.0,
+      "elite_games": 5,
+      "avg_opponent": 2623.8
+    },
+    "Oparin, Grigoriy": {
+      "tpr": 2641.0,
+      "draw_rate": 0.6,
+      "elite_games": 8,
+      "avg_opponent": 2641.6
+    },
+    "Ponomariov, Ruslan": {
+      "tpr": 2682.9,
+      "draw_rate": 1.0,
+      "elite_games": 8,
+      "avg_opponent": 2682.9
+    },
+    "Praggnanandhaa R": {
+      "tpr": 2753.0,
+      "draw_rate": 0.6136,
+      "elite_games": 46,
+      "avg_opponent": 2728.5
+    },
+    "Pranav, V": {
+      "tpr": 2718.7,
+      "draw_rate": 0.625,
+      "elite_games": 8,
+      "avg_opponent": 2675.0
+    },
+    "Predke, Alexandr": {
+      "tpr": 2719.4,
+      "draw_rate": 0.375,
+      "elite_games": 8,
+      "avg_opponent": 2675.5
+    },
+    "Puranik, Abhimanyu": {
+      "tpr": 2678.6,
+      "draw_rate": 0.5714,
+      "elite_games": 8,
+      "avg_opponent": 2728.7
+    },
+    "Rapport, Richard": {
+      "tpr": 2721.9,
+      "draw_rate": 0.5,
+      "elite_games": 8,
+      "avg_opponent": 2632.8
+    },
+    "Robson, Ray": {
+      "tpr": 2618.5,
+      "draw_rate": 0.75,
+      "elite_games": 8,
+      "avg_opponent": 2618.5
+    },
+    "Rodshtein, Maxim": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2746.2
+    },
+    "Sadhwani, Raunak": {
+      "tpr": 2681.1,
+      "draw_rate": 0.8,
+      "elite_games": 8,
+      "avg_opponent": 2610.6
+    },
+    "Salem, A.R. Saleh": {
+      "tpr": 2595.0,
+      "draw_rate": 0.6667,
+      "elite_games": 8,
+      "avg_opponent": 2717.3
+    },
+    "Samunenkov, Ihor": {
+      "tpr": 2607.3,
+      "draw_rate": 0.625,
+      "elite_games": 8,
+      "avg_opponent": 2651.2
+    },
+    "Santos Latasa, Jaime": {
+      "tpr": 2579.9,
+      "draw_rate": 0.75,
+      "elite_games": 8,
+      "avg_opponent": 2669.0
+    },
+    "Sarana, Alexey": {
+      "tpr": 2515.6,
+      "draw_rate": 0.6667,
+      "elite_games": 9,
+      "avg_opponent": 2638.8
+    },
+    "Sargissian, Gabriel": {
+      "tpr": 2565.4,
+      "draw_rate": 0.6,
+      "elite_games": 8,
+      "avg_opponent": 2713.4
+    },
+    "Sargsyan, Shant": {
+      "tpr": 2781.1,
+      "draw_rate": 0.8,
+      "elite_games": 8,
+      "avg_opponent": 2708.8
+    },
+    "Saric, Ivan": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2646.5
+    },
+    "Sevian, Samuel": {
+      "tpr": 2642.7,
+      "draw_rate": 0.7143,
+      "elite_games": 8,
+      "avg_opponent": 2643.4
+    },
+    "Shankland, Sam": {
+      "tpr": 2635.8,
+      "draw_rate": 0.4286,
+      "elite_games": 8,
+      "avg_opponent": 2636.4
+    },
+    "Shirov, Alexei": {
+      "tpr": 2772.6,
+      "draw_rate": 0.75,
+      "elite_games": 8,
+      "avg_opponent": 2683.4
+    },
+    "Sjugirov, Sanan": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2709.5
+    },
+    "Suleymanli, Aydin": {
+      "tpr": 2669.4,
+      "draw_rate": 0.75,
+      "elite_games": 8,
+      "avg_opponent": 2669.4
+    },
+    "Suyarov, Mukhammadzokhid": {
+      "tpr": 2471.8,
+      "draw_rate": 0.5714,
+      "elite_games": 7,
+      "avg_opponent": 2631.0
+    },
+    "Svane, Frederik": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2748.3
+    },
+    "Svane, Rasmus": {
+      "tpr": 2586.4,
+      "draw_rate": 0.7143,
+      "elite_games": 8,
+      "avg_opponent": 2689.1
+    },
+    "Tabatabaei, M. Amin": {
+      "tpr": 2702.7,
+      "draw_rate": 0.5714,
+      "elite_games": 8,
+      "avg_opponent": 2651.7
+    },
+    "Theodorou, Nikolas": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2742.8
+    },
+    "Vachier-Lagrave, Maxime": {
+      "tpr": 2680.9,
+      "draw_rate": 0.2857,
+      "elite_games": 8,
+      "avg_opponent": 2630.9
+    },
+    "Vakhidov, Jakhongir": {
+      "tpr": 2423.1,
+      "draw_rate": 0.4286,
+      "elite_games": 7,
+      "avg_opponent": 2649.7
+    },
+    "Van Foreest, Jorden": {
+      "tpr": 2621.6,
+      "draw_rate": 0.48,
+      "elite_games": 26,
+      "avg_opponent": 2694.1
+    },
+    "Vidit, Santosh Gujrathi": {
+      "tpr": 2718.4,
+      "draw_rate": 0.64,
+      "elite_games": 26,
+      "avg_opponent": 2703.8
+    },
+    "Vincent Keymer": {
+      "tpr": 2783.0,
+      "draw_rate": 0.3529,
+      "elite_games": 17,
+      "avg_opponent": 2676.1
+    },
+    "Vitiugov, Nikita": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2684.2
+    },
+    "Vokhidov, Shamsiddin": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2670.5
+    },
+    "Volokitin, Andrei": {
+      "tpr": 2649.3,
+      "draw_rate": 0.5,
+      "elite_games": 8,
+      "avg_opponent": 2708.0
+    },
+    "Wagner, Dennis": {
+      "tpr": 2433.7,
+      "draw_rate": 0.4286,
+      "elite_games": 8,
+      "avg_opponent": 2660.4
+    },
+    "Warmerdam, Max": {
+      "tpr": 2608.6,
+      "draw_rate": 0.5294,
+      "elite_games": 18,
+      "avg_opponent": 2693.9
+    },
+    "Wei Yi": {
+      "tpr": 2796.8,
+      "draw_rate": 0.4375,
+      "elite_games": 17,
+      "avg_opponent": 2729.8
+    },
+    "Wojtaszek, Radoslaw": {
+      "tpr": 2496.2,
+      "draw_rate": 0.6667,
+      "elite_games": 8,
+      "avg_opponent": 2616.7
+    },
+    "Woodward, Andy": {
+      "tpr": 2767.1,
+      "draw_rate": 0.5,
+      "elite_games": 8,
+      "avg_opponent": 2677.4
+    },
+    "Xiong, Jeffery": {
+      "tpr": 2710.3,
+      "draw_rate": 0.6667,
+      "elite_games": 8,
+      "avg_opponent": 2710.0
+    },
+    "Xu, Xiangyu": {
+      "tpr": 2503.5,
+      "draw_rate": 0.5714,
+      "elite_games": 8,
+      "avg_opponent": 2663.0
+    },
+    "Yakubboev, Nodirbek": {
+      "tpr": 2790.5,
+      "draw_rate": 0.2,
+      "elite_games": 8,
+      "avg_opponent": 2640.0
+    },
+    "Yu, Yangyi": {
+      "tpr": 2726.1,
+      "draw_rate": 0.4286,
+      "elite_games": 8,
+      "avg_opponent": 2623.9
+    },
+    "Yuffa, Daniil": {
+      "tpr": null,
+      "draw_rate": null,
+      "elite_games": 8,
+      "avg_opponent": 2658.3
+    },
+    "Zemlyanskii, Ivan": {
+      "tpr": 2618.7,
+      "draw_rate": 0.375,
+      "elite_games": 8,
+      "avg_opponent": 2663.6
+    }
+  }
+}

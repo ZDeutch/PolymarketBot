@@ -27,106 +27,55 @@ from collections import defaultdict
 
 # ─── Constants ────────────────────────────────────────────────────────────────
 
-HEADERS     = {"User-Agent": "PolymarketBot/1.0"}
-LICHESS_API = "https://lichess.org/api"
+HEADERS = {"User-Agent": "PolymarketBot/1.0"}
 
-# Major elite tournaments on Lichess 2024-2026.
-# Tour IDs extracted from broadcast URLs.
-# Format: (tour_slug_or_id, display_name, year)
+# Hardcoded round IDs for each elite tournament.
+# Round IDs are the 8-char Lichess broadcast round identifiers found in
+# the broadcast URL: lichess.org/broadcast/-/{round-name}/{round_id}
 # Notes:
 #   - Sinquefield Cup 2024/2025 omitted — not on Lichess (USCF broadcast ban)
 #   - WCC 2024 omitted — only 14 classical games, insufficient data
-#   - 8-char IDs (e.g. ycy5D2r8) bypass slug search entirely
-ELITE_TOURNAMENTS = [
-    # 2024 events
-    ("ycy5D2r8",                    "Tata Steel 2024",      2024),
-    ("fide-candidates-2024--open",  "Candidates 2024",      2024),
-    ("norway-chess-2024--open",     "Norway Chess 2024",    2024),
-    ("fide-grand-swiss-2024--open", "Grand Swiss 2024",     2024),
-
-    # 2025 events
-    ("3COxSfdj",                    "Tata Steel 2025",      2025),
-    ("norway-chess-2025--open",     "Norway Chess 2025",    2025),
-    ("fide-grand-swiss-2025--open", "Grand Swiss 2025",     2025),
-    ("fide-world-cup-2025",         "World Cup 2025",       2025),
-
-    # 2026 events
-    ("fide-candidates-2026--open",  "Candidates 2026",      2026),
-]
+#   - Round lists are partial where only some IDs were recoverable;
+#     partial data is still useful for TPR estimation.
+HARDCODED_ROUNDS = {
+    "Tata Steel 2024": [
+        "iSglSzjv", "haD9x5TT", "OrHsLFq5",
+        "msGCthzJ", "cmDGoJr1", "ubgeWaHz",
+        "k0StVoen", "EDCwDiqA", "L43YRQWv",
+        "iSglSzjv",
+    ],
+    "Candidates 2024": [
+        "AjqSsU1w", "GenKIJ8A", "xQgaUu2y",
+        "CPS9dENa", "MDiLWQ5M", "nUycmG6L",
+        "vfqUR38R", "eJghIBZe", "S4zisI6M",
+    ],
+    "Norway Chess 2024": [
+        "I9TLGEOt", "sbOHYOVj", "xmZcMs9U",
+        "Whq5YPU7", "Qvlkp2yF", "C5Zzd9mM",
+    ],
+    "Tata Steel 2025": [
+        "FRGTkE8Z", "LPs7X3dM", "T4KlhCEf",
+        "TU7qC17C", "pdNmUOnu", "9nR8UQz9",
+        "W4XtM3HF", "4qFZzDfZ",
+    ],
+    "Norway Chess 2025": [
+        "elkTUv1R", "8Ma8Q5pQ", "4MpGqf5j",
+    ],
+    "Grand Swiss 2025": [
+        "xSCoiNg0", "UnZivDF9", "gLwN3kib",
+        "zmaKVsPL", "ADzdjVmn", "iAnC0jAl",
+        "xtmbmvSP", "FpwTKfvI",
+    ],
+    "Candidates 2026": [
+        "FRGTkE8Z",
+    ],
+}
 
 MIN_OPPONENT_RATING = 2600
 MIN_GAMES_FOR_TPR   = 5   # need at least 5 games to compute reliable TPR
 
 
-# ─── Broadcast resolution ──────────────────────────────────────────────────────
-
-def _resolve_broadcast_id(tour_slug: str) -> str | None:
-    """Resolves a Lichess broadcast slug to a tour ID.
-
-    Lichess tour IDs are exactly 8 alphanumeric characters (e.g. '3COxSfdj').
-    Anything else is treated as a human-readable slug and searched for in
-    the broadcast list.
-
-    Returns the tour ID string, or None if not found.
-    """
-    # 8-char alphanumeric → treat directly as a tour ID
-    if re.match(r'^[A-Za-z0-9]{8}$', tour_slug):
-        return tour_slug
-
-    # Otherwise search the broadcast list (NDJSON) for a slug match
-    url = f"{LICHESS_API}/broadcast?nb=100"
-    try:
-        r = requests.get(
-            url,
-            headers={**HEADERS, "Accept": "application/x-ndjson"},
-            timeout=10,
-            stream=False,
-        )
-        for line in r.text.strip().split("\n"):
-            if not line.strip():
-                continue
-            obj  = json.loads(line)
-            tour = obj.get("tour", obj)
-            if tour.get("slug") == tour_slug:
-                return tour["id"]
-
-        return None
-
-    except Exception as e:
-        print(f"  Error searching broadcasts: {e}")
-        return None
-
-
 # ─── Data fetching ─────────────────────────────────────────────────────────────
-
-def get_tour_rounds(tour_slug: str) -> list:
-    """Returns a list of round IDs for a broadcast tour slug.
-
-    Resolves the slug to a Lichess tour ID, then fetches the broadcast
-    metadata to extract all round IDs.
-
-    Prints:  "  Found {n} rounds for {tour_slug}"
-    On failure prints a warning and returns [].
-    """
-    tour_id = _resolve_broadcast_id(tour_slug)
-    if not tour_id:
-        print(f"  WARNING: could not resolve tour '{tour_slug}' — skipping.")
-        return []
-
-    url = f"{LICHESS_API}/broadcast/{tour_id}"
-    try:
-        resp = requests.get(url, headers=HEADERS, timeout=15)
-        resp.raise_for_status()
-        data = resp.json()
-    except Exception as e:
-        print(f"  WARNING: could not fetch broadcast '{tour_id}': {e}")
-        return []
-
-    rounds    = data.get("rounds", [])
-    round_ids = [r["id"] for r in rounds if r.get("id")]
-    print(f"  Found {len(round_ids)} rounds for {tour_slug}")
-    return round_ids
-
 
 def get_round_pgn(round_id: str) -> str:
     """Fetches PGN text for a broadcast round.
@@ -149,6 +98,40 @@ def get_round_pgn(round_id: str) -> str:
         return ""
     finally:
         time.sleep(1)
+
+
+# ─── Name normalisation ───────────────────────────────────────────────────────
+
+# Maps PGN "Last, First" variants → canonical "First Last" form used
+# throughout the codebase.  Keys are exact strings as they appear in
+# Lichess broadcast PGN headers.
+_NAME_REPLACEMENTS = {
+    "Gukesh, D":               "Gukesh D",
+    "Praggnanandhaa, R":       "Praggnanandhaa R",
+    "R Praggnanandhaa":        "Praggnanandhaa R",
+    "Dommaraju, Gukesh":       "Gukesh D",
+    "Nepomniachtchi, Ian":     "Ian Nepomniachtchi",
+    "Firouzja, Alireza":       "Alireza Firouzja",
+    "Caruana, Fabiano":        "Fabiano Caruana",
+    "Nakamura, Hikaru":        "Hikaru Nakamura",
+    "Giri, Anish":             "Anish Giri",
+    "Abdusattorov, Nodirbek":  "Nodirbek Abdusattorov",
+    "Erigaisi, Arjun":         "Arjun Erigaisi",
+    "Keymer, Vincent":         "Vincent Keymer",
+    "Sindarov, Javokhir":      "Javokhir Sindarov",
+    "Esipenko, Andrey":        "Andrey Esipenko",
+    "Bluebaum, Matthias":      "Matthias Bluebaum",
+    "Wei, Yi":                 "Wei Yi",
+}
+
+
+def normalize_name(name: str) -> str:
+    """Normalises a player name from PGN to canonical form.
+
+    Applies the _NAME_REPLACEMENTS lookup; returns the name unchanged
+    if no mapping exists.
+    """
+    return _NAME_REPLACEMENTS.get(name, name)
 
 
 # ─── PGN parsing ──────────────────────────────────────────────────────────────
@@ -187,8 +170,8 @@ def parse_pgn_games(pgn_text: str) -> list:
 
         headers = dict(header_re.findall(block))
 
-        white  = headers.get("White", "").strip()
-        black  = headers.get("Black", "").strip()
+        white  = normalize_name(headers.get("White", "").strip())
+        black  = normalize_name(headers.get("Black", "").strip())
         result = headers.get("Result", "*").strip()
 
         if not white or not black:
@@ -391,14 +374,16 @@ def run() -> None:
     from datetime import datetime
 
     print("Building elite TPR database...")
-    print(f"Fetching games from {len(ELITE_TOURNAMENTS)} tournaments")
+    print(f"Fetching games from {len(HARDCODED_ROUNDS)} tournaments")
 
     all_games: list = []
-    for tour_slug, name, year in ELITE_TOURNAMENTS:
-        print(f"\n[{year}] {name}")
-        rounds = get_tour_rounds(tour_slug)
-        for round_id in rounds:
-            pgn   = get_round_pgn(round_id)
+    for tour_name, round_ids in HARDCODED_ROUNDS.items():
+        print(f"\n{tour_name} ({len(round_ids)} rounds)")
+        tour_games = 0
+        for round_id in round_ids:
+            pgn = get_round_pgn(round_id)
+            if not pgn:
+                continue
             games = parse_pgn_games(pgn)
             # Keep games where at least one player is rated 2600+
             elite = [
@@ -407,6 +392,8 @@ def run() -> None:
                 or (g["black_elo"] and g["black_elo"] >= MIN_OPPONENT_RATING)
             ]
             all_games.extend(elite)
+            tour_games += len(elite)
+        print(f"  {tour_games} elite games from this tournament")
         print(f"  Running total: {len(all_games)} elite games")
 
     print("\nComputing TPR for all players...")
@@ -434,7 +421,7 @@ def run() -> None:
 
     output = {
         "generated_at":        datetime.now().isoformat(),
-        "tournaments_scanned": len(ELITE_TOURNAMENTS),
+        "tournaments_scanned": len(HARDCODED_ROUNDS),
         "total_elite_games":   len(all_games),
         "players":             qualified,
     }
