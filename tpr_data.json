@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-15T18:18:51.183466",
+  "generated_at": "2026-04-16T08:55:12.436677",
   "tournaments_scanned": 7,
   "total_elite_games": 662,
   "players": {
@@ -123,6 +123,12 @@
       "elite_games": 8,
       "avg_opponent": 2688.8
     },
+    "Arjun Erigaisi": {
+      "tpr": 2785.8,
+      "draw_rate": 0.5789,
+      "elite_games": 19,
+      "avg_opponent": 2709.9
+    },
     "Aryan Chopra": {
       "tpr": 2623.6,
       "draw_rate": 0.625,
@@ -230,12 +236,6 @@
       "draw_rate": 0.6,
       "elite_games": 8,
       "avg_opponent": 2724.8
-    },
-    "Erigaisi Arjun": {
-      "tpr": 2785.8,
-      "draw_rate": 0.5789,
-      "elite_games": 19,
-      "avg_opponent": 2709.9
     },
     "Etienne Bacrot": {
       "tpr": null,

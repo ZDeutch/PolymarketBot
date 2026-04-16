@@ -122,6 +122,10 @@ _NAME_REPLACEMENTS = {
     "Esipenko, Andrey":        "Andrey Esipenko",
     "Bluebaum, Matthias":      "Matthias Bluebaum",
     "Wei, Yi":                 "Wei Yi",
+    "Erigaisi Arjun":          "Arjun Erigaisi",
+    "Abdusattorov Nodirbek":   "Nodirbek Abdusattorov",
+    "Keymer Vincent":          "Vincent Keymer",
+    "Tabatabaei M. Amin":      "M. Amin Tabatabaei",
 }
 
 
