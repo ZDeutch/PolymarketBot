@@ -9,10 +9,9 @@ import time
 from datetime import datetime
 from sheets_logger import get_sheet, log_opportunity
 from position_sizer import calculate_stakes
+from config import BANKROLL
 
 # ─── Constants ───────────────────────────────────────────────────────────────
-
-BANKROLL = 10000.0
 SCAN_INTERVAL = 120       # seconds between full scans
 COOLDOWN = 3600           # seconds before re-logging same set
 MAX_MARKETS_PER_SET = 12  # maximum candidates in a set
