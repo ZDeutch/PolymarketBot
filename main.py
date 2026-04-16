@@ -19,6 +19,14 @@ Arguments:
   --polymarket   Polymarket event slug for this tournament
   --check        If passed, only show the edge table;
                  do not log positions
+  --force        Override the pre-tournament gate (rounds > 4 check).
+                 Use to run analysis mid-tournament for research only.
+
+Gate:
+  If more than ROUNDS_GATE rounds are complete the tool exits with a
+  warning unless --force is supplied. This prevents stale edges from
+  being acted on deep into a tournament where market prices have fully
+  adjusted to known results.
 
 Flow:
   1. Fetch tournament metadata from Lichess
@@ -64,7 +72,9 @@ POLYMARKET_SLUGS = {
 }
 
 MAX_RETRIES = 3
-BASE_DELAY  = 2  # seconds
+BASE_DELAY  = 2   # seconds
+
+ROUNDS_GATE = 4   # exit if more rounds than this are complete (use --force to override)
 
 
 def _fetch_clob_price(slug: str) -> float | None:
@@ -113,7 +123,8 @@ def get_market_prices() -> dict:
 def run(tournament_name: str,
         polymarket_slug: str,
         check_only: bool = False,
-        tour_id: str | None = None) -> None:
+        tour_id: str | None = None,
+        force: bool = False) -> None:
     """Full pipeline: fetch → simulate → edge table."""
 
     fetch_id = tour_id or tournament_name
@@ -131,11 +142,26 @@ def run(tournament_name: str,
         print("Failed to fetch tournament data.")
         sys.exit(1)
 
+    rounds_complete = tournament.get("rounds_complete", 0)
+
     print(f"  Name:    {tournament.get('name', tournament_name)}")
     print(f"  Status:  {tournament.get('status', 'unknown')}")
     print(f"  Players: {len(tournament.get('players', []))}")
-    print(f"  Rounds:  {tournament.get('rounds_complete', 0)}"
+    print(f"  Rounds:  {rounds_complete}"
           f" / {tournament.get('total_rounds', '?')} complete")
+
+    # ── Pre-tournament gate ───────────────────────────────────────────────────
+    if rounds_complete > ROUNDS_GATE and not force:
+        print(f"\n  ⚠ GATE: {rounds_complete} rounds complete "
+              f"(threshold: {ROUNDS_GATE}).")
+        print("  Markets have had time to price in results — edge estimates")
+        print("  are unreliable this deep into the tournament.")
+        print("  Pass --force to run anyway (research/analysis only).")
+        sys.exit(0)
+
+    if force and rounds_complete > ROUNDS_GATE:
+        print(f"\n  --force: bypassing gate "
+              f"({rounds_complete} rounds complete). Research mode.")
 
     # ── Step 2: Completed results ─────────────────────────────────────────────
     print(f"\nFetching completed results...")
@@ -234,7 +260,10 @@ if __name__ == "__main__":
                         help="Polymarket event slug")
     parser.add_argument("--check", action="store_true",
                         help="Show edge table only; do not log positions")
+    parser.add_argument("--force", action="store_true",
+                        help=f"Override the >{ROUNDS_GATE}-round gate; "
+                             "run analysis mid-tournament for research")
 
     args = parser.parse_args()
     run(args.tournament, args.polymarket, args.check,
-        tour_id=args.tour_id)
+        tour_id=args.tour_id, force=args.force)
