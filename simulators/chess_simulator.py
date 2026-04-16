@@ -8,6 +8,11 @@ Simulation model:
     falls back to Kryukov when data unavailable
   - Kryukov draw-rate baseline (exponential
     mean-rating term captures 2700+ draw surge)
+  - Must-win draw adjustment: players trailing
+    the leader by ≥ MUST_WIN_SCORE_GAP with
+    ≤ MUST_WIN_GAMES_LEFT remaining have their
+    draw probability multiplied by
+    MUST_WIN_DRAW_FACTOR (0.85) per such player
   - +35 Elo white piece bonus
   - TPR-blended ratings with N(rating, σ=50)
     performance variance per iteration
@@ -28,10 +33,13 @@ Key functions:
     Outperforms Pav logistic at 2700+ average rating.
 
   simulate_game(white: str, black: str,
-                ratings: dict) -> tuple
+                ratings: dict,
+                scores: dict | None,
+                games_left: dict | None) -> tuple
     Simulates one game. Returns (white_score,
     black_score). Applies white piece bonus.
-    Uses per-player + Kryukov draw model.
+    Uses per-player + Kryukov draw model with
+    optional must-win draw reduction.
 
   simulate_tournament(ratings: dict,
                       completed: dict,
@@ -122,6 +130,11 @@ def get_adjusted_rating(player: str, fide_elo: float) -> float:
 
 WHITE_BONUS = 35  # Elo points added to white's effective rating (Sonas, 266k games)
 
+# Must-win draw adjustment (Change 6)
+MUST_WIN_DRAW_FACTOR = 0.85   # 15 % relative draw-rate reduction per must-win player
+MUST_WIN_SCORE_GAP   = 2      # trail leader by ≥ this many points …
+MUST_WIN_GAMES_LEFT  = 4      # … with ≤ this many games remaining (incl. current)
+
 
 # ─── Core probability functions ───────────────────────────────────────────────
 
@@ -148,15 +161,26 @@ def kryukov_draw_rate(rating_a: float, rating_b: float) -> float:
     return round(max(0.0, min(0.85, draw_pct / 100.0)), 4)
 
 
-def simulate_game(white: str, black: str, ratings: dict) -> tuple:
+def simulate_game(white: str, black: str, ratings: dict,
+                  scores: dict | None = None,
+                  games_left: dict | None = None) -> tuple:
     """Simulates one game. white gets +WHITE_BONUS to effective rating.
 
-    Draw rate (Change 2 + 3):
+    Draw rate (Changes 2 + 3):
       If both players have empirical draw rates in tpr_data.json:
         base = (dr_white + dr_black) / 2
         scaled by Kryukov's rating-diff factor relative to equal-rating baseline
         → preserves per-player draw tendencies while penalising mismatches
       Otherwise: Kryukov formula directly (Change 3 fallback).
+
+    Must-win adjustment (Change 6):
+      After the base draw rate is computed, for each player who trails
+      the current leader by ≥ MUST_WIN_SCORE_GAP points and has
+      ≤ MUST_WIN_GAMES_LEFT games remaining (including this one),
+      draw_rate is multiplied by MUST_WIN_DRAW_FACTOR (0.85).
+      Applied independently per qualifying player, so two must-win
+      players facing each other compound the reduction (0.85²≈0.72).
+      Requires scores and games_left to be passed; no-ops otherwise.
 
     Returns (white_score, black_score).
     """
@@ -180,6 +204,15 @@ def simulate_game(white: str, black: str, ratings: dict) -> tuple:
     else:
         # Fallback: Kryukov formula alone
         draw_rate = kryukov_draw_rate(white_eff, black_eff)
+
+    # ── Must-win draw adjustment ───────────────────────────────────────────────
+    if scores is not None and games_left is not None:
+        leader = max(scores.values())
+        for player in (white, black):
+            gap  = leader - scores[player]
+            left = games_left.get(player, 0)
+            if gap >= MUST_WIN_SCORE_GAP and left <= MUST_WIN_GAMES_LEFT:
+                draw_rate *= MUST_WIN_DRAW_FACTOR
 
     draw_rate = max(0.0, min(0.85, draw_rate))
 
@@ -206,13 +239,21 @@ def simulate_tournament(ratings: dict,
     Each iteration:
       1. Samples per-player performance ratings from N(rating, σ=50)
       2. Seeds scores from actual completed results
-      3. Simulates all remaining games
+      3. Simulates all remaining games (with must-win draw adjustment)
       4. Awards the win to the highest scorer (random tiebreak)
 
     Returns {player: win_probability}.
     """
     players    = list(ratings.keys())
     win_counts = {p: 0 for p in players}
+
+    # Precompute starting games_left from the fixed remaining schedule.
+    # Copied cheaply each iteration and decremented as games are played,
+    # so simulate_game always sees the correct count (incl. current game).
+    initial_games_left: dict[str, int] = {p: 0 for p in players}
+    for w, b in remaining:
+        initial_games_left[w] = initial_games_left.get(w, 0) + 1
+        initial_games_left[b] = initial_games_left.get(b, 0) + 1
 
     for _ in range(n):
         # Sample performance ratings: apply TPR blend first, then σ=50 noise
@@ -230,13 +271,19 @@ def simulate_tournament(ratings: dict,
                 if black in scores:
                     scores[black] += bs
 
+        # games_left is mutable per iteration; copy once from precomputed base
+        games_left = dict(initial_games_left)
+
         # Simulate remaining games
         for white, black in remaining:
             if white not in perf or black not in perf:
                 continue
-            ws, bs = simulate_game(white, black, perf)
+            ws, bs = simulate_game(white, black, perf,
+                                   scores=scores, games_left=games_left)
             scores[white] += ws
             scores[black] += bs
+            games_left[white] -= 1
+            games_left[black] -= 1
 
         # Find winner — random tiebreak
         max_score = max(scores.values())
