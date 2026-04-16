@@ -35,8 +35,73 @@ Key functions:
     tournament. Returns {player: win_probability}.
 """
 
+import json
 import math
+import os
 import random
+
+# ─── TPR data (lazy-loaded from tpr_data.json) ────────────────────────────────
+
+_TPR_DATA        = {}
+_TPR_DATA_LOADED = False
+
+
+def _load_tpr_data() -> None:
+    """Loads tpr_data.json once on first call; no-ops on subsequent calls."""
+    global _TPR_DATA, _TPR_DATA_LOADED
+    if _TPR_DATA_LOADED:
+        return
+    path = os.path.join(os.path.dirname(__file__), "..", "tpr_data.json")
+    try:
+        with open(path) as f:
+            raw = json.load(f)
+        _TPR_DATA = raw.get("players", {})
+        _TPR_DATA_LOADED = True
+        print(f"  Loaded TPR data: {len(_TPR_DATA)} players")
+    except Exception as e:
+        print(f"  WARNING: could not load tpr_data.json: {e}")
+        _TPR_DATA_LOADED = True   # don't retry
+
+# ─── TPR blend ────────────────────────────────────────────────────────────────
+
+def get_adjusted_rating(player: str, fide_elo: float) -> float:
+    """Blends FIDE Elo with elite TPR for a more accurate strength estimate.
+
+    Formula (full data):
+      adjusted = 0.45 * fide_elo + 0.55 * tpr
+
+    Reliability scaling: if fewer than 15 elite games are available, the
+    TPR weight is reduced proportionally so sparse data doesn't dominate:
+      weight_tpr  = 0.55 * min(games, 15) / 15
+      weight_fide = 1.0 - weight_tpr
+
+    Velocity adjustment: captures players whose recent form significantly
+    exceeds or trails their accumulated FIDE rating:
+      velocity = (tpr - fide_elo) * 0.15
+
+    Falls back to raw FIDE Elo if no TPR data is available.
+    """
+    _load_tpr_data()
+
+    player_data = _TPR_DATA.get(player)
+    if not player_data:
+        return fide_elo
+
+    tpr   = player_data.get("tpr")
+    games = player_data.get("elite_games", 0)
+
+    if tpr is None or games == 0:
+        return fide_elo
+
+    # Scale TPR weight by data reliability (full weight at 15+ games)
+    weight_tpr  = 0.55 * min(games, 15) / 15
+    weight_fide = 1.0 - weight_tpr
+
+    blended  = weight_fide * fide_elo + weight_tpr * tpr
+    velocity = (tpr - fide_elo) * 0.15
+
+    return round(blended + velocity, 1)
+
 
 # ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -115,8 +180,11 @@ def simulate_tournament(ratings: dict,
     win_counts = {p: 0 for p in players}
 
     for _ in range(n):
-        # Sample performance ratings with σ=50 variance
-        perf = {p: random.gauss(ratings[p], 50) for p in players}
+        # Sample performance ratings: apply TPR blend first, then σ=50 noise
+        perf = {
+            p: random.gauss(get_adjusted_rating(p, ratings[p]), 50)
+            for p in players
+        }
 
         # Seed scores from actual completed results
         scores = {p: 0.0 for p in players}
