@@ -79,8 +79,13 @@ def get_adjusted_rating(player: str, fide_elo: float) -> float:
     exceeds or trails their accumulated FIDE rating:
       velocity = (tpr - fide_elo) * 0.15
 
+    Clamp: the total adjustment (blended + velocity − fide_elo) is capped
+    at ±MAX_ADJUSTMENT Elo so small-sample noise cannot produce extreme shifts.
+
     Falls back to raw FIDE Elo if no TPR data is available.
     """
+    MAX_ADJUSTMENT = 50   # Elo points — hard ceiling on any single adjustment
+
     _load_tpr_data()
 
     player_data = _TPR_DATA.get(player)
@@ -100,7 +105,11 @@ def get_adjusted_rating(player: str, fide_elo: float) -> float:
     blended  = weight_fide * fide_elo + weight_tpr * tpr
     velocity = (tpr - fide_elo) * 0.15
 
-    return round(blended + velocity, 1)
+    raw_delta     = (blended + velocity) - fide_elo
+    clamped_delta = max(-MAX_ADJUSTMENT, min(MAX_ADJUSTMENT, raw_delta))
+    adjusted      = fide_elo + clamped_delta
+
+    return round(adjusted, 1)
 
 
 # ─── Constants ────────────────────────────────────────────────────────────────
