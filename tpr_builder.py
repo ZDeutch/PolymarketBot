@@ -67,7 +67,7 @@ HARDCODED_ROUNDS = {
         "xtmbmvSP", "FpwTKfvI",
     ],
     "Candidates 2026": [
-        "FRGTkE8Z",
+        # Populated at runtime from chess_fetcher.get_tournament()
     ],
 }
 
@@ -128,10 +128,24 @@ _NAME_REPLACEMENTS = {
 def normalize_name(name: str) -> str:
     """Normalises a player name from PGN to canonical form.
 
-    Applies the _NAME_REPLACEMENTS lookup; returns the name unchanged
-    if no mapping exists.
+    1. Checks the explicit _NAME_REPLACEMENTS lookup first.
+    2. Falls back to reversing "Last, First" → "First Last"
+       for any name containing exactly one comma.
     """
-    return _NAME_REPLACEMENTS.get(name, name)
+    # Explicit replacements first
+    if name in _NAME_REPLACEMENTS:
+        return _NAME_REPLACEMENTS[name]
+
+    # General "Last, First" → "First Last" inversion
+    # Only apply if exactly one comma is present
+    parts = name.split(",")
+    if len(parts) == 2:
+        last  = parts[0].strip()
+        first = parts[1].strip()
+        if first and last:
+            return f"{first} {last}"
+
+    return name
 
 
 # ─── PGN parsing ──────────────────────────────────────────────────────────────
@@ -375,6 +389,21 @@ def run() -> None:
 
     print("Building elite TPR database...")
     print(f"Fetching games from {len(HARDCODED_ROUNDS)} tournaments")
+
+    # ── Auto-fetch Candidates 2026 round IDs from chess_fetcher ───────────────
+    print("\nFetching Candidates 2026 round IDs...")
+    try:
+        from fetchers.chess_fetcher import get_tournament
+        t = get_tournament("fide-candidates-2026--open")
+        if t and t.get("rounds"):
+            c2026_ids = [r["id"] for r in t["rounds"] if r.get("finished")]
+            HARDCODED_ROUNDS["Candidates 2026"] = c2026_ids
+            print(f"  Got {len(c2026_ids)} completed rounds")
+        else:
+            HARDCODED_ROUNDS["Candidates 2026"] = []
+            print("  Could not fetch — skipping")
+    except Exception as e:
+        print(f"  Error: {e} — skipping Candidates 2026")
 
     all_games: list = []
     for tour_name, round_ids in HARDCODED_ROUNDS.items():
