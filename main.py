@@ -37,8 +37,6 @@ Flow:
   4. Fetch Polymarket prices
   5. Calculate edges
   6. Size positions with half-Kelly
-  7. Settle any open positions from previous run
-  8. Log new positions to Google Sheets
 """
 
 import argparse
@@ -47,7 +45,7 @@ import json
 import requests
 import time
 
-from sport_detector import detect_sport, get_fetcher, get_simulator
+from sport_detector import get_fetcher, get_simulator
 from edge_calculator import find_edges, size_positions
 from config import SIMULATIONS, BANKROLL, MIN_EDGE
 
@@ -130,34 +128,29 @@ def _fetch_clob_price(slug: str) -> float | None:
     return None
 
 
+_POLYMARKET_SLUGS = {
+    "chess": POLYMARKET_SLUGS_CHESS,
+    "golf":  POLYMARKET_SLUGS_GOLF,
+}
+
+
 def get_market_prices(sport: str, polymarket_slug: str) -> dict:
     """Fetches live Polymarket YES midpoint prices for all players.
 
-    Chess: uses POLYMARKET_SLUGS_CHESS per-player slugs.
-    Golf:  uses POLYMARKET_SLUGS_GOLF per-player slugs.
-    Other sports: reserved for future use.
+    Chess/golf: uses per-player slugs from _POLYMARKET_SLUGS.
+    Tennis: reserved for future use (no per-player slugs yet).
     """
     prices = {}
+    slug_dict = _POLYMARKET_SLUGS.get(sport, {})
 
-    if sport == "chess":
-        for player, slug in POLYMARKET_SLUGS_CHESS.items():
-            price = _fetch_clob_price(slug)
-            if price is not None:
-                prices[player] = price
-                print(f"  {player}: {price:.3f}")
-            else:
-                print(f"  {player}: failed to fetch")
-            time.sleep(0.5)
-
-    elif sport == "golf":
-        for player, slug in POLYMARKET_SLUGS_GOLF.items():
-            price = _fetch_clob_price(slug)
-            if price is not None:
-                prices[player] = price
-                print(f"  {player}: {price:.3f}")
-            else:
-                print(f"  {player}: failed to fetch")
-            time.sleep(0.5)
+    for player, slug in slug_dict.items():
+        price = _fetch_clob_price(slug)
+        if price is not None:
+            prices[player] = price
+            print(f"  {player}: {price:.3f}")
+        else:
+            print(f"  {player}: failed to fetch")
+        time.sleep(0.5)
 
     return prices
 
@@ -364,8 +357,8 @@ if __name__ == "__main__":
         description="PolymarketBot — Multi-Sport Tournament Simulator"
     )
     parser.add_argument("--tournament", required=True,
-                        help="Lichess broadcast tour ID or slug "
-                             "e.g. BLA70Vds or fide-candidates-2026-open")
+                        help="Tournament name (chess/golf/tennis) or "
+                             "Lichess slug/tour-id (chess only)")
     parser.add_argument("--sport", required=True,
                         choices=["chess", "tennis", "golf"],
                         help="Sport type")

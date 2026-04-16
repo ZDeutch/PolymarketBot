@@ -42,7 +42,6 @@ HARDCODED_ROUNDS = {
         "iSglSzjv", "haD9x5TT", "OrHsLFq5",
         "msGCthzJ", "cmDGoJr1", "ubgeWaHz",
         "k0StVoen", "EDCwDiqA", "L43YRQWv",
-        "iSglSzjv",
     ],
     "Candidates 2024": [
         "AjqSsU1w", "GenKIJ8A", "xQgaUu2y",
@@ -67,7 +66,7 @@ HARDCODED_ROUNDS = {
         "xtmbmvSP", "FpwTKfvI",
     ],
     "Candidates 2026": [
-        # Populated at runtime from chess_fetcher.get_tournament()
+        # Populated at runtime via get_tournament("BLA70Vds") (direct tour ID)
     ],
 }
 
@@ -395,10 +394,11 @@ def run() -> None:
     print(f"Fetching games from {len(HARDCODED_ROUNDS)} tournaments")
 
     # ── Auto-fetch Candidates 2026 round IDs from chess_fetcher ───────────────
+    # Uses direct tour ID BLA70Vds (slug-based lookup fails for archived tours)
     print("\nFetching Candidates 2026 round IDs...")
     try:
         from fetchers.chess_fetcher import get_tournament
-        t = get_tournament("fide-candidates-2026--open")
+        t = get_tournament("BLA70Vds")
         if t and t.get("rounds"):
             c2026_ids = [r["id"] for r in t["rounds"] if r.get("finished")]
             HARDCODED_ROUNDS["Candidates 2026"] = c2026_ids

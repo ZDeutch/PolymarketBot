@@ -36,7 +36,7 @@ standardized formats used by chess_simulator.py:
     Extracts sorted list of all player names from round 1.
 
   get_player_ratings(players: list) -> dict
-    Chess.com classical/rapid rating with FIDE scrape fallback.
+    Chess.com classical/rapid rating with hardcoded fallback.
     Returns: {player_name: elo_rating}
 
   get_remaining_schedule(tournament_id, completed_results,
@@ -413,8 +413,7 @@ def get_player_ratings(players: list) -> dict:
 
     Tries in order:
       1. Chess.com (classical, then rapid — must be > 2500)
-      2. FIDE profile scrape via elo_model.FIDE_IDS
-      3. KNOWN_RATINGS hardcoded fallback table
+      2. KNOWN_RATINGS hardcoded fallback table
 
     Returns {real_name: elo_rating}.
     """
@@ -431,19 +430,7 @@ def get_player_ratings(players: list) -> dict:
                 print(f"  {name}: {rating} (chess.com)")
             time.sleep(0.5)
 
-        # 2. FIDE scrape
-        if not rating:
-            try:
-                from elo_model import scrape_fide_rating, FIDE_IDS
-                fide_id = FIDE_IDS.get(name)
-                if fide_id:
-                    rating = scrape_fide_rating(fide_id)
-                    if rating:
-                        print(f"  {name}: {rating} (fide)")
-            except Exception:
-                pass
-
-        # 3. Hardcoded fallback
+        # 2. Hardcoded fallback
         if not rating:
             rating = KNOWN_RATINGS.get(name)
             if rating:
