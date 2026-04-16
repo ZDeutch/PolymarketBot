@@ -165,12 +165,19 @@ def get_market_prices(sport: str, polymarket_slug: str) -> dict:
 # ─── Main run ─────────────────────────────────────────────────────────────────
 
 def run(tournament_name: str, sport: str,
-        polymarket_slug: str, check_only: bool = False) -> None:
+        polymarket_slug: str, check_only: bool = False,
+        tour_id: str | None = None) -> None:
     """Full pipeline: fetch → simulate → edge table → (optionally) log."""
+
+    # For chess, --tour-id bypasses slug resolution (direct 8-char Lichess ID).
+    # For golf/tennis, tour_id is always None and fetch_id == tournament_name.
+    fetch_id = tour_id or tournament_name
 
     print("=" * 60)
     print(f"PolymarketBot — {tournament_name}")
     print(f"Sport: {sport.upper()}")
+    if tour_id:
+        print(f"Tour ID: {tour_id}")
     print("=" * 60)
 
     fetcher   = get_fetcher(sport)
@@ -178,7 +185,7 @@ def run(tournament_name: str, sport: str,
 
     # ── Step 1: Tournament metadata ───────────────────────────────────────────
     print(f"\nFetching tournament data...")
-    tournament = fetcher.get_tournament(tournament_name)
+    tournament = fetcher.get_tournament(fetch_id)
     if not tournament:
         print("Failed to fetch tournament data.")
         sys.exit(1)
@@ -270,11 +277,11 @@ def run(tournament_name: str, sport: str,
 
         # ── Step 2: Completed results ─────────────────────────────────────────
         print(f"\nFetching completed results...")
-        completed = fetcher.get_completed_results(tournament_name)
+        completed = fetcher.get_completed_results(fetch_id)
 
         # ── Step 3: Player ratings ────────────────────────────────────────────
         print(f"\nFetching player ratings...")
-        players = fetcher.get_players(tournament_name)
+        players = fetcher.get_players(fetch_id)
         print(f"  Players found: {len(players)}")
         ratings = fetcher.get_player_ratings(players)
         print(f"  Ratings fetched: {len(ratings)}/{len(players)}")
@@ -286,7 +293,7 @@ def run(tournament_name: str, sport: str,
         # ── Step 4: Remaining schedule ────────────────────────────────────────
         total_rounds = tournament.get("total_rounds")
         remaining = fetcher.get_remaining_schedule(
-            tournament_name, completed, players, total_rounds
+            fetch_id, completed, players, total_rounds
         )
         print(f"  Remaining games: {len(remaining)}")
 
@@ -366,6 +373,12 @@ if __name__ == "__main__":
                         help="Polymarket event slug")
     parser.add_argument("--check", action="store_true",
                         help="Show edge table only; do not log positions")
+    parser.add_argument("--tour-id", default=None,
+                        dest="tour_id",
+                        help="Direct 8-char Lichess tour ID (chess only). "
+                             "Bypasses slug resolution when provided. "
+                             "e.g. BLA70Vds for FIDE Candidates 2026")
 
     args = parser.parse_args()
-    run(args.tournament, args.sport, args.polymarket, args.check)
+    run(args.tournament, args.sport, args.polymarket, args.check,
+        tour_id=args.tour_id)
