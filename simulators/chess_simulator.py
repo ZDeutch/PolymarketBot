@@ -3,9 +3,14 @@ Monte Carlo simulator for round-robin chess
 tournaments.
 
 Simulation model:
-  - Pav logistic draw rate (rating diff + avg rating)
+  - Per-player draw rates from tpr_data.json,
+    scaled by Kryukov rating-diff factor;
+    falls back to Kryukov when data unavailable
+  - Kryukov draw-rate baseline (exponential
+    mean-rating term captures 2700+ draw surge)
   - +35 Elo white piece bonus
-  - N(rating, σ=50) performance variance per iteration
+  - TPR-blended ratings with N(rating, σ=50)
+    performance variance per iteration
   - Random tiebreak (simplified)
   - 50,000 iterations default
 
@@ -16,16 +21,17 @@ Key functions:
     Standard Elo win probability formula.
     P(A beats B) = 1 / (1 + 10^((B-A)/400))
 
-  pav_draw_rate(rating_a: float,
-                rating_b: float) -> float
-    Pav logistic model for draw probability.
-    Uses rating difference and average rating.
-    Fitted on 1.18M rated games.
+  kryukov_draw_rate(rating_a: float,
+                    rating_b: float) -> float
+    Kryukov exponential model for draw probability.
+    draw% = -|Δ|/32.49 + exp((μ−2254.7)/208.49) + 23.87
+    Outperforms Pav logistic at 2700+ average rating.
 
   simulate_game(white: str, black: str,
                 ratings: dict) -> tuple
     Simulates one game. Returns (white_score,
     black_score). Applies white piece bonus.
+    Uses per-player + Kryukov draw model.
 
   simulate_tournament(ratings: dict,
                       completed: dict,
@@ -116,11 +122,6 @@ def get_adjusted_rating(player: str, fide_elo: float) -> float:
 
 WHITE_BONUS = 35  # Elo points added to white's effective rating (Sonas, 266k games)
 
-# Pav logistic draw-rate model (gilgamath.com, fitted on 1.18 M rated games)
-DRAW_LOGIT_INTERCEPT  = -0.0198
-DRAW_LOGIT_RDIFF_COEF =  0.00687
-DRAW_LOGIT_MEAN_COEF  = -0.000421
-
 
 # ─── Core probability functions ───────────────────────────────────────────────
 
@@ -132,30 +133,55 @@ def elo_win_prob(rating_a: float, rating_b: float) -> float:
     return 1.0 / (1.0 + 10 ** ((rating_b - rating_a) / 400))
 
 
-def pav_draw_rate(rating_a: float, rating_b: float) -> float:
-    """Returns P(draw) using the Pav logistic model (gilgamath.com).
+def kryukov_draw_rate(rating_a: float, rating_b: float) -> float:
+    """Returns P(draw) using the Kryukov exponential model.
 
-    Fitted on 1.18M rated games. Uses rating difference and average rating.
+    draw% = -|Δ|/32.49 + exp((μ − 2254.7)/208.49) + 23.87
+
+    The exponential mean-rating term captures the accelerating draw rate
+    at 2700+ average Elo that Pav's linear term systematically underestimates.
+    Clamped to [0.0, 0.85].
     """
-    delta = abs(rating_a - rating_b)
-    mean  = (rating_a + rating_b) / 2.0
-    logit_decisive = (DRAW_LOGIT_INTERCEPT
-                      + DRAW_LOGIT_RDIFF_COEF * delta
-                      + DRAW_LOGIT_MEAN_COEF  * mean)
-    p_decisive = 1.0 / (1.0 + math.exp(-logit_decisive))
-    return round(1.0 - p_decisive, 4)
+    delta    = abs(rating_a - rating_b)
+    mu       = (rating_a + rating_b) / 2.0
+    draw_pct = -delta / 32.49 + math.exp((mu - 2254.7) / 208.49) + 23.87
+    return round(max(0.0, min(0.85, draw_pct / 100.0)), 4)
 
 
 def simulate_game(white: str, black: str, ratings: dict) -> tuple:
     """Simulates one game. white gets +WHITE_BONUS to effective rating.
 
+    Draw rate (Change 2 + 3):
+      If both players have empirical draw rates in tpr_data.json:
+        base = (dr_white + dr_black) / 2
+        scaled by Kryukov's rating-diff factor relative to equal-rating baseline
+        → preserves per-player draw tendencies while penalising mismatches
+      Otherwise: Kryukov formula directly (Change 3 fallback).
+
     Returns (white_score, black_score).
     """
-    white_rating = ratings[white] + WHITE_BONUS
-    black_rating = ratings[black]
+    white_eff = ratings[white] + WHITE_BONUS
+    black_eff = ratings[black]
 
-    p_white_wins = elo_win_prob(white_rating, black_rating)
-    draw_rate    = pav_draw_rate(white_rating, black_rating)
+    p_white_wins = elo_win_prob(white_eff, black_eff)
+
+    # ── Draw rate ─────────────────────────────────────────────────────────────
+    dr_white = _TPR_DATA.get(white, {}).get("draw_rate")
+    dr_black = _TPR_DATA.get(black, {}).get("draw_rate")
+
+    if dr_white is not None and dr_black is not None:
+        # Per-player empirical average, scaled by Kryukov rating-diff penalty
+        avg_eff      = (white_eff + black_eff) / 2.0
+        kryukov_ref  = kryukov_draw_rate(avg_eff, avg_eff)  # zero diff, same mean
+        kryukov_full = kryukov_draw_rate(white_eff, black_eff)
+        player_avg   = (dr_white + dr_black) / 2.0
+        draw_rate    = (player_avg * kryukov_full / kryukov_ref
+                        if kryukov_ref > 0 else player_avg)
+    else:
+        # Fallback: Kryukov formula alone
+        draw_rate = kryukov_draw_rate(white_eff, black_eff)
+
+    draw_rate = max(0.0, min(0.85, draw_rate))
 
     p_white_decisive = p_white_wins * (1 - draw_rate)
     p_draw           = draw_rate
