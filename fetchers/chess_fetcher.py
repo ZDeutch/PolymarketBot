@@ -73,8 +73,13 @@ PLAYER_NAME_TO_USERNAME = {
     "Matthias Bluebaum":     "matthiasbluebaum",
     "Matthias Blübaum":      "matthiasbluebaum",
 
+    # Sigeman 2026 players (new)
+    "Nils Grandelius":            "grandelius",
+    "Andy Woodward":              "andywoodward",
+    # Zhu Jiner — Chess.com username unconfirmed; falls through to KNOWN_RATINGS
+
     # Tata Steel / other elite players
-    # Gukesh omitted — Chess.com returns online rating (too low); falls through to FIDE scrape
+    # Gukesh omitted — Chess.com returns online rating (too low); falls through to KNOWN_RATINGS
     "Arjun Erigaisi":             "arjunerigaisi",
     "Erigaisi Arjun":             "arjunerigaisi",
     "Vincent Keymer":             "vincentkeymer",
@@ -112,8 +117,9 @@ PLAYER_NAME_TO_USERNAME = {
 # PGN headers use "Last, First" (Western) or non-standard forms.
 # Overrides handle names that don't follow simple "Last, First" → "First Last".
 PGN_NAME_OVERRIDES = {
-    "Wei, Yi":          "Wei Yi",           # Chinese naming convention
-    "Praggnanandhaa, R": "Praggnanandhaa R", # single-letter surname initial
+    "Wei, Yi":           "Wei Yi",            # Chinese naming convention
+    "Praggnanandhaa, R": "Praggnanandhaa R",  # single-letter surname initial
+    "Zhu, Jiner":        "Zhu Jiner",         # Chinese: keep surname-first order
 }
 
 
@@ -378,13 +384,24 @@ def get_player_rating(username: str) -> int | None:
 
 
 # Hardcoded fallback ratings for players not reachable via Chess.com
-# or FIDE scraping (e.g. missing classical games, scrape failures).
-# Updated from FIDE rating list — refresh periodically.
+# (e.g. missing classical games, unconfirmed usernames).
+# Sourced from FIDE April 2026 rating list — refresh each new tournament.
 KNOWN_RATINGS = {
-    "Nodirbek Abdusattorov":      2764,
-    "Abdusattorov Nodirbek":      2764,
-    "Arjun Erigaisi":             2777,
-    "Erigaisi Arjun":             2777,
+    # ── Sigeman 2026 ──────────────────────────────────────────────────────────
+    "Magnus Carlsen":             2840,   # April 2026 FIDE #1
+    "Nodirbek Abdusattorov":      2780,   # April 2026 FIDE #4 (was 2764)
+    "Abdusattorov Nodirbek":      2780,
+    "Arjun Erigaisi":             2751,   # April 2026 (was 2777)
+    "Erigaisi Arjun":             2751,
+    "Jorden van Foreest":         2736,   # April 2026 (was 2645 — +91!)
+    "Jorden Van Foreest":         2736,
+    "Nils Grandelius":            2662,   # April 2026
+    "Yagiz Kaan Erdogmus":        2687,   # April 2026 (was 2610 — +77!)
+    "Erdogmus Yagiz Kaan":        2687,
+    "Andy Woodward":              2635,   # April 2026 — US GM (b. 2010)
+    "Woodward Andy":              2635,
+    "Zhu Jiner":                  2554,   # April 2026 — Chinese GM
+    # ── Other elite players ───────────────────────────────────────────────────
     "Gukesh D":                   2783,
     "Gukesh Dommaraju":           2783,
     "D Gukesh":                   2783,
@@ -397,12 +414,8 @@ KNOWN_RATINGS = {
     "Fedoseev Vladimir":          2674,
     "Matthias Bluebaum":          2700,
     "Matthias Blübaum":           2700,
-    "Jorden van Foreest":         2645,
-    "Jorden Van Foreest":         2645,
     "Thai Dai Van Nguyen":        2612,
     "Nguyen Thai Dai Van":        2612,
-    "Yagiz Kaan Erdogmus":        2610,
-    "Erdogmus Yagiz Kaan":        2610,
     "Max Warmerdam":              2598,
     "Warmerdam Max":              2598,
 }

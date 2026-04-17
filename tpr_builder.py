@@ -68,6 +68,12 @@ HARDCODED_ROUNDS = {
     "Candidates 2026": [
         # Populated at runtime via get_tournament("BLA70Vds") (direct tour ID)
     ],
+    "Sigeman 2026": [
+        # Add round IDs as each round is broadcast on Lichess.
+        # Find IDs in the broadcast URL:
+        #   lichess.org/broadcast/-/{round-name}/{round_id}
+        # e.g. "will-magnus-carlsen-win..." → round_id is the 8-char suffix
+    ],
 }
 
 MIN_OPPONENT_RATING = 2600
@@ -125,6 +131,13 @@ _NAME_REPLACEMENTS = {
     "Abdusattorov Nodirbek":   "Nodirbek Abdusattorov",
     "Keymer Vincent":          "Vincent Keymer",
     "Tabatabaei M. Amin":      "M. Amin Tabatabaei",
+    # Sigeman 2026 players
+    "Grandelius, Nils":        "Nils Grandelius",
+    "Woodward, Andy":          "Andy Woodward",
+    "Zhu, Jiner":              "Zhu Jiner",   # keep Chinese surname-first order
+    "Van Foreest, Jorden":     "Jorden van Foreest",
+    "van Foreest, Jorden":     "Jorden van Foreest",
+    "Erdogmus, Yagiz Kaan":    "Yagiz Kaan Erdogmus",
 }
 
 

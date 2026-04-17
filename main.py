@@ -48,27 +48,28 @@ from simulators import chess_simulator as simulator
 from edge_calculator import find_edges, size_positions
 from config import SIMULATIONS, BANKROLL, MIN_EDGE
 
-# ─── Polymarket slugs (FIDE Candidates 2026) ──────────────────────────────────
+# ─── Polymarket slugs (TePe Sigeman 2026) ─────────────────────────────────────
 # Update this dict for each new tournament.
 # Slug pattern: "will-{name-hyphenated}-win-the-{year}-{event}"
+# TODO: verify slugs once Polymarket lists the Sigeman 2026 markets.
 
 POLYMARKET_SLUGS = {
-    "Fabiano Caruana":
-        "will-fabiano-caruana-win-the-2026-fide-candidates-tournament",
-    "Hikaru Nakamura":
-        "will-hikaru-nakamura-win-the-2026-fide-candidates-tournament",
-    "Javokhir Sindarov":
-        "will-javokhir-sindarov-win-the-2026-fide-candidates-tournament",
-    "Praggnanandhaa R":
-        "will-praggnanandhaa-r-win-the-2026-fide-candidates-tournament",
-    "Anish Giri":
-        "will-anish-giri-win-the-2026-fide-candidates-tournament",
-    "Wei Yi":
-        "will-wei-yi-win-the-2026-fide-candidates-tournament",
-    "Andrey Esipenko":
-        "will-andrey-esipenko-win-the-2026-fide-candidates-tournament",
-    "Matthias Bluebaum":
-        "will-matthias-bluebaum-win-the-2026-fide-candidates-tournament",
+    "Magnus Carlsen":
+        "will-magnus-carlsen-win-the-2026-tepe-sigeman-chess-tournament",
+    "Nodirbek Abdusattorov":
+        "will-nodirbek-abdusattorov-win-the-2026-tepe-sigeman-chess-tournament",
+    "Arjun Erigaisi":
+        "will-arjun-erigaisi-win-the-2026-tepe-sigeman-chess-tournament",
+    "Jorden van Foreest":
+        "will-jorden-van-foreest-win-the-2026-tepe-sigeman-chess-tournament",
+    "Nils Grandelius":
+        "will-nils-grandelius-win-the-2026-tepe-sigeman-chess-tournament",
+    "Yagiz Kaan Erdogmus":
+        "will-yagiz-kaan-erdogmus-win-the-2026-tepe-sigeman-chess-tournament",
+    "Andy Woodward":
+        "will-andy-woodward-win-the-2026-tepe-sigeman-chess-tournament",
+    "Zhu Jiner":
+        "will-zhu-jiner-win-the-2026-tepe-sigeman-chess-tournament",
 }
 
 MAX_RETRIES = 3
@@ -167,10 +168,22 @@ def run(tournament_name: str,
     print(f"\nFetching completed results...")
     completed = fetcher.get_completed_results(fetch_id)
 
-    # ── Step 3: Player ratings ────────────────────────────────────────────────
-    print(f"\nFetching player ratings...")
+    # ── Step 3: Player list ───────────────────────────────────────────────────
+    print(f"\nFetching player list...")
     players = fetcher.get_players(fetch_id)
-    print(f"  Players found: {len(players)}")
+
+    if not players:
+        # Pre-tournament: round 1 not yet played (or broadcast not set up).
+        # Fall back to POLYMARKET_SLUGS keys — the user must keep this in sync
+        # with the actual field for pre-tournament runs to be meaningful.
+        players = sorted(POLYMARKET_SLUGS.keys())
+        print(f"  No Lichess round 1 data yet — "
+              f"using POLYMARKET_SLUGS ({len(players)} players)")
+    else:
+        print(f"  Players found: {len(players)}")
+
+    # ── Step 4a: Player ratings ───────────────────────────────────────────────
+    print(f"\nFetching player ratings...")
     ratings = fetcher.get_player_ratings(players)
     print(f"  Ratings fetched: {len(ratings)}/{len(players)}")
 
@@ -178,7 +191,7 @@ def run(tournament_name: str,
         print("ERROR: No ratings available. Cannot simulate.")
         sys.exit(1)
 
-    # ── Step 4: Remaining schedule ────────────────────────────────────────────
+    # ── Step 4b: Remaining schedule ───────────────────────────────────────────
     total_rounds = tournament.get("total_rounds")
     remaining = fetcher.get_remaining_schedule(
         fetch_id, completed, players, total_rounds
