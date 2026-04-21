@@ -61,15 +61,14 @@ HEADERS = {
 # so that names extracted directly from PGN headers resolve correctly.
 PLAYER_NAME_TO_USERNAME = {
     # Candidates 2026 players
+    # Caruana and Nakamura have working Chess.com classical ratings.
+    # Giri, Sindarov, Wei Yi removed — Chess.com returns stale/wrong values;
+    # Praggnanandhaa, Esipenko removed — Chess.com returns sub-2500; all fall to KNOWN_RATINGS.
     "Fabiano Caruana":       "fabianocaruana",
     "Hikaru Nakamura":       "hikaru",
-    "Javokhir Sindarov":     "sindarov2005",
     "Praggnanandhaa R":      "rpraggnanandhaa",
     "Praggnanandhaa":        "rpraggnanandhaa",
     "R Praggnanandhaa":      "rpraggnanandhaa",
-    "Anish Giri":            "anishgiri",
-    "Wei Yi":                "weiyi_chess",
-    "Andrey Esipenko":       "andrey_esipenko",
     "Matthias Bluebaum":     "matthiasbluebaum",
     "Matthias Blübaum":      "matthiasbluebaum",
 
@@ -401,6 +400,16 @@ KNOWN_RATINGS = {
     "Andy Woodward":              2635,   # April 2026 — US GM (b. 2010)
     "Woodward Andy":              2635,
     "Zhu Jiner":                  2554,   # April 2026 — Chinese GM
+    # ── Candidates 2026 ───────────────────────────────────────────────────────
+    "Fabiano Caruana":            2793,   # April 2026 FIDE
+    "Hikaru Nakamura":            2810,   # April 2026 FIDE
+    "Anish Giri":                 2753,   # April 2026 FIDE (Chess.com returns 2672 — stale)
+    "Wei Yi":                     2754,   # April 2026 FIDE (Chess.com 404)
+    "Javokhir Sindarov":          2745,   # April 2026 FIDE (Chess.com 404)
+    "Praggnanandhaa R":           2741,   # April 2026 FIDE (Chess.com returns sub-2500)
+    "Praggnanandhaa":             2741,
+    "R Praggnanandhaa":           2741,
+    "Andrey Esipenko":            2698,   # April 2026 FIDE (Chess.com returns sub-2500)
     # ── Other elite players ───────────────────────────────────────────────────
     "Gukesh D":                   2783,
     "Gukesh Dommaraju":           2783,
