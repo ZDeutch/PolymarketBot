@@ -384,47 +384,48 @@ def get_player_rating(username: str) -> int | None:
 
 # Hardcoded fallback ratings for players not reachable via Chess.com
 # (e.g. missing classical games, unconfirmed usernames).
-# Sourced from FIDE April 2026 rating list — refresh each new tournament.
+# Sourced from FIDE live ratings (post-Candidates 2026) — April 23, 2026.
+# Rounded to nearest integer; official May 2026 list drops May 1.
 KNOWN_RATINGS = {
     # ── Sigeman 2026 ──────────────────────────────────────────────────────────
-    "Magnus Carlsen":             2840,   # April 2026 FIDE #1
-    "Nodirbek Abdusattorov":      2780,   # April 2026 FIDE #4 (was 2764)
+    "Magnus Carlsen":             2840,   # live #1 (unchanged)
+    "Nodirbek Abdusattorov":      2780,   # live #4 (unchanged)
     "Abdusattorov Nodirbek":      2780,
-    "Arjun Erigaisi":             2751,   # April 2026 (was 2777)
+    "Arjun Erigaisi":             2751,   # live #11 (unchanged)
     "Erigaisi Arjun":             2751,
-    "Jorden van Foreest":         2736,   # April 2026 (was 2645 — +91!)
+    "Jorden van Foreest":         2736,   # live #15 (unchanged)
     "Jorden Van Foreest":         2736,
-    "Nils Grandelius":            2662,   # April 2026
-    "Yagiz Kaan Erdogmus":        2687,   # April 2026 (was 2610 — +77!)
-    "Erdogmus Yagiz Kaan":        2687,
-    "Andy Woodward":              2635,   # April 2026 — US GM (b. 2010)
+    "Nils Grandelius":            2662,   # live #52 (unchanged)
+    "Yagiz Kaan Erdogmus":        2709,   # live #30 (was 2687, +22 post-Candidates)
+    "Erdogmus Yagiz Kaan":        2709,
+    "Andy Woodward":              2635,   # live #91 (unchanged)
     "Woodward Andy":              2635,
-    "Zhu Jiner":                  2554,   # April 2026 — Chinese GM
+    "Zhu Jiner":                  2554,   # April 2026 FIDE (not in live top-100)
     # ── Candidates 2026 ───────────────────────────────────────────────────────
-    "Fabiano Caruana":            2793,   # April 2026 FIDE
-    "Hikaru Nakamura":            2810,   # April 2026 FIDE
-    "Anish Giri":                 2753,   # April 2026 FIDE (Chess.com returns 2672 — stale)
-    "Wei Yi":                     2754,   # April 2026 FIDE (Chess.com 404)
-    "Javokhir Sindarov":          2745,   # April 2026 FIDE (Chess.com 404)
-    "Praggnanandhaa R":           2741,   # April 2026 FIDE (Chess.com returns sub-2500)
-    "Praggnanandhaa":             2741,
-    "R Praggnanandhaa":           2741,
-    "Andrey Esipenko":            2698,   # April 2026 FIDE (Chess.com returns sub-2500)
+    "Fabiano Caruana":            2788,   # live #3 (was 2793, −5)
+    "Hikaru Nakamura":            2792,   # live #2 (was 2810, −18)
+    "Anish Giri":                 2767,   # live #6 (was 2753, +14)
+    "Wei Yi":                     2753,   # live #10 (was 2754, −1)
+    "Javokhir Sindarov":          2776,   # live #5 (was 2745, +31 — won Candidates!)
+    "Praggnanandhaa R":           2733,   # live #16 (was 2741, −8)
+    "Praggnanandhaa":             2733,
+    "R Praggnanandhaa":           2733,
+    "Andrey Esipenko":            2684,   # live #40 (was 2698, −14)
     # ── Other elite players ───────────────────────────────────────────────────
-    "Gukesh D":                   2783,
-    "Gukesh Dommaraju":           2783,
-    "D Gukesh":                   2783,
-    "Vincent Keymer":             2726,
-    "Chithambaram VR. Aravindh":  2603,
-    "Aravindh Chithambaram":      2603,
-    "Hans Moke Niemann":          2663,
-    "Niemann Hans Moke":          2663,
-    "Vladimir Fedoseev":          2674,
-    "Fedoseev Vladimir":          2674,
-    "Matthias Bluebaum":          2700,
-    "Matthias Blübaum":           2700,
-    "Thai Dai Van Nguyen":        2612,
-    "Nguyen Thai Dai Van":        2612,
+    "Gukesh D":                   2732,   # live #17 (was 2783, −51 post-WCC title defense)
+    "Gukesh Dommaraju":           2732,
+    "D Gukesh":                   2732,
+    "Vincent Keymer":             2762,   # live #7 (was 2726, +36)
+    "Chithambaram VR. Aravindh":  2693,   # live #37 (was 2603, +90!)
+    "Aravindh Chithambaram":      2693,
+    "Hans Moke Niemann":          2742,   # live #12 (was 2663, +79!)
+    "Niemann Hans Moke":          2742,
+    "Vladimir Fedoseev":          2703,   # live #33 (was 2674, +29)
+    "Fedoseev Vladimir":          2703,
+    "Matthias Bluebaum":          2696,   # live #34 (was 2700, −4)
+    "Matthias Blübaum":           2696,
+    "Thai Dai Van Nguyen":        2633,   # live #95 (was 2612, +21)
+    "Nguyen Thai Dai Van":        2633,
     "Max Warmerdam":              2598,
     "Warmerdam Max":              2598,
 }
