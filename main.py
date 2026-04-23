@@ -125,7 +125,8 @@ def run(tournament_name: str,
         polymarket_slug: str,
         check_only: bool = False,
         tour_id: str | None = None,
-        force: bool = False) -> None:
+        force: bool = False,
+        fmt: str = "classical") -> None:
     """Full pipeline: fetch → simulate → edge table."""
 
     fetch_id = tour_id or tournament_name
@@ -134,6 +135,7 @@ def run(tournament_name: str,
     print(f"PolymarketBot — {tournament_name}")
     if tour_id:
         print(f"Tour ID: {tour_id}")
+    print(f"Format:  {fmt}")
     print("=" * 60)
 
     # ── Step 1: Tournament metadata ───────────────────────────────────────────
@@ -183,8 +185,8 @@ def run(tournament_name: str,
         print(f"  Players found: {len(players)}")
 
     # ── Step 4a: Player ratings ───────────────────────────────────────────────
-    print(f"\nFetching player ratings...")
-    ratings = fetcher.get_player_ratings(players)
+    print(f"\nFetching player ratings ({fmt})...")
+    ratings = fetcher.get_player_ratings(players, fmt=fmt)
     print(f"  Ratings fetched: {len(ratings)}/{len(players)}")
 
     if not ratings:
@@ -276,7 +278,12 @@ if __name__ == "__main__":
     parser.add_argument("--force", action="store_true",
                         help=f"Override the >{ROUNDS_GATE}-round gate; "
                              "run analysis mid-tournament for research")
+    parser.add_argument("--format", default="classical",
+                        choices=["classical", "rapid", "blitz"],
+                        dest="fmt",
+                        help="Tournament time control (default: classical). "
+                             "Selects which FIDE rating list to use.")
 
     args = parser.parse_args()
     run(args.tournament, args.polymarket, args.check,
-        tour_id=args.tour_id, force=args.force)
+        tour_id=args.tour_id, force=args.force, fmt=args.fmt)

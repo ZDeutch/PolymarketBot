@@ -348,33 +348,39 @@ def get_players(tournament_id: str) -> list:
 
 # ─── Chess.com rating functions ───────────────────────────────────────────────
 
-def get_player_rating(username: str) -> int | None:
-    """Fetches current Elo from Chess.com player stats.
+_CHESSCOM_KEY = {
+    "classical": "chess_classical",
+    "rapid":     "chess_rapid",
+    "blitz":     "chess_blitz",
+}
+_CHESSCOM_FALLBACK = {
+    "classical": "chess_rapid",
+    "rapid":     "chess_classical",
+    "blitz":     "chess_rapid",
+}
 
-    Tries classical first, then rapid. Validates that the returned
-    rating is > 2500 — anything lower is likely stale/wrong data for
-    a top GM and we fall through to FIDE scraping instead.
+
+def get_player_rating(username: str, fmt: str = "classical") -> int | None:
+    """Fetches current Elo from Chess.com player stats for the given format.
+
+    Tries the primary format key first, then the fallback key.
+    Validates rating > 2500 — anything lower is likely stale/wrong for a top GM.
     Returns None on failure or implausibly low rating.
     """
+    primary  = _CHESSCOM_KEY.get(fmt, "chess_classical")
+    fallback = _CHESSCOM_FALLBACK.get(fmt, "chess_rapid")
+
     url = f"{CHESSCOM_BASE}/player/{username}/stats"
     try:
         resp = requests.get(url, headers=HEADERS, timeout=10)
         resp.raise_for_status()
         data = resp.json()
 
-        # Classical first
-        classical = data.get("chess_classical", {})
-        rating    = classical.get("last", {}).get("rating")
-        if rating and int(rating) > 2500:
-            return int(rating)
+        for key in (primary, fallback):
+            rating = data.get(key, {}).get("last", {}).get("rating")
+            if rating and int(rating) > 2500:
+                return int(rating)
 
-        # Rapid fallback
-        rapid  = data.get("chess_rapid", {})
-        rating = rapid.get("last", {}).get("rating")
-        if rating and int(rating) > 2500:
-            return int(rating)
-
-        # Both missing or implausibly low — signal fallback
         return None
 
     except Exception as e:
@@ -430,16 +436,82 @@ KNOWN_RATINGS = {
     "Warmerdam Max":              2598,
 }
 
+# FIDE live rapid ratings — April 23, 2026.
+KNOWN_RATINGS_RAPID = {
+    "Magnus Carlsen":             2832,   # rapid #1
+    "Arjun Erigaisi":             2741,   # rapid #4
+    "Erigaisi Arjun":             2741,
+    "Hikaru Nakamura":            2742,   # rapid #3
+    "Fabiano Caruana":            2727,   # rapid #9
+    "Nodirbek Abdusattorov":      2703,   # rapid #16
+    "Abdusattorov Nodirbek":      2703,
+    "Javokhir Sindarov":          2727,   # rapid #10
+    "Wei Yi":                     2726,   # rapid #12
+    "Anish Giri":                 2689,   # rapid #22
+    "Praggnanandhaa R":           2663,   # rapid #33
+    "Praggnanandhaa":             2663,
+    "R Praggnanandhaa":           2663,
+    "Andrey Esipenko":            2657,   # rapid #36
+    "Nils Grandelius":            2611,   # rapid #82
+    "Gukesh D":                   2682,   # rapid #27
+    "Gukesh Dommaraju":           2682,
+    "D Gukesh":                   2682,
+    "Vincent Keymer":             2627,   # rapid #58
+    "Vladimir Fedoseev":          2690,   # rapid #20
+    "Fedoseev Vladimir":          2690,
+    "Hans Moke Niemann":          2646,   # rapid #40
+    "Niemann Hans Moke":          2646,
+}
 
-def get_player_ratings(players: list) -> dict:
+# FIDE live blitz ratings — April 23, 2026.
+KNOWN_RATINGS_BLITZ = {
+    "Magnus Carlsen":             2869,   # blitz #1
+    "Hikaru Nakamura":            2838,   # blitz #2
+    "Nodirbek Abdusattorov":      2785,   # blitz #6
+    "Abdusattorov Nodirbek":      2785,
+    "Arjun Erigaisi":             2776,   # blitz #7
+    "Erigaisi Arjun":             2776,
+    "Fabiano Caruana":            2749,   # blitz #12
+    "Wei Yi":                     2698,   # blitz #23
+    "Praggnanandhaa R":           2698,   # blitz #22
+    "Praggnanandhaa":             2698,
+    "R Praggnanandhaa":           2698,
+    "Javokhir Sindarov":          2662,   # blitz #40
+    "Andrey Esipenko":            2651,   # blitz #44
+    "Anish Giri":                 2666,   # blitz #38
+    "Jorden van Foreest":         2690,   # blitz #27
+    "Jorden Van Foreest":         2690,
+    "Gukesh D":                   2646,   # blitz #49
+    "Gukesh Dommaraju":           2646,
+    "D Gukesh":                   2646,
+    "Vladimir Fedoseev":          2756,   # blitz #11
+    "Fedoseev Vladimir":          2756,
+    "Matthias Bluebaum":          2634,   # blitz #61
+    "Matthias Blübaum":           2634,
+    "Vincent Keymer":             2621,   # blitz #70
+    "Hans Moke Niemann":          2699,   # blitz #21
+    "Niemann Hans Moke":          2699,
+}
+
+_KNOWN_RATINGS_BY_FORMAT = {
+    "classical": KNOWN_RATINGS,
+    "rapid":     KNOWN_RATINGS_RAPID,
+    "blitz":     KNOWN_RATINGS_BLITZ,
+}
+
+
+def get_player_ratings(players: list, fmt: str = "classical") -> dict:
     """Fetches ratings for a list of real player names.
 
+    fmt controls which rating type to prefer: 'classical', 'rapid', or 'blitz'.
+
     Tries in order:
-      1. Chess.com (classical, then rapid — must be > 2500)
-      2. KNOWN_RATINGS hardcoded fallback table
+      1. Chess.com (primary format, then fallback format — must be > 2500)
+      2. Format-specific KNOWN_RATINGS hardcoded fallback table
 
     Returns {real_name: elo_rating}.
     """
+    known = _KNOWN_RATINGS_BY_FORMAT.get(fmt, KNOWN_RATINGS)
     ratings = {}
 
     for name in players:
@@ -448,14 +520,14 @@ def get_player_ratings(players: list) -> dict:
         # 1. Chess.com
         username = PLAYER_NAME_TO_USERNAME.get(name)
         if username:
-            rating = get_player_rating(username)
+            rating = get_player_rating(username, fmt=fmt)
             if rating:
-                print(f"  {name}: {rating} (chess.com)")
+                print(f"  {name}: {rating} (chess.com {fmt})")
             time.sleep(0.5)
 
         # 2. Hardcoded fallback
         if not rating:
-            rating = KNOWN_RATINGS.get(name)
+            rating = known.get(name)
             if rating:
                 print(f"  {name}: {rating} (hardcoded fallback)")
 
