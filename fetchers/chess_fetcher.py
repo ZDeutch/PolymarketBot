@@ -79,18 +79,17 @@ PLAYER_NAME_TO_USERNAME = {
 
     # Tata Steel / other elite players
     # Gukesh omitted — Chess.com returns online rating (too low); falls through to KNOWN_RATINGS
+    # Carlsen omitted — Chess.com classical is ~106 pts above FIDE OTB; falls through to KNOWN_RATINGS
+    # Firouzja omitted — Chess.com classical is ~85 pts above FIDE OTB; falls through to KNOWN_RATINGS
+    # Keymer omitted — Chess.com classical is ~29 pts below FIDE OTB; falls through to KNOWN_RATINGS
     "Arjun Erigaisi":             "arjunerigaisi",
     "Erigaisi Arjun":             "arjunerigaisi",
-    "Vincent Keymer":             "vincentkeymer",
     "Nodirbek Abdusattorov":      "abdusattorov",
     "Abdusattorov Nodirbek":      "abdusattorov",
     "Jorden van Foreest":         "jordanvanforeest",
     "Jorden Van Foreest":         "jordanvanforeest",
-    "Magnus Carlsen":             "magnuscarlsen",
     "Ian Nepomniachtchi":         "lachessis",
     "Nepomniachtchi Ian":         "lachessis",
-    "Alireza Firouzja":           "firouzja2003",
-    "Firouzja Alireza":           "firouzja2003",
     "Vidit Gujrathi":             "viditchess",
     "Nijat Abasov":               "nijatabasov",
     "Abasov Nijat":               "nijatabasov",
@@ -417,6 +416,10 @@ KNOWN_RATINGS = {
     "Praggnanandhaa":             2733,
     "R Praggnanandhaa":           2733,
     "Andrey Esipenko":            2684,   # live #40 (was 2698, −14)
+    # ── Norway Chess 2026 ────────────────────────────────────────────────────
+    "Wesley So":                  2754,   # live #9 (classical)
+    "Alireza Firouzja":           2759,   # live #8 (classical)
+    "Firouzja Alireza":           2759,
     # ── Other elite players ───────────────────────────────────────────────────
     "Gukesh D":                   2732,   # live #17 (was 2783, −51 post-WCC title defense)
     "Gukesh Dommaraju":           2732,
@@ -461,6 +464,9 @@ KNOWN_RATINGS_RAPID = {
     "Fedoseev Vladimir":          2690,
     "Hans Moke Niemann":          2646,   # rapid #40
     "Niemann Hans Moke":          2646,
+    "Wesley So":                  2705,   # rapid #15
+    "Alireza Firouzja":           2755,   # rapid #2
+    "Firouzja Alireza":           2755,
 }
 
 # FIDE live blitz ratings — April 23, 2026.
@@ -491,6 +497,9 @@ KNOWN_RATINGS_BLITZ = {
     "Vincent Keymer":             2621,   # blitz #70
     "Hans Moke Niemann":          2699,   # blitz #21
     "Niemann Hans Moke":          2699,
+    "Wesley So":                  2798,   # blitz #3
+    "Alireza Firouzja":           2796,   # blitz #4
+    "Firouzja Alireza":           2796,
 }
 
 _KNOWN_RATINGS_BY_FORMAT = {
