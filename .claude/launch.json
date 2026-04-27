@@ -2,6 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "Dashboard",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8000"],
+      "port": 8000
+    },
+    {
       "name": "Main Bot Loop",
       "runtimeExecutable": "venv/bin/python",
       "runtimeArgs": ["main.py"],

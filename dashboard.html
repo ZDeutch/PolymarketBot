@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PolymarketBot — Chess Tournament Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg:           #0a0e1a;
+      --surface:      #111827;
+      --surface-2:    #141e2e;
+      --border:       #1e2d40;
+      --border-hi:    #2e4060;
+      --cyan:         #00d4ff;
+      --cyan-dim:     rgba(0,212,255,0.12);
+      --cyan-glow:    0 0 24px rgba(0,212,255,0.25);
+      --green:        #10b981;
+      --green-dim:    rgba(16,185,129,0.12);
+      --red:          #ef4444;
+      --red-dim:      rgba(239,68,68,0.12);
+      --yellow:       #f59e0b;
+      --yellow-dim:   rgba(245,158,11,0.12);
+      --text:         #f1f5f9;
+      --text-dim:     #94a3b8;
+      --text-muted:   #4b5e7a;
+      --mono:         'JetBrains Mono', monospace;
+      --sans:         'Inter', sans-serif;
+      --radius:       12px;
+      --radius-sm:    8px;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 3px; }
+
+    /* ── Layout ── */
+    .wrapper { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+
+    /* ─────────────────────────────────────────────
+       HEADER
+    ───────────────────────────────────────────── */
+    header {
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,14,26,0.95);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--cyan), #0066ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      box-shadow: var(--cyan-glow);
+      flex-shrink: 0;
+    }
+
+    .logo-text h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--text);
+    }
+
+    .logo-text p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 1px;
+      font-family: var(--mono);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--green-dim);
+      border: 1px solid rgba(16,185,129,0.3);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: var(--green);
+      font-family: var(--mono);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    .timestamp {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+    }
+
+    /* ─────────────────────────────────────────────
+       HERO
+    ───────────────────────────────────────────── */
+    .hero {
+      padding: 64px 0 48px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(0,212,255,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--cyan-dim);
+      border: 1px solid rgba(0,212,255,0.25);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--cyan);
+      margin-bottom: 24px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .hero h2 {
+      font-size: 52px;
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff 30%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 18px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--text-dim);
+      max-width: 640px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ─────────────────────────────────────────────
+       STATS STRIP
+    ───────────────────────────────────────────── */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      padding-bottom: 48px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .stat-card:hover {
+      border-color: var(--border-hi);
+      transform: translateY(-2px);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+
+    .stat-card.cyan::before  { background: linear-gradient(90deg, var(--cyan), transparent); }
+    .stat-card.green::before { background: linear-gradient(90deg, var(--green), transparent); }
+    .stat-card.yellow::before{ background: linear-gradient(90deg, var(--yellow), transparent); }
+    .stat-card.blue::before  { background: linear-gradient(90deg, #6366f1, transparent); }
+
+    .stat-label {
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 10px;
+    }
+
+    .stat-value {
+      font-size: 36px;
+      font-weight: 700;
+      font-family: var(--mono);
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-card.cyan  .stat-value { color: var(--cyan); }
+    .stat-card.green .stat-value { color: var(--green); }
+    .stat-card.yellow .stat-value { color: var(--yellow); }
+    .stat-card.blue  .stat-value { font-size: 32px; color: #818cf8; }
+
+    .stat-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ─────────────────────────────────────────────
+       SECTION TITLES
+    ───────────────────────────────────────────── */
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .section-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+    }
+
+    .section-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--yellow-dim);
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-family: var(--mono);
+    }
+
+    /* ─────────────────────────────────────────────
+       P&L CHART
+    ───────────────────────────────────────────── */
+    .chart-section { padding-bottom: 48px; }
+
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chart-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--green), var(--cyan), transparent);
+    }
+
+    .chart-metrics {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .chart-metric { }
+
+    .chart-metric .label {
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+    }
+
+    .chart-metric .value {
+      font-size: 28px;
+      font-weight: 700;
+      font-family: var(--mono);
+      letter-spacing: -0.5px;
+    }
+
+    .chart-metric .value.positive { color: var(--green); }
+    .chart-metric .value.neutral  { color: var(--text-dim); }
+
+    .chart-wrap {
+      position: relative;
+      height: 280px;
+    }
+
+    .chart-disclaimer {
+      margin-top: 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+      text-align: right;
+    }
+
+    /* ─────────────────────────────────────────────
+       POSITIONS TABLE
+    ───────────────────────────────────────────── */
+    .positions-section { padding-bottom: 48px; }
+
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      background: var(--surface-2);
+      padding: 14px 18px;
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      text-align: left;
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+    }
+
+    thead th:not(:first-child) { text-align: right; }
+    thead th:nth-child(2),
+    thead th:nth-child(3),
+    thead th:nth-child(4) { text-align: left; }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+    tbody tr.yes-row { border-left: 3px solid var(--green); }
+    tbody tr.no-row  { border-left: 3px solid var(--red); }
+
+    td {
+      padding: 16px 18px;
+      font-size: 13px;
+      text-align: right;
+    }
+
+    td:nth-child(1),
+    td:nth-child(2),
+    td:nth-child(3),
+    td:nth-child(4) { text-align: left; }
+
+    .td-date {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .td-tournament { font-weight: 500; }
+
+    .td-exchange {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--cyan-dim);
+      color: var(--cyan);
+      display: inline-block;
+    }
+
+    .td-player { font-weight: 600; }
+
+    .td-num {
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+
+    .edge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .edge-pill.positive {
+      background: var(--green-dim);
+      color: var(--green);
+    }
+
+    .edge-pill.negative {
+      background: var(--red-dim);
+      color: var(--red);
+    }
+
+    .action-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .action-badge.yes {
+      background: var(--green-dim);
+      color: var(--green);
+      border: 1px solid rgba(16,185,129,0.25);
+    }
+
+    .action-badge.no {
+      background: var(--red-dim);
+      color: var(--red);
+      border: 1px solid rgba(239,68,68,0.25);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .status-badge.open {
+      background: var(--yellow-dim);
+      color: var(--yellow);
+      border: 1px solid rgba(245,158,11,0.25);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-family: var(--mono);
+    }
+
+    /* ─────────────────────────────────────────────
+       METHODOLOGY
+    ───────────────────────────────────────────── */
+    .methodology-section { padding-bottom: 48px; }
+
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .method-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .method-card:hover {
+      border-color: var(--border-hi);
+      transform: translateY(-2px);
+    }
+
+    .method-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 18px;
+    }
+
+    .method-icon.cyan   { background: var(--cyan-dim); }
+    .method-icon.green  { background: var(--green-dim); }
+    .method-icon.purple { background: rgba(99,102,241,0.12); }
+
+    .method-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      letter-spacing: -0.2px;
+    }
+
+    .pipeline-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .pipeline-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 8px 0;
+    }
+
+    .pipeline-step:not(:last-child) {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--cyan-dim);
+      border: 1px solid rgba(0,212,255,0.25);
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .step-text {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    .step-text strong { color: var(--text); }
+
+    .bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bullet-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    .bullet-list li::before {
+      content: '▸';
+      color: var(--cyan);
+      font-size: 11px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .bullet-list li strong { color: var(--text); }
+
+    /* ─────────────────────────────────────────────
+       MODEL DETAILS ACCORDION
+    ───────────────────────────────────────────── */
+    .model-section { padding-bottom: 64px; }
+
+    .accordion {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .acc-item { border-bottom: 1px solid var(--border); }
+    .acc-item:last-child { border-bottom: none; }
+
+    .acc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+
+    .acc-header:hover { background: rgba(255,255,255,0.02); }
+
+    .acc-header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .acc-icon {
+      font-size: 18px;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .acc-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .acc-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+      margin-top: 2px;
+    }
+
+    .acc-chevron {
+      color: var(--text-muted);
+      font-size: 14px;
+      transition: transform 0.2s;
+    }
+
+    .acc-item.open .acc-chevron { transform: rotate(180deg); }
+
+    .acc-body {
+      display: none;
+      padding: 0 24px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .acc-item.open .acc-body { display: block; }
+
+    .formula-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      font-family: var(--mono);
+      font-size: 14px;
+      color: var(--cyan);
+      margin: 16px 0;
+      line-height: 1.8;
+    }
+
+    .formula-block .comment {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .param-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .param-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+    }
+
+    .param-name {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 6px;
+    }
+
+    .param-val {
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .param-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ─────────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-left {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .footer-left strong {
+      color: var(--text-dim);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      font-size: 12px;
+      font-family: var(--mono);
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover { color: var(--cyan); }
+
+    /* ─────────────────────────────────────────────
+       DIVIDER
+    ───────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin-bottom: 48px;
+    }
+
+    /* ─────────────────────────────────────────────
+       FADE-IN
+    ───────────────────────────────────────────── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in:nth-child(1) { animation-delay: 0.05s; }
+    .fade-in:nth-child(2) { animation-delay: 0.10s; }
+    .fade-in:nth-child(3) { animation-delay: 0.15s; }
+    .fade-in:nth-child(4) { animation-delay: 0.20s; }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ───────────────────────────────────────────── -->
+<header>
+  <div class="wrapper">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-mark">P∿</div>
+        <div class="logo-text">
+          <h1>PolymarketBot</h1>
+          <p>chess tournament win-market simulator</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="status-pill">
+          <div class="status-dot"></div>
+          ACTIVE
+        </div>
+        <div class="timestamp" id="ts">—</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ── HERO ─────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="wrapper">
+    <div class="hero-tag">⚡ Quantitative Chess Prediction Engine</div>
+    <h2>Find Edge in Chess<br>Prediction Markets</h2>
+    <p>Monte Carlo simulation engine that models tournament outcomes from Elo ratings, tournament performance data, and draw-rate models — then compares against Polymarket and Kalshi prices to surface mispriced contracts.</p>
+  </div>
+</section>
+
+<!-- ── STATS STRIP ───────────────────────────────────────── -->
+<section>
+  <div class="wrapper">
+    <div class="stats-strip">
+      <div class="stat-card cyan fade-in">
+        <div class="stat-label">Simulations / Run</div>
+        <div class="stat-value">50K</div>
+        <div class="stat-sub">Monte Carlo iterations</div>
+      </div>
+      <div class="stat-card green fade-in">
+        <div class="stat-label">Illustrative P&L</div>
+        <div class="stat-value" id="stat-pnl">+$2,830</div>
+        <div class="stat-sub">7 settled positions</div>
+      </div>
+      <div class="stat-card yellow fade-in">
+        <div class="stat-label">Edge Threshold</div>
+        <div class="stat-value">8%</div>
+        <div class="stat-sub">Minimum to act</div>
+      </div>
+      <div class="stat-card blue fade-in">
+        <div class="stat-label">Position Sizing</div>
+        <div class="stat-value">¼ Kelly</div>
+        <div class="stat-sub">Conservative fractional Kelly</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrapper"><div class="divider"></div></div>
+
+<!-- ── P&L CHART ─────────────────────────────────────────── -->
+<section class="chart-section">
+  <div class="wrapper">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Cumulative P&amp;L</div>
+      </div>
+      <span class="section-note">⚠ Illustrative track record — for research purposes</span>
+    </div>
+    <div class="chart-card">
+      <div class="chart-metrics">
+        <div class="chart-metric">
+          <div class="label">Total P&L</div>
+          <div class="value positive">+$2,830</div>
+        </div>
+        <div class="chart-metric">
+          <div class="label">Settled Trades</div>
+          <div class="value neutral">7</div>
+        </div>
+        <div class="chart-metric">
+          <div class="label">Win Rate</div>
+          <div class="value positive">100%</div>
+        </div>
+        <div class="chart-metric">
+          <div class="label">Avg Edge</div>
+          <div class="value positive">+12.4%</div>
+        </div>
+        <div class="chart-metric">
+          <div class="label">Open Positions</div>
+          <div class="value neutral" id="open-count">1</div>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="pnlChart"></canvas>
+      </div>
+      <div class="chart-disclaimer">
+        † Past performance is illustrative. Live positions shown in the table below.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrapper"><div class="divider"></div></div>
+
+<!-- ── POSITIONS TABLE ───────────────────────────────────── -->
+<section class="positions-section">
+  <div class="wrapper">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Live Positions</div>
+      </div>
+      <span class="section-sub" id="pos-count">loading…</span>
+    </div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Tournament</th>
+            <th>Exchange</th>
+            <th>Player</th>
+            <th>Model</th>
+            <th>Market</th>
+            <th>Edge</th>
+            <th>Action</th>
+            <th>Stake</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="positions-tbody">
+          <tr><td colspan="10" class="empty-state">Loading positions…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="wrapper"><div class="divider"></div></div>
+
+<!-- ── METHODOLOGY ───────────────────────────────────────── -->
+<section class="methodology-section">
+  <div class="wrapper">
+    <div class="section-header">
+      <div class="section-title">How It Works</div>
+    </div>
+    <div class="method-grid">
+
+      <!-- Card 1: Pipeline -->
+      <div class="method-card">
+        <div class="method-icon cyan">🔗</div>
+        <h3>Data Pipeline</h3>
+        <div class="pipeline-steps">
+          <div class="pipeline-step">
+            <div class="step-num">1</div>
+            <div class="step-text"><strong>Lichess Broadcast API</strong> — live round results as games finish</div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">2</div>
+            <div class="step-text"><strong>FIDE / Chess.com ratings</strong> — current Elo with Chess.com fallback</div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">3</div>
+            <div class="step-text"><strong>TPR database</strong> — 650+ players, 662 elite games across 7 tournaments</div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">4</div>
+            <div class="step-text"><strong>Market prices</strong> — Polymarket CLOB API or Kalshi (hardcoded)</div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">5</div>
+            <div class="step-text"><strong>Edge table + CSV log</strong> — actionable bets written to positions.csv</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Monte Carlo -->
+      <div class="method-card">
+        <div class="method-icon cyan">🎲</div>
+        <h3>Monte Carlo Engine</h3>
+        <ul class="bullet-list">
+          <li><strong>50,000 tournament simulations</strong> per run, full round-robin schedule</li>
+          <li><strong>Elo win probability</strong> with +35 white-piece advantage baked in</li>
+          <li><strong>Kryukov draw-rate model</strong> — exponential fit, optimized for the 2700+ cohort where draws dominate</li>
+          <li><strong>TPR blending</strong> — 45% FIDE Elo + 55% tournament performance rating, scaled by games played</li>
+          <li><strong>Rating variance</strong> — N(μ, σ=50) per simulation to capture uncertainty</li>
+          <li><strong>Must-win adjustment</strong> — standings-aware draw-rate reduction for desperate positions</li>
+        </ul>
+      </div>
+
+      <!-- Card 3: Edge & Sizing -->
+      <div class="method-card">
+        <div class="method-icon green">📐</div>
+        <h3>Edge &amp; Position Sizing</h3>
+        <ul class="bullet-list">
+          <li><strong>Edge = Model prob − Market price</strong> — positive means YES is cheap, negative means YES is overpriced</li>
+          <li><strong>8% minimum edge</strong> — 3-point buffer above 5% EV floor to absorb model error</li>
+          <li><strong>Quarter-Kelly sizing</strong> — conservative fractional Kelly, caps each trade at a fraction of bankroll</li>
+          <li><strong>5% tournament exposure cap</strong> — total stake per tournament ≤ $500 on a $10K bankroll</li>
+          <li><strong>Min $100 stake</strong> — ignores tiny signals not worth the operational friction</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="wrapper"><div class="divider"></div></div>
+
+<!-- ── MODEL DETAILS ─────────────────────────────────────── -->
+<section class="model-section">
+  <div class="wrapper">
+    <div class="section-header">
+      <div class="section-title">Model Details</div>
+    </div>
+    <div class="accordion">
+
+      <!-- Elo Formula -->
+      <div class="acc-item open">
+        <div class="acc-header" onclick="toggleAcc(this)">
+          <div class="acc-header-left">
+            <div class="acc-icon" style="background:var(--cyan-dim); font-size:16px;">∿</div>
+            <div>
+              <div class="acc-title">Elo Win Probability</div>
+              <div class="acc-sub">Standard Elo model with white-piece bonus</div>
+            </div>
+          </div>
+          <div class="acc-chevron">▼</div>
+        </div>
+        <div class="acc-body">
+          <div class="formula-block">
+            P(A wins) = 1 / (1 + 10<sup style="font-size:10px">((R<sub>B</sub> − R<sub>A</sub>) / 400)</sup>
+            <br><br>
+            <span class="comment">// White gets +35 Elo bonus before calculation</span><br>
+            <span class="comment">// Draw outcome sampled from Kryukov model below</span>
+          </div>
+          <div class="param-grid">
+            <div class="param-item">
+              <div class="param-name">White Bonus</div>
+              <div class="param-val">+35 Elo</div>
+              <div class="param-desc">First-move advantage adjustment</div>
+            </div>
+            <div class="param-item">
+              <div class="param-name">Scale Factor</div>
+              <div class="param-val">400</div>
+              <div class="param-desc">Standard FIDE Elo constant</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kryukov Draw Model -->
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleAcc(this)">
+          <div class="acc-header-left">
+            <div class="acc-icon" style="background:var(--green-dim); font-size:16px;">⚖</div>
+            <div>
+              <div class="acc-title">Kryukov Draw-Rate Model</div>
+              <div class="acc-sub">Calibrated to 2700+ classical games, captures elite draw surge</div>
+            </div>
+          </div>
+          <div class="acc-chevron">▼</div>
+        </div>
+        <div class="acc-body">
+          <div class="formula-block">
+            draw% = −|ΔR| / 32.49
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ exp((μ − 2254.7) / 208.49)
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ 23.87
+            <br><br>
+            <span class="comment">// μ = average rating of the two players</span><br>
+            <span class="comment">// ΔR = rating difference (larger gap → fewer draws)</span><br>
+            <span class="comment">// Exponential term captures 2700+ draw rate explosion</span>
+          </div>
+          <p style="font-size:13px; color:var(--text-dim); line-height:1.6;">
+            At the top level, games between equally matched 2800+ players draw over 60% of the time.
+            The exponential term in this model captures that phenomenon — draw rates grow rapidly
+            as average rating crosses 2600 and explode above 2750.
+          </p>
+        </div>
+      </div>
+
+      <!-- TPR Blending -->
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleAcc(this)">
+          <div class="acc-header-left">
+            <div class="acc-icon" style="background:rgba(99,102,241,0.12); font-size:16px;">🔀</div>
+            <div>
+              <div class="acc-title">TPR Blending</div>
+              <div class="acc-sub">Adjusts static FIDE ratings with recent tournament performance</div>
+            </div>
+          </div>
+          <div class="acc-chevron">▼</div>
+        </div>
+        <div class="acc-body">
+          <div class="formula-block">
+            adjusted = 0.45 × FIDE_elo + 0.55 × tpr
+            <br><br>
+            <span class="comment">// Weight scaled by reliability:</span><br>
+            <span class="comment">// full 55% weight at 15+ elite games</span><br>
+            <span class="comment">// linear ramp from 0 to 15 games</span><br>
+            <br>
+            velocity = (tpr − fide_elo) × 0.15&nbsp;&nbsp;<span class="comment">// momentum</span><br>
+            adjustment clamped to ±50 Elo
+          </div>
+          <div class="param-grid">
+            <div class="param-item">
+              <div class="param-name">FIDE Weight</div>
+              <div class="param-val">45%</div>
+              <div class="param-desc">Static official rating</div>
+            </div>
+            <div class="param-item">
+              <div class="param-name">TPR Weight</div>
+              <div class="param-val">55%</div>
+              <div class="param-desc">Live performance rating (2600+ opp)</div>
+            </div>
+            <div class="param-item">
+              <div class="param-name">Players in DB</div>
+              <div class="param-val">650+</div>
+              <div class="param-desc">Elite games analyzed</div>
+            </div>
+            <div class="param-item">
+              <div class="param-name">Max Adjustment</div>
+              <div class="param-val">±50 Elo</div>
+              <div class="param-desc">Hard cap on FIDE deviation</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kelly Criterion -->
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleAcc(this)">
+          <div class="acc-header-left">
+            <div class="acc-icon" style="background:var(--yellow-dim); font-size:16px;">💰</div>
+            <div>
+              <div class="acc-title">Kelly Criterion &amp; Position Sizing</div>
+              <div class="acc-sub">Quarter-Kelly with exposure cap</div>
+            </div>
+          </div>
+          <div class="acc-chevron">▼</div>
+        </div>
+        <div class="acc-body">
+          <div class="formula-block">
+            f* = (b·p − q) / b
+            <br><br>
+            <span class="comment">// b = net odds (payout / cost)</span><br>
+            <span class="comment">// p = model win probability</span><br>
+            <span class="comment">// q = 1 − p (loss probability)</span><br>
+            <br>
+            stake = (f* × ¼) × bankroll
+            <br>
+            stake = max(stake, $100)&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// $100 floor</span><br>
+            total ≤ 5% of bankroll per tournament
+          </div>
+          <div class="param-grid">
+            <div class="param-item">
+              <div class="param-name">Kelly Fraction</div>
+              <div class="param-val">25%</div>
+              <div class="param-desc">Conservative — accounts for model error</div>
+            </div>
+            <div class="param-item">
+              <div class="param-name">Bankroll</div>
+              <div class="param-val">$10,000</div>
+              <div class="param-desc">Simulated starting capital</div>
+            </div>
+            <div class="param-item">
+              <div class="param-name">Tournament Cap</div>
+              <div class="param-val">5%</div>
+              <div class="param-desc">Max $500 exposure per event</div>
+            </div>
+            <div class="param-item">
+              <div class="param-name">Min Stake</div>
+              <div class="param-val">$100</div>
+              <div class="param-desc">Ignores sub-threshold signals</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ────────────────────────────────────────────── -->
+<footer>
+  <div class="wrapper">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <strong>PolymarketBot v1.0</strong> — Built by Zander Deutsch &nbsp;·&nbsp;
+        Monte Carlo chess tournament simulator
+      </div>
+      <div class="footer-links">
+        <a href="https://lichess.org" target="_blank">Lichess</a>
+        <a href="https://www.chess.com" target="_blank">Chess.com</a>
+        <a href="https://polymarket.com" target="_blank">Polymarket</a>
+        <a href="https://kalshi.com" target="_blank">Kalshi</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Timestamp ──────────────────────────────────────────────
+function updateTimestamp() {
+  const now = new Date();
+  document.getElementById('ts').textContent =
+    now.toLocaleString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric',
+      hour: '2-digit', minute: '2-digit', second: '2-digit'
+    });
+}
+updateTimestamp();
+setInterval(updateTimestamp, 1000);
+
+// ── Demo P&L Data ──────────────────────────────────────────
+const DEMO_TRADES = [
+  { date: '2025-10-18', label: 'Tata Steel Qualifier — YES Erigaisi',   pnl: 340  },
+  { date: '2025-10-18', label: 'Tata Steel Qualifier — NO Carlsen',     pnl: 410  },
+  { date: '2026-01-12', label: 'Tata Steel 2026 — YES Abdusattorov',    pnl: 280  },
+  { date: '2026-01-12', label: 'Tata Steel 2026 — NO Carlsen',          pnl: 490  },
+  { date: '2026-02-09', label: 'Candidates 2026 — YES Sindarov',        pnl: 620  },
+  { date: '2026-02-09', label: 'Candidates 2026 — NO Nakamura',         pnl: 380  },
+  { date: '2026-04-07', label: 'Sigeman 2026 — YES Abdusattorov',       pnl: 310  },
+  { date: '2026-04-23', label: 'Norway Chess 2026 — NO Carlsen',        pnl: null }, // open
+];
+
+// Cumulative P&L (open position doesn't change it yet)
+let cumulative = 0;
+const chartLabels = [];
+const chartData   = [];
+
+// Start point
+chartLabels.push('Start');
+chartData.push(0);
+
+DEMO_TRADES.forEach(t => {
+  if (t.pnl !== null) {
+    cumulative += t.pnl;
+    chartLabels.push(t.date);
+    chartData.push(cumulative);
+  }
+});
+
+// Add open position as the last point (same value, dashed)
+chartLabels.push('2026-04-23*');
+chartData.push(cumulative);
+
+// ── P&L Chart ──────────────────────────────────────────────
+const canvas = document.getElementById('pnlChart');
+const ctx    = canvas.getContext('2d');
+
+const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+gradient.addColorStop(0,   'rgba(16, 185, 129, 0.35)');
+gradient.addColorStop(0.7, 'rgba(16, 185, 129, 0.06)');
+gradient.addColorStop(1,   'rgba(16, 185, 129, 0)');
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: chartLabels,
+    datasets: [{
+      data: chartData,
+      borderColor: '#10b981',
+      borderWidth: 2.5,
+      pointBackgroundColor: chartLabels.map((_, i) =>
+        i === chartLabels.length - 1 ? '#f59e0b' : '#10b981'
+      ),
+      pointBorderColor: '#111827',
+      pointBorderWidth: 2,
+      pointRadius: chartLabels.map((_, i) =>
+        i === chartLabels.length - 1 ? 7 : 5
+      ),
+      pointHoverRadius: 8,
+      fill: true,
+      backgroundColor: gradient,
+      tension: 0.4,
+      // Dashed segment for the open position
+      segment: {
+        borderDash: (ctx) => ctx.p1DataIndex === chartData.length - 1 ? [6, 4] : [],
+        borderColor: (ctx) => ctx.p1DataIndex === chartData.length - 1
+          ? 'rgba(245,158,11,0.8)' : '#10b981',
+      },
+    }],
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1a2332',
+        borderColor: '#2e4060',
+        borderWidth: 1,
+        titleColor: '#94a3b8',
+        bodyColor: '#f1f5f9',
+        padding: 12,
+        callbacks: {
+          label: (ctx) => {
+            const v = ctx.raw;
+            const sign = v >= 0 ? '+' : '';
+            return `  Cumulative P&L: ${sign}$${v.toLocaleString()}`;
+          },
+          afterLabel: (ctx) => {
+            const i = ctx.dataIndex;
+            if (i === 0) return '  Starting position';
+            if (i === chartData.length - 1) return '  ● Open position (unsettled)';
+            const t = DEMO_TRADES[i - 1];
+            return t ? `  ${t.label}` : '';
+          }
+        }
+      },
+    },
+    scales: {
+      x: {
+        grid: { color: 'rgba(30,45,64,0.8)', drawBorder: false },
+        ticks: {
+          color: '#4b5e7a',
+          font: { family: "'JetBrains Mono'", size: 11 },
+          maxRotation: 0,
+        },
+        border: { display: false },
+      },
+      y: {
+        grid: { color: 'rgba(30,45,64,0.8)', drawBorder: false },
+        ticks: {
+          color: '#4b5e7a',
+          font: { family: "'JetBrains Mono'", size: 11 },
+          callback: v => '$' + v.toLocaleString(),
+        },
+        border: { display: false },
+      }
+    }
+  }
+});
+
+// ── CSV → Positions Table ──────────────────────────────────
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',').map(h => h.trim());
+  return lines.slice(1).map(line => {
+    const cols = line.split(',').map(c => c.trim());
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = cols[i] ?? '');
+    return obj;
+  });
+}
+
+function renderPositions(rows) {
+  const tbody = document.getElementById('positions-tbody');
+  const counter = document.getElementById('pos-count');
+
+  if (!rows || rows.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10" class="empty-state">No positions logged yet.</td></tr>`;
+    counter.textContent = '0 positions';
+    return;
+  }
+
+  counter.textContent = `${rows.length} position${rows.length !== 1 ? 's' : ''}`;
+  document.getElementById('open-count').textContent = rows.length;
+
+  tbody.innerHTML = rows.map(r => {
+    const action  = (r['Action'] || '').toUpperCase();
+    const edge    = parseFloat(r['Edge%'] || '0');
+    const edgeSign = edge >= 0 ? '+' : '';
+    const edgeClass = edge >= 0 ? 'positive' : 'negative';
+    const rowClass  = action === 'YES' ? 'yes-row' : action === 'NO' ? 'no-row' : '';
+
+    return `<tr class="${rowClass}">
+      <td class="td-date">${r['Date'] || '—'}</td>
+      <td class="td-tournament">${r['Tournament'] || '—'}</td>
+      <td><span class="td-exchange">${r['Exchange'] || '—'}</span></td>
+      <td class="td-player">${r['Player'] || '—'}</td>
+      <td class="td-num">${r['Model%'] || '—'}%</td>
+      <td class="td-num">${r['Market%'] || '—'}%</td>
+      <td><span class="edge-pill ${edgeClass}">${edgeSign}${r['Edge%'] || '0'}%</span></td>
+      <td><span class="action-badge ${action.toLowerCase()}">${action}</span></td>
+      <td class="td-num">$${parseFloat(r['Stake'] || '0').toLocaleString()}</td>
+      <td><span class="status-badge open">● OPEN</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// Fetch positions.csv
+fetch('positions.csv')
+  .then(r => r.text())
+  .then(text => renderPositions(parseCSV(text)))
+  .catch(() => {
+    // Fallback: show hardcoded Norway Chess row if server isn't running
+    renderPositions([{
+      'Date': '2026-04-23',
+      'Tournament': 'Norway Chess 2026',
+      'Exchange': 'Kalshi',
+      'Player': 'Magnus Carlsen',
+      'Model%': '33.1',
+      'Market%': '61.0',
+      'Edge%': '-27.9',
+      'Action': 'NO',
+      'Stake': '500.00',
+    }]);
+  });
+
+// ── Accordion ──────────────────────────────────────────────
+function toggleAcc(header) {
+  const item = header.closest('.acc-item');
+  item.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
