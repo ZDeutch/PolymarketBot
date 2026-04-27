@@ -61,10 +61,10 @@ HEADERS = {
 # so that names extracted directly from PGN headers resolve correctly.
 PLAYER_NAME_TO_USERNAME = {
     # Candidates 2026 players
-    # Caruana and Nakamura have working Chess.com classical ratings.
+    # Nakamura has working Chess.com classical rating.
+    # Caruana removed — Chess.com returns 2764 vs FIDE 2788 (−24); falls to KNOWN_RATINGS.
     # Giri, Sindarov, Wei Yi removed — Chess.com returns stale/wrong values;
     # Praggnanandhaa, Esipenko removed — Chess.com returns sub-2500; all fall to KNOWN_RATINGS.
-    "Fabiano Caruana":       "fabianocaruana",
     "Hikaru Nakamura":       "hikaru",
     "Praggnanandhaa R":      "rpraggnanandhaa",
     "Praggnanandhaa":        "rpraggnanandhaa",
@@ -420,6 +420,22 @@ KNOWN_RATINGS = {
     "Wesley So":                  2754,   # live #9 (classical)
     "Alireza Firouzja":           2759,   # live #8 (classical)
     "Firouzja Alireza":           2759,
+    # ── GCT 2026 Finals — new players ────────────────────────────────────────
+    "Maxime Vachier-Lagrave":     2706,   # live ~#32 (April 2026)
+    "Vachier-Lagrave Maxime":     2706,
+    "Jan-Krzysztof Duda":         2720,   # live ~#23 (April 2026)
+    "Duda Jan-Krzysztof":         2720,
+    "Levon Aronian":              2737,   # live ~#14 (April 2026)
+    "Aronian Levon":              2737,
+    "Bogdan-Daniel Deac":         2674,   # live ~#51 (April 2026)
+    "Deac Bogdan-Daniel":         2674,
+    "Ivan Saric":                 2614,   # live ~#85 (April 2026)
+    "Saric Ivan":                 2614,
+    "Radoslaw Wojtaszek":         2682,   # live ~#43 (April 2026)
+    "Wojtaszek Radoslaw":         2682,
+    # Kalshi name aliases
+    "Hans Niemann":               2742,   # alias for Hans Moke Niemann
+    "Rameshbabu Praggnanandhaa":  2733,   # alias for Praggnanandhaa R
     # ── Other elite players ───────────────────────────────────────────────────
     "Gukesh D":                   2732,   # live #17 (was 2783, −51 post-WCC title defense)
     "Gukesh Dommaraju":           2732,
