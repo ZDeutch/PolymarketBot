@@ -3,1303 +3,584 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PolymarketBot — Chess Tournament Simulator</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>PolymarketBot — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
-      --bg:           #0a0e1a;
-      --surface:      #111827;
-      --surface-2:    #141e2e;
-      --border:       #1e2d40;
-      --border-hi:    #2e4060;
-      --cyan:         #00d4ff;
-      --cyan-dim:     rgba(0,212,255,0.12);
-      --cyan-glow:    0 0 24px rgba(0,212,255,0.25);
-      --green:        #10b981;
-      --green-dim:    rgba(16,185,129,0.12);
-      --red:          #ef4444;
-      --red-dim:      rgba(239,68,68,0.12);
-      --yellow:       #f59e0b;
-      --yellow-dim:   rgba(245,158,11,0.12);
-      --text:         #f1f5f9;
-      --text-dim:     #94a3b8;
-      --text-muted:   #4b5e7a;
-      --mono:         'JetBrains Mono', monospace;
-      --sans:         'Inter', sans-serif;
-      --radius:       12px;
-      --radius-sm:    8px;
+      --bg:       #080c14;
+      --bg2:      #0d1320;
+      --bg3:      #111827;
+      --border:   #1a2640;
+      --border2:  #243352;
+      --cyan:     #00d4ff;
+      --green:    #00e676;
+      --red:      #ff4444;
+      --yellow:   #ffb300;
+      --purple:   #bb86fc;
+      --dim:      #3d5068;
+      --muted:    #546e8a;
+      --text:     #cdd9e5;
+      --bright:   #e8f0fe;
+      --mono:     'JetBrains Mono', monospace;
+      --sans:     'Inter', sans-serif;
     }
-
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-
-    html { scroll-behavior: smooth; }
-
+    html { font-size: 12px; }
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: var(--sans);
+      font-family: var(--mono);
       min-height: 100vh;
       background-image:
-        linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
-      background-size: 48px 48px;
+        linear-gradient(rgba(0,212,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.015) 1px, transparent 1px);
+      background-size: 32px 32px;
     }
-
-    /* ── Scrollbar ── */
-    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: var(--border2); }
 
-    /* ── Layout ── */
-    .wrapper { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
-
-    /* ─────────────────────────────────────────────
-       HEADER
-    ───────────────────────────────────────────── */
+    /* ── HEADER ──────────────────────────────────── */
     header {
+      background: var(--bg2);
       border-bottom: 1px solid var(--border);
-      background: rgba(10,14,26,0.95);
-      backdrop-filter: blur(12px);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      padding: 0 20px;
+      position: sticky; top: 0; z-index: 100;
     }
-
-    .header-inner {
-      display: flex;
-      align-items: center;
+    .header-row {
+      display: flex; align-items: center;
       justify-content: space-between;
-      padding: 20px 0;
+      height: 44px; gap: 24px;
     }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .logo-mark {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--cyan), #0066ff);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--mono);
-      font-size: 18px;
-      font-weight: 600;
-      color: #fff;
-      box-shadow: var(--cyan-glow);
+    .h-brand {
+      display: flex; align-items: center; gap: 10px;
       flex-shrink: 0;
     }
-
-    .logo-text h1 {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-      color: var(--text);
-    }
-
-    .logo-text p {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 1px;
-      font-family: var(--mono);
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .status-pill {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      background: var(--green-dim);
-      border: 1px solid rgba(16,185,129,0.3);
-      border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 12px;
-      color: var(--green);
-      font-family: var(--mono);
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.85); }
-    }
-
-    .timestamp {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-family: var(--mono);
-    }
-
-    /* ─────────────────────────────────────────────
-       HERO
-    ───────────────────────────────────────────── */
-    .hero {
-      padding: 64px 0 48px;
-      text-align: center;
-      position: relative;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 50%; transform: translateX(-50%);
-      width: 600px; height: 300px;
-      background: radial-gradient(ellipse at 50% 0%, rgba(0,212,255,0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--cyan-dim);
-      border: 1px solid rgba(0,212,255,0.25);
-      border-radius: 20px;
-      padding: 5px 14px;
-      font-size: 11px;
-      font-family: var(--mono);
-      color: var(--cyan);
-      margin-bottom: 24px;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-
-    .hero h2 {
-      font-size: 52px;
-      font-weight: 800;
-      letter-spacing: -1.5px;
-      line-height: 1.1;
-      background: linear-gradient(135deg, #fff 30%, var(--cyan) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 18px;
-    }
-
-    .hero p {
-      font-size: 18px;
-      color: var(--text-dim);
-      max-width: 640px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
-
-    /* ─────────────────────────────────────────────
-       STATS STRIP
-    ───────────────────────────────────────────── */
-    .stats-strip {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      padding-bottom: 48px;
-    }
-
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-
-    .stat-card:hover {
-      border-color: var(--border-hi);
-      transform: translateY(-2px);
-    }
-
-    .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-    }
-
-    .stat-card.cyan::before  { background: linear-gradient(90deg, var(--cyan), transparent); }
-    .stat-card.green::before { background: linear-gradient(90deg, var(--green), transparent); }
-    .stat-card.yellow::before{ background: linear-gradient(90deg, var(--yellow), transparent); }
-    .stat-card.blue::before  { background: linear-gradient(90deg, #6366f1, transparent); }
-
-    .stat-label {
-      font-size: 11px;
-      font-family: var(--mono);
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 10px;
-    }
-
-    .stat-value {
-      font-size: 36px;
-      font-weight: 700;
-      font-family: var(--mono);
-      letter-spacing: -1px;
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-
-    .stat-card.cyan  .stat-value { color: var(--cyan); }
-    .stat-card.green .stat-value { color: var(--green); }
-    .stat-card.yellow .stat-value { color: var(--yellow); }
-    .stat-card.blue  .stat-value { font-size: 32px; color: #818cf8; }
-
-    .stat-sub {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    /* ─────────────────────────────────────────────
-       SECTION TITLES
-    ───────────────────────────────────────────── */
-    .section-header {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-
-    .section-title {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-    }
-
-    .section-sub {
-      font-size: 13px;
-      color: var(--text-muted);
-      font-family: var(--mono);
-    }
-
-    .section-note {
-      font-size: 11px;
-      color: var(--text-muted);
-      background: var(--yellow-dim);
-      border: 1px solid rgba(245,158,11,0.2);
-      border-radius: 6px;
-      padding: 4px 10px;
-      font-family: var(--mono);
-    }
-
-    /* ─────────────────────────────────────────────
-       P&L CHART
-    ───────────────────────────────────────────── */
-    .chart-section { padding-bottom: 48px; }
-
-    .chart-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 32px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .chart-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, var(--green), var(--cyan), transparent);
-    }
-
-    .chart-metrics {
-      display: flex;
-      gap: 32px;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
-    }
-
-    .chart-metric { }
-
-    .chart-metric .label {
-      font-size: 11px;
-      font-family: var(--mono);
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 4px;
-    }
-
-    .chart-metric .value {
-      font-size: 28px;
-      font-weight: 700;
-      font-family: var(--mono);
+    .h-mark {
+      width: 28px; height: 28px; border-radius: 6px;
+      background: linear-gradient(135deg, var(--cyan), #0066ff);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #fff;
       letter-spacing: -0.5px;
     }
+    .h-title { font-size: 13px; font-weight: 600; color: var(--bright); letter-spacing: 0.5px; }
+    .h-version { font-size: 10px; color: var(--muted); margin-top: 1px; }
 
-    .chart-metric .value.positive { color: var(--green); }
-    .chart-metric .value.neutral  { color: var(--text-dim); }
-
-    .chart-wrap {
-      position: relative;
-      height: 280px;
+    .h-metrics {
+      display: flex; align-items: center; gap: 0;
+      flex: 1; justify-content: center;
     }
+    .h-metric {
+      padding: 0 16px;
+      border-right: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .h-metric:first-child { border-left: 1px solid var(--border); }
+    .h-metric .lbl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
+    .h-metric .val { font-size: 12px; font-weight: 600; color: var(--bright); margin-top: 1px; }
+    .h-metric .val.green  { color: var(--green); }
+    .h-metric .val.yellow { color: var(--yellow); }
+    .h-metric .val.cyan   { color: var(--cyan); }
 
-    .chart-disclaimer {
-      margin-top: 16px;
-      font-size: 11px;
-      color: var(--text-muted);
+    .h-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+    .live-dot {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 10px; color: var(--green);
+    }
+    .live-dot::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .ts { font-size: 10px; color: var(--muted); }
+
+    .btn-methodology {
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--cyan);
       font-family: var(--mono);
-      text-align: right;
+      font-size: 10px;
+      padding: 5px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: background 0.15s, border-color 0.15s;
+      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .btn-methodology:hover { background: rgba(0,212,255,0.08); border-color: var(--cyan); }
+
+    /* ── STATUS BAR ──────────────────────────────── */
+    .statusbar {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      display: flex; align-items: center; gap: 24px;
+      height: 28px; font-size: 10px; color: var(--muted);
+    }
+    .sb-item { display: flex; align-items: center; gap: 5px; }
+    .sb-item .k { color: var(--dim); }
+    .sb-item .v { color: var(--text); }
+    .sb-item .v.ok  { color: var(--green); }
+    .sb-item .v.warn{ color: var(--yellow); }
+
+    /* ── MAIN LAYOUT ─────────────────────────────── */
+    .main {
+      display: grid;
+      grid-template-columns: 240px 1fr 240px;
+      gap: 1px;
+      background: var(--border);
+      min-height: calc(100vh - 72px);
     }
 
-    /* ─────────────────────────────────────────────
-       POSITIONS TABLE
-    ───────────────────────────────────────────── */
-    .positions-section { padding-bottom: 48px; }
+    .col { background: var(--bg); padding: 14px; display: flex; flex-direction: column; gap: 12px; }
 
-    .table-card {
-      background: var(--surface);
+    /* ── PANEL ───────────────────────────────────── */
+    .panel {
+      background: var(--bg2);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: 4px;
       overflow: hidden;
-      overflow-x: auto;
     }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    .panel-hdr {
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      padding: 6px 10px;
+      font-size: 9px; font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase; letter-spacing: 1px;
+      display: flex; align-items: center; justify-content: space-between;
     }
+    .panel-hdr .badge {
+      font-size: 9px; padding: 1px 6px; border-radius: 3px;
+      background: var(--bg); color: var(--cyan);
+      border: 1px solid var(--border2);
+    }
+    .panel-body { padding: 10px; }
 
-    thead th {
-      background: var(--surface-2);
-      padding: 14px 18px;
+    /* ── KV ROWS ─────────────────────────────────── */
+    .kv-list { display: flex; flex-direction: column; gap: 0; }
+    .kv {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 4px 0;
+      border-bottom: 1px solid var(--border);
       font-size: 11px;
-      font-family: var(--mono);
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      text-align: left;
-      font-weight: 500;
+    }
+    .kv:last-child { border-bottom: none; }
+    .kv .k { color: var(--muted); font-size: 10px; }
+    .kv .v { color: var(--text); font-weight: 500; text-align: right; }
+    .kv .v.cyan   { color: var(--cyan); }
+    .kv .v.green  { color: var(--green); }
+    .kv .v.yellow { color: var(--yellow); }
+    .kv .v.red    { color: var(--red); }
+    .kv .v.purple { color: var(--purple); }
+
+    /* ── SIGNALS PANEL ───────────────────────────── */
+    .signal {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--red);
+      border-radius: 3px;
+      padding: 8px;
+      margin-bottom: 8px;
+      font-size: 10px;
+    }
+    .signal:last-child { margin-bottom: 0; }
+    .signal.yes { border-left-color: var(--green); }
+    .signal-top {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 5px;
+    }
+    .signal-id { font-size: 9px; color: var(--muted); }
+    .signal-action {
+      font-size: 9px; font-weight: 700; padding: 1px 6px;
+      border-radius: 2px; letter-spacing: 0.5px;
+    }
+    .signal-action.no  { background: rgba(255,68,68,0.15); color: var(--red); }
+    .signal-action.yes { background: rgba(0,230,118,0.15); color: var(--green); }
+    .signal-player { font-weight: 600; color: var(--bright); margin-bottom: 4px; }
+    .signal-row { display: flex; gap: 10px; }
+    .signal-stat .sk { font-size: 9px; color: var(--muted); }
+    .signal-stat .sv { font-size: 11px; font-weight: 500; }
+
+    /* ── CHART PANEL ─────────────────────────────── */
+    .chart-metrics-bar {
+      display: flex; gap: 0;
       border-bottom: 1px solid var(--border);
     }
-
-    thead th:not(:first-child) { text-align: right; }
-    thead th:nth-child(2),
-    thead th:nth-child(3),
-    thead th:nth-child(4) { text-align: left; }
-
-    tbody tr {
-      border-bottom: 1px solid var(--border);
-      transition: background 0.15s;
+    .cm {
+      flex: 1; padding: 8px 12px;
+      border-right: 1px solid var(--border);
     }
+    .cm:last-child { border-right: none; }
+    .cm .cl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+    .cm .cv { font-size: 16px; font-weight: 700; line-height: 1; }
+    .cm .cv.green  { color: var(--green); }
+    .cm .cv.red    { color: var(--red); }
+    .cm .cv.yellow { color: var(--yellow); }
+    .cm .cv.cyan   { color: var(--cyan); }
+    .cm .cv.text   { color: var(--text); }
 
+    .chart-wrap { padding: 12px; height: 220px; position: relative; }
+    .chart-note { padding: 4px 12px 8px; font-size: 9px; color: var(--dim); text-align: right; }
+
+    /* ── POSITIONS TABLE ─────────────────────────── */
+    .tbl-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    thead th {
+      background: var(--bg3);
+      padding: 6px 10px;
+      font-size: 9px; font-weight: 500; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.8px;
+      text-align: left; white-space: nowrap;
+      border-bottom: 1px solid var(--border);
+    }
+    thead th:not(:nth-child(-n+4)) { text-align: right; }
+    tbody tr { border-bottom: 1px solid var(--border); }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: rgba(255,255,255,0.02); }
-
-    tbody tr.yes-row { border-left: 3px solid var(--green); }
-    tbody tr.no-row  { border-left: 3px solid var(--red); }
-
+    tbody tr.row-no  { border-left: 2px solid var(--red); }
+    tbody tr.row-yes { border-left: 2px solid var(--green); }
     td {
-      padding: 16px 18px;
-      font-size: 13px;
+      padding: 7px 10px; white-space: nowrap;
       text-align: right;
     }
-
-    td:nth-child(1),
-    td:nth-child(2),
-    td:nth-child(3),
-    td:nth-child(4) { text-align: left; }
-
-    .td-date {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--text-muted);
+    td:nth-child(1),td:nth-child(2),td:nth-child(3),td:nth-child(4) { text-align: left; }
+    .td-date { font-size: 10px; color: var(--muted); }
+    .td-tour { font-size: 11px; }
+    .td-exch { font-size: 9px; padding: 2px 6px; border-radius: 2px; background: rgba(0,212,255,0.1); color: var(--cyan); }
+    .td-player { font-weight: 600; color: var(--bright); }
+    .pill {
+      display: inline-block; padding: 1px 7px; border-radius: 2px;
+      font-size: 10px; font-weight: 600;
     }
+    .pill.pos { background: rgba(0,230,118,0.12); color: var(--green); }
+    .pill.neg { background: rgba(255,68,68,0.12); color: var(--red); }
+    .pill.no  { background: rgba(255,68,68,0.12); color: var(--red); }
+    .pill.yes { background: rgba(0,230,118,0.12); color: var(--green); }
+    .pill.open{ background: rgba(255,179,0,0.12); color: var(--yellow); }
 
-    .td-tournament { font-weight: 500; }
-
-    .td-exchange {
-      font-family: var(--mono);
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      background: var(--cyan-dim);
-      color: var(--cyan);
-      display: inline-block;
-    }
-
-    .td-player { font-weight: 600; }
-
-    .td-num {
-      font-family: var(--mono);
-      font-size: 13px;
-    }
-
-    .edge-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      padding: 3px 9px;
-      border-radius: 20px;
-      font-family: var(--mono);
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .edge-pill.positive {
-      background: var(--green-dim);
-      color: var(--green);
-    }
-
-    .edge-pill.negative {
-      background: var(--red-dim);
-      color: var(--red);
-    }
-
-    .action-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-    }
-
-    .action-badge.yes {
-      background: var(--green-dim);
-      color: var(--green);
-      border: 1px solid rgba(16,185,129,0.25);
-    }
-
-    .action-badge.no {
-      background: var(--red-dim);
-      color: var(--red);
-      border: 1px solid rgba(239,68,68,0.25);
-    }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 3px 9px;
-      border-radius: 20px;
-      font-family: var(--mono);
-      font-size: 11px;
-    }
-
-    .status-badge.open {
-      background: var(--yellow-dim);
-      color: var(--yellow);
-      border: 1px solid rgba(245,158,11,0.25);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 48px 24px;
-      color: var(--text-muted);
-      font-size: 14px;
-      font-family: var(--mono);
-    }
-
-    /* ─────────────────────────────────────────────
-       METHODOLOGY
-    ───────────────────────────────────────────── */
-    .methodology-section { padding-bottom: 48px; }
-
-    .method-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .method-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-
-    .method-card:hover {
-      border-color: var(--border-hi);
-      transform: translateY(-2px);
-    }
-
-    .method-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      margin-bottom: 18px;
-    }
-
-    .method-icon.cyan   { background: var(--cyan-dim); }
-    .method-icon.green  { background: var(--green-dim); }
-    .method-icon.purple { background: rgba(99,102,241,0.12); }
-
-    .method-card h3 {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 14px;
-      letter-spacing: -0.2px;
-    }
-
-    .pipeline-steps {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .pipeline-step {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 8px 0;
-    }
-
-    .pipeline-step:not(:last-child) {
-      border-bottom: 1px solid var(--border);
-    }
-
-    .step-num {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: var(--cyan-dim);
-      border: 1px solid rgba(0,212,255,0.25);
-      color: var(--cyan);
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
-    .step-text {
-      font-size: 13px;
-      color: var(--text-dim);
-      line-height: 1.5;
-    }
-
-    .step-text strong { color: var(--text); }
-
-    .bullet-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .bullet-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 13px;
-      color: var(--text-dim);
-      line-height: 1.5;
-    }
-
-    .bullet-list li::before {
-      content: '▸';
-      color: var(--cyan);
-      font-size: 11px;
-      margin-top: 2px;
-      flex-shrink: 0;
-    }
-
-    .bullet-list li strong { color: var(--text); }
-
-    /* ─────────────────────────────────────────────
-       MODEL DETAILS ACCORDION
-    ───────────────────────────────────────────── */
-    .model-section { padding-bottom: 64px; }
-
-    .accordion {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-
-    .acc-item { border-bottom: 1px solid var(--border); }
-    .acc-item:last-child { border-bottom: none; }
-
-    .acc-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px 24px;
-      cursor: pointer;
-      user-select: none;
-      transition: background 0.15s;
-    }
-
-    .acc-header:hover { background: rgba(255,255,255,0.02); }
-
-    .acc-header-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .acc-icon {
-      font-size: 18px;
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .acc-title {
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .acc-sub {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-family: var(--mono);
-      margin-top: 2px;
-    }
-
-    .acc-chevron {
-      color: var(--text-muted);
-      font-size: 14px;
-      transition: transform 0.2s;
-    }
-
-    .acc-item.open .acc-chevron { transform: rotate(180deg); }
-
-    .acc-body {
-      display: none;
-      padding: 0 24px 24px;
-      border-top: 1px solid var(--border);
-    }
-
-    .acc-item.open .acc-body { display: block; }
-
-    .formula-block {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 16px 20px;
-      font-family: var(--mono);
-      font-size: 14px;
-      color: var(--cyan);
-      margin: 16px 0;
-      line-height: 1.8;
-    }
-
-    .formula-block .comment {
-      color: var(--text-muted);
-      font-size: 12px;
-    }
-
-    .param-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .param-item {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 14px 16px;
-    }
-
-    .param-name {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      margin-bottom: 6px;
-    }
-
-    .param-val {
-      font-family: var(--mono);
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .param-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    /* ─────────────────────────────────────────────
-       FOOTER
-    ───────────────────────────────────────────── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 32px 0;
-    }
-
-    .footer-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .footer-left {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    .footer-left strong {
-      color: var(--text-dim);
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 20px;
-    }
-
-    .footer-links a {
-      font-size: 12px;
-      font-family: var(--mono);
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: color 0.15s;
-    }
-
-    .footer-links a:hover { color: var(--cyan); }
-
-    /* ─────────────────────────────────────────────
-       DIVIDER
-    ───────────────────────────────────────────── */
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border), transparent);
-      margin-bottom: 48px;
-    }
-
-    /* ─────────────────────────────────────────────
-       FADE-IN
-    ───────────────────────────────────────────── */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(16px);
-      animation: fadeIn 0.5s ease forwards;
-    }
-
-    @keyframes fadeIn {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .fade-in:nth-child(1) { animation-delay: 0.05s; }
-    .fade-in:nth-child(2) { animation-delay: 0.10s; }
-    .fade-in:nth-child(3) { animation-delay: 0.15s; }
-    .fade-in:nth-child(4) { animation-delay: 0.20s; }
+    /* ── IDLE STATE ──────────────────────────────── */
+    .empty { padding: 20px; text-align: center; color: var(--dim); font-size: 11px; }
   </style>
 </head>
 <body>
 
-<!-- ── HEADER ───────────────────────────────────────────── -->
+<!-- ── HEADER ─────────────────────────────────────────── -->
 <header>
-  <div class="wrapper">
-    <div class="header-inner">
-      <div class="logo">
-        <div class="logo-mark">P∿</div>
-        <div class="logo-text">
-          <h1>PolymarketBot</h1>
-          <p>chess tournament win-market simulator</p>
-        </div>
+  <div class="header-row">
+    <div class="h-brand">
+      <div class="h-mark">P∿</div>
+      <div>
+        <div class="h-title">POLYMARKETBOT</div>
+        <div class="h-version">chess · monte carlo · v1.0</div>
       </div>
-      <div class="header-right">
-        <div class="status-pill">
-          <div class="status-dot"></div>
-          ACTIVE
-        </div>
-        <div class="timestamp" id="ts">—</div>
+    </div>
+
+    <div class="h-metrics">
+      <div class="h-metric">
+        <div class="lbl">n_sim</div>
+        <div class="val cyan">50,000</div>
       </div>
+      <div class="h-metric">
+        <div class="lbl">edge_min</div>
+        <div class="val">8.0%</div>
+      </div>
+      <div class="h-metric">
+        <div class="lbl">kelly_f</div>
+        <div class="val">0.25</div>
+      </div>
+      <div class="h-metric">
+        <div class="lbl">bankroll</div>
+        <div class="val">$10,000</div>
+      </div>
+      <div class="h-metric">
+        <div class="lbl">exposure_cap</div>
+        <div class="val">5.0%</div>
+      </div>
+      <div class="h-metric">
+        <div class="lbl">open</div>
+        <div class="val yellow" id="hdr-open">1</div>
+      </div>
+    </div>
+
+    <div class="h-right">
+      <div class="live-dot">LIVE</div>
+      <div class="ts" id="hdr-ts">—</div>
+      <a class="btn-methodology" href="methodology.html" target="_blank">METHODOLOGY ↗</a>
     </div>
   </div>
 </header>
 
-<!-- ── HERO ─────────────────────────────────────────────── -->
-<section class="hero">
-  <div class="wrapper">
-    <div class="hero-tag">⚡ Quantitative Chess Prediction Engine</div>
-    <h2>Find Edge in Chess<br>Prediction Markets</h2>
-    <p>Monte Carlo simulation engine that models tournament outcomes from Elo ratings, tournament performance data, and draw-rate models — then compares against Polymarket and Kalshi prices to surface mispriced contracts.</p>
+<!-- ── STATUS BAR ─────────────────────────────────────── -->
+<div class="statusbar">
+  <div class="sb-item"><span class="k">tournament:</span><span class="v">Norway Chess 2026</span></div>
+  <div class="sb-item"><span class="k">exchange:</span><span class="v">kalshi</span></div>
+  <div class="sb-item"><span class="k">format:</span><span class="v">classical</span></div>
+  <div class="sb-item"><span class="k">rounds_complete:</span><span class="v">0 / 10</span></div>
+  <div class="sb-item"><span class="k">gate:</span><span class="v ok">OK (≤4)</span></div>
+  <div class="sb-item"><span class="k">broadcast:</span><span class="v warn">pre-tournament</span></div>
+  <div class="sb-item"><span class="k">ratings_src:</span><span class="v ok">KNOWN_RATINGS (6/6)</span></div>
+  <div class="sb-item"><span class="k">tpr_db:</span><span class="v ok">650 players · 662 games</span></div>
+</div>
+
+<!-- ── MAIN GRID ───────────────────────────────────────── -->
+<div class="main">
+
+  <!-- LEFT ──────────────────────────────────────────── -->
+  <div class="col">
+
+    <!-- Active Tournament -->
+    <div class="panel">
+      <div class="panel-hdr">ACTIVE_TOURNAMENT <span class="badge">PRE</span></div>
+      <div class="panel-body">
+        <div class="kv-list">
+          <div class="kv"><span class="k">name</span><span class="v cyan">Norway Chess 2026</span></div>
+          <div class="kv"><span class="k">players</span><span class="v">6 (DRR)</span></div>
+          <div class="kv"><span class="k">total_rounds</span><span class="v">10</span></div>
+          <div class="kv"><span class="k">rounds_done</span><span class="v">0</span></div>
+          <div class="kv"><span class="k">start_date</span><span class="v">2026-05-25</span></div>
+          <div class="kv"><span class="k">location</span><span class="v">Oslo, NOR</span></div>
+          <div class="kv"><span class="k">exchange</span><span class="v yellow">Kalshi</span></div>
+          <div class="kv"><span class="k">broadcast</span><span class="v yellow">pending</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Model Config -->
+    <div class="panel">
+      <div class="panel-hdr">MODEL_CONFIG</div>
+      <div class="panel-body">
+        <div class="kv-list">
+          <div class="kv"><span class="k">elo_white_bonus</span><span class="v">+35</span></div>
+          <div class="kv"><span class="k">elo_scale</span><span class="v">400</span></div>
+          <div class="kv"><span class="k">draw_model</span><span class="v cyan">kryukov</span></div>
+          <div class="kv"><span class="k">tpr_weight</span><span class="v">0.55</span></div>
+          <div class="kv"><span class="k">fide_weight</span><span class="v">0.45</span></div>
+          <div class="kv"><span class="k">tpr_min_games</span><span class="v">15</span></div>
+          <div class="kv"><span class="k">adj_cap</span><span class="v">±50 elo</span></div>
+          <div class="kv"><span class="k">rating_σ</span><span class="v">50</span></div>
+          <div class="kv"><span class="k">must_win_adj</span><span class="v">−15% draw</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Norway Field Ratings -->
+    <div class="panel">
+      <div class="panel-hdr">FIELD_RATINGS · NCH26</div>
+      <div class="panel-body">
+        <div class="kv-list">
+          <div class="kv"><span class="k">Carlsen, M.</span><span class="v cyan">2840</span></div>
+          <div class="kv"><span class="k">Keymer, V.</span><span class="v">2762</span></div>
+          <div class="kv"><span class="k">So, W.</span><span class="v">2754</span></div>
+          <div class="kv"><span class="k">Firouzja, A.</span><span class="v">2759</span></div>
+          <div class="kv"><span class="k">Gukesh, D.</span><span class="v">2732</span></div>
+          <div class="kv"><span class="k">Praggnanandhaa, R.</span><span class="v">2733</span></div>
+        </div>
+      </div>
+    </div>
+
   </div>
-</section>
 
-<!-- ── STATS STRIP ───────────────────────────────────────── -->
-<section>
-  <div class="wrapper">
-    <div class="stats-strip">
-      <div class="stat-card cyan fade-in">
-        <div class="stat-label">Simulations / Run</div>
-        <div class="stat-value">50K</div>
-        <div class="stat-sub">Monte Carlo iterations</div>
+  <!-- CENTER ─────────────────────────────────────────── -->
+  <div class="col" style="gap:12px;">
+
+    <!-- P&L Chart -->
+    <div class="panel">
+      <div class="panel-hdr">CUMULATIVE_P&L <span class="badge" style="color:var(--yellow);border-color:var(--yellow);background:rgba(255,179,0,0.08)">ILLUSTRATIVE</span></div>
+      <div class="chart-metrics-bar">
+        <div class="cm"><div class="cl">settled_pnl</div><div class="cv green">+$1,680</div></div>
+        <div class="cm"><div class="cl">trades</div><div class="cv text">9</div></div>
+        <div class="cm"><div class="cl">w / l</div><div class="cv text">6 <span style="color:var(--dim)">/</span> <span style="color:var(--red)">3</span></div></div>
+        <div class="cm"><div class="cl">win_rate</div><div class="cv text">66.7%</div></div>
+        <div class="cm"><div class="cl">avg_edge</div><div class="cv green">+9.1%</div></div>
+        <div class="cm"><div class="cl">max_dd</div><div class="cv red">−$310</div></div>
+        <div class="cm"><div class="cl">open</div><div class="cv yellow">1</div></div>
       </div>
-      <div class="stat-card green fade-in">
-        <div class="stat-label">Illustrative P&L</div>
-        <div class="stat-value" id="stat-pnl">+$2,830</div>
-        <div class="stat-sub">7 settled positions</div>
-      </div>
-      <div class="stat-card yellow fade-in">
-        <div class="stat-label">Edge Threshold</div>
-        <div class="stat-value">8%</div>
-        <div class="stat-sub">Minimum to act</div>
-      </div>
-      <div class="stat-card blue fade-in">
-        <div class="stat-label">Position Sizing</div>
-        <div class="stat-value">¼ Kelly</div>
-        <div class="stat-sub">Conservative fractional Kelly</div>
+      <div class="chart-wrap"><canvas id="pnlChart"></canvas></div>
+      <div class="chart-note">† illustrative track record — see positions table for live data</div>
+    </div>
+
+    <!-- Live Positions -->
+    <div class="panel" style="flex:1;">
+      <div class="panel-hdr">POSITIONS <span class="badge" id="pos-badge">loading</span></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>date</th>
+              <th>tournament</th>
+              <th>exch</th>
+              <th>player</th>
+              <th>model%</th>
+              <th>mkt%</th>
+              <th>edge%</th>
+              <th>action</th>
+              <th>stake</th>
+              <th>status</th>
+            </tr>
+          </thead>
+          <tbody id="pos-tbody">
+            <tr><td colspan="10" class="empty">fetching positions.csv…</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
+
   </div>
-</section>
 
-<div class="wrapper"><div class="divider"></div></div>
+  <!-- RIGHT ──────────────────────────────────────────── -->
+  <div class="col">
 
-<!-- ── P&L CHART ─────────────────────────────────────────── -->
-<section class="chart-section">
-  <div class="wrapper">
-    <div class="section-header">
-      <div>
-        <div class="section-title">Cumulative P&amp;L</div>
-      </div>
-      <span class="section-note">⚠ Illustrative track record — for research purposes</span>
-    </div>
-    <div class="chart-card">
-      <div class="chart-metrics">
-        <div class="chart-metric">
-          <div class="label">Total P&L</div>
-          <div class="value positive">+$2,830</div>
+    <!-- Active Signals -->
+    <div class="panel">
+      <div class="panel-hdr">ACTIVE_SIGNALS</div>
+      <div class="panel-body" id="signals-body">
+        <div class="signal">
+          <div class="signal-top">
+            <span class="signal-id">NCH26-001 · 2026-04-23</span>
+            <span class="signal-action no">NO</span>
+          </div>
+          <div class="signal-player">M. Carlsen</div>
+          <div class="signal-row">
+            <div class="signal-stat"><div class="sk">model</div><div class="sv" style="color:var(--text)">33.1%</div></div>
+            <div class="signal-stat"><div class="sk">market</div><div class="sv" style="color:var(--text)">61.0%</div></div>
+            <div class="signal-stat"><div class="sk">edge</div><div class="sv" style="color:var(--red)">−27.9%</div></div>
+            <div class="signal-stat"><div class="sk">stake</div><div class="sv" style="color:var(--yellow)">$500</div></div>
+          </div>
         </div>
-        <div class="chart-metric">
-          <div class="label">Settled Trades</div>
-          <div class="value neutral">7</div>
-        </div>
-        <div class="chart-metric">
-          <div class="label">Win Rate</div>
-          <div class="value positive">100%</div>
-        </div>
-        <div class="chart-metric">
-          <div class="label">Avg Edge</div>
-          <div class="value positive">+12.4%</div>
-        </div>
-        <div class="chart-metric">
-          <div class="label">Open Positions</div>
-          <div class="value neutral" id="open-count">1</div>
-        </div>
-      </div>
-      <div class="chart-wrap">
-        <canvas id="pnlChart"></canvas>
-      </div>
-      <div class="chart-disclaimer">
-        † Past performance is illustrative. Live positions shown in the table below.
       </div>
     </div>
+
+    <!-- Last Run Stats -->
+    <div class="panel">
+      <div class="panel-hdr">LAST_RUN</div>
+      <div class="panel-body">
+        <div class="kv-list">
+          <div class="kv"><span class="k">timestamp</span><span class="v">2026-04-23</span></div>
+          <div class="kv"><span class="k">players_loaded</span><span class="v green">6 / 6</span></div>
+          <div class="kv"><span class="k">ratings_source</span><span class="v">KNOWN_RATINGS</span></div>
+          <div class="kv"><span class="k">completed_games</span><span class="v">0</span></div>
+          <div class="kv"><span class="k">remaining_games</span><span class="v">30</span></div>
+          <div class="kv"><span class="k">schedule_type</span><span class="v cyan">double RR</span></div>
+          <div class="kv"><span class="k">tpr_players_hit</span><span class="v">6 / 6</span></div>
+          <div class="kv"><span class="k">gate_status</span><span class="v green">PASS (0 ≤ 4)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Norway Model Output -->
+    <div class="panel">
+      <div class="panel-hdr">MODEL_OUTPUT · NCH26</div>
+      <div class="panel-body">
+        <div class="kv-list">
+          <div class="kv"><span class="k">Carlsen</span>
+            <span><span style="color:var(--muted);font-size:10px">33.1% </span><span class="pill neg">61.0%</span></span>
+          </div>
+          <div class="kv"><span class="k">Firouzja</span>
+            <span><span style="color:var(--muted);font-size:10px">17.1% </span><span class="pill" style="background:rgba(200,200,200,0.08);color:var(--muted)">14.0%</span></span>
+          </div>
+          <div class="kv"><span class="k">Keymer</span>
+            <span><span style="color:var(--muted);font-size:10px">14.1% </span><span class="pill" style="background:rgba(200,200,200,0.08);color:var(--muted)">11.0%</span></span>
+          </div>
+          <div class="kv"><span class="k">So</span>
+            <span><span style="color:var(--muted);font-size:10px">13.4% </span><span class="pill" style="background:rgba(200,200,200,0.08);color:var(--muted)">10.0%</span></span>
+          </div>
+          <div class="kv"><span class="k">Praggnanandhaa</span>
+            <span><span style="color:var(--muted);font-size:10px">12.1% </span><span class="pill" style="background:rgba(200,200,200,0.08);color:var(--muted)">8.0%</span></span>
+          </div>
+          <div class="kv"><span class="k">Gukesh</span>
+            <span><span style="color:var(--muted);font-size:10px">10.3% </span><span class="pill" style="background:rgba(200,200,200,0.08);color:var(--muted)">7.0%</span></span>
+          </div>
+        </div>
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:9px;color:var(--muted)">
+          model% · market% &nbsp;|&nbsp; actionable: <span style="color:var(--red)">1 (NO Carlsen)</span>
+        </div>
+      </div>
+    </div>
+
   </div>
-</section>
-
-<div class="wrapper"><div class="divider"></div></div>
-
-<!-- ── POSITIONS TABLE ───────────────────────────────────── -->
-<section class="positions-section">
-  <div class="wrapper">
-    <div class="section-header">
-      <div>
-        <div class="section-title">Live Positions</div>
-      </div>
-      <span class="section-sub" id="pos-count">loading…</span>
-    </div>
-    <div class="table-card">
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Tournament</th>
-            <th>Exchange</th>
-            <th>Player</th>
-            <th>Model</th>
-            <th>Market</th>
-            <th>Edge</th>
-            <th>Action</th>
-            <th>Stake</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="positions-tbody">
-          <tr><td colspan="10" class="empty-state">Loading positions…</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<div class="wrapper"><div class="divider"></div></div>
-
-<!-- ── METHODOLOGY ───────────────────────────────────────── -->
-<section class="methodology-section">
-  <div class="wrapper">
-    <div class="section-header">
-      <div class="section-title">How It Works</div>
-    </div>
-    <div class="method-grid">
-
-      <!-- Card 1: Pipeline -->
-      <div class="method-card">
-        <div class="method-icon cyan">🔗</div>
-        <h3>Data Pipeline</h3>
-        <div class="pipeline-steps">
-          <div class="pipeline-step">
-            <div class="step-num">1</div>
-            <div class="step-text"><strong>Lichess Broadcast API</strong> — live round results as games finish</div>
-          </div>
-          <div class="pipeline-step">
-            <div class="step-num">2</div>
-            <div class="step-text"><strong>FIDE / Chess.com ratings</strong> — current Elo with Chess.com fallback</div>
-          </div>
-          <div class="pipeline-step">
-            <div class="step-num">3</div>
-            <div class="step-text"><strong>TPR database</strong> — 650+ players, 662 elite games across 7 tournaments</div>
-          </div>
-          <div class="pipeline-step">
-            <div class="step-num">4</div>
-            <div class="step-text"><strong>Market prices</strong> — Polymarket CLOB API or Kalshi (hardcoded)</div>
-          </div>
-          <div class="pipeline-step">
-            <div class="step-num">5</div>
-            <div class="step-text"><strong>Edge table + CSV log</strong> — actionable bets written to positions.csv</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 2: Monte Carlo -->
-      <div class="method-card">
-        <div class="method-icon cyan">🎲</div>
-        <h3>Monte Carlo Engine</h3>
-        <ul class="bullet-list">
-          <li><strong>50,000 tournament simulations</strong> per run, full round-robin schedule</li>
-          <li><strong>Elo win probability</strong> with +35 white-piece advantage baked in</li>
-          <li><strong>Kryukov draw-rate model</strong> — exponential fit, optimized for the 2700+ cohort where draws dominate</li>
-          <li><strong>TPR blending</strong> — 45% FIDE Elo + 55% tournament performance rating, scaled by games played</li>
-          <li><strong>Rating variance</strong> — N(μ, σ=50) per simulation to capture uncertainty</li>
-          <li><strong>Must-win adjustment</strong> — standings-aware draw-rate reduction for desperate positions</li>
-        </ul>
-      </div>
-
-      <!-- Card 3: Edge & Sizing -->
-      <div class="method-card">
-        <div class="method-icon green">📐</div>
-        <h3>Edge &amp; Position Sizing</h3>
-        <ul class="bullet-list">
-          <li><strong>Edge = Model prob − Market price</strong> — positive means YES is cheap, negative means YES is overpriced</li>
-          <li><strong>8% minimum edge</strong> — 3-point buffer above 5% EV floor to absorb model error</li>
-          <li><strong>Quarter-Kelly sizing</strong> — conservative fractional Kelly, caps each trade at a fraction of bankroll</li>
-          <li><strong>5% tournament exposure cap</strong> — total stake per tournament ≤ $500 on a $10K bankroll</li>
-          <li><strong>Min $100 stake</strong> — ignores tiny signals not worth the operational friction</li>
-        </ul>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<div class="wrapper"><div class="divider"></div></div>
-
-<!-- ── MODEL DETAILS ─────────────────────────────────────── -->
-<section class="model-section">
-  <div class="wrapper">
-    <div class="section-header">
-      <div class="section-title">Model Details</div>
-    </div>
-    <div class="accordion">
-
-      <!-- Elo Formula -->
-      <div class="acc-item open">
-        <div class="acc-header" onclick="toggleAcc(this)">
-          <div class="acc-header-left">
-            <div class="acc-icon" style="background:var(--cyan-dim); font-size:16px;">∿</div>
-            <div>
-              <div class="acc-title">Elo Win Probability</div>
-              <div class="acc-sub">Standard Elo model with white-piece bonus</div>
-            </div>
-          </div>
-          <div class="acc-chevron">▼</div>
-        </div>
-        <div class="acc-body">
-          <div class="formula-block">
-            P(A wins) = 1 / (1 + 10<sup style="font-size:10px">((R<sub>B</sub> − R<sub>A</sub>) / 400)</sup>
-            <br><br>
-            <span class="comment">// White gets +35 Elo bonus before calculation</span><br>
-            <span class="comment">// Draw outcome sampled from Kryukov model below</span>
-          </div>
-          <div class="param-grid">
-            <div class="param-item">
-              <div class="param-name">White Bonus</div>
-              <div class="param-val">+35 Elo</div>
-              <div class="param-desc">First-move advantage adjustment</div>
-            </div>
-            <div class="param-item">
-              <div class="param-name">Scale Factor</div>
-              <div class="param-val">400</div>
-              <div class="param-desc">Standard FIDE Elo constant</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Kryukov Draw Model -->
-      <div class="acc-item">
-        <div class="acc-header" onclick="toggleAcc(this)">
-          <div class="acc-header-left">
-            <div class="acc-icon" style="background:var(--green-dim); font-size:16px;">⚖</div>
-            <div>
-              <div class="acc-title">Kryukov Draw-Rate Model</div>
-              <div class="acc-sub">Calibrated to 2700+ classical games, captures elite draw surge</div>
-            </div>
-          </div>
-          <div class="acc-chevron">▼</div>
-        </div>
-        <div class="acc-body">
-          <div class="formula-block">
-            draw% = −|ΔR| / 32.49
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ exp((μ − 2254.7) / 208.49)
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ 23.87
-            <br><br>
-            <span class="comment">// μ = average rating of the two players</span><br>
-            <span class="comment">// ΔR = rating difference (larger gap → fewer draws)</span><br>
-            <span class="comment">// Exponential term captures 2700+ draw rate explosion</span>
-          </div>
-          <p style="font-size:13px; color:var(--text-dim); line-height:1.6;">
-            At the top level, games between equally matched 2800+ players draw over 60% of the time.
-            The exponential term in this model captures that phenomenon — draw rates grow rapidly
-            as average rating crosses 2600 and explode above 2750.
-          </p>
-        </div>
-      </div>
-
-      <!-- TPR Blending -->
-      <div class="acc-item">
-        <div class="acc-header" onclick="toggleAcc(this)">
-          <div class="acc-header-left">
-            <div class="acc-icon" style="background:rgba(99,102,241,0.12); font-size:16px;">🔀</div>
-            <div>
-              <div class="acc-title">TPR Blending</div>
-              <div class="acc-sub">Adjusts static FIDE ratings with recent tournament performance</div>
-            </div>
-          </div>
-          <div class="acc-chevron">▼</div>
-        </div>
-        <div class="acc-body">
-          <div class="formula-block">
-            adjusted = 0.45 × FIDE_elo + 0.55 × tpr
-            <br><br>
-            <span class="comment">// Weight scaled by reliability:</span><br>
-            <span class="comment">// full 55% weight at 15+ elite games</span><br>
-            <span class="comment">// linear ramp from 0 to 15 games</span><br>
-            <br>
-            velocity = (tpr − fide_elo) × 0.15&nbsp;&nbsp;<span class="comment">// momentum</span><br>
-            adjustment clamped to ±50 Elo
-          </div>
-          <div class="param-grid">
-            <div class="param-item">
-              <div class="param-name">FIDE Weight</div>
-              <div class="param-val">45%</div>
-              <div class="param-desc">Static official rating</div>
-            </div>
-            <div class="param-item">
-              <div class="param-name">TPR Weight</div>
-              <div class="param-val">55%</div>
-              <div class="param-desc">Live performance rating (2600+ opp)</div>
-            </div>
-            <div class="param-item">
-              <div class="param-name">Players in DB</div>
-              <div class="param-val">650+</div>
-              <div class="param-desc">Elite games analyzed</div>
-            </div>
-            <div class="param-item">
-              <div class="param-name">Max Adjustment</div>
-              <div class="param-val">±50 Elo</div>
-              <div class="param-desc">Hard cap on FIDE deviation</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Kelly Criterion -->
-      <div class="acc-item">
-        <div class="acc-header" onclick="toggleAcc(this)">
-          <div class="acc-header-left">
-            <div class="acc-icon" style="background:var(--yellow-dim); font-size:16px;">💰</div>
-            <div>
-              <div class="acc-title">Kelly Criterion &amp; Position Sizing</div>
-              <div class="acc-sub">Quarter-Kelly with exposure cap</div>
-            </div>
-          </div>
-          <div class="acc-chevron">▼</div>
-        </div>
-        <div class="acc-body">
-          <div class="formula-block">
-            f* = (b·p − q) / b
-            <br><br>
-            <span class="comment">// b = net odds (payout / cost)</span><br>
-            <span class="comment">// p = model win probability</span><br>
-            <span class="comment">// q = 1 − p (loss probability)</span><br>
-            <br>
-            stake = (f* × ¼) × bankroll
-            <br>
-            stake = max(stake, $100)&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// $100 floor</span><br>
-            total ≤ 5% of bankroll per tournament
-          </div>
-          <div class="param-grid">
-            <div class="param-item">
-              <div class="param-name">Kelly Fraction</div>
-              <div class="param-val">25%</div>
-              <div class="param-desc">Conservative — accounts for model error</div>
-            </div>
-            <div class="param-item">
-              <div class="param-name">Bankroll</div>
-              <div class="param-val">$10,000</div>
-              <div class="param-desc">Simulated starting capital</div>
-            </div>
-            <div class="param-item">
-              <div class="param-name">Tournament Cap</div>
-              <div class="param-val">5%</div>
-              <div class="param-desc">Max $500 exposure per event</div>
-            </div>
-            <div class="param-item">
-              <div class="param-name">Min Stake</div>
-              <div class="param-val">$100</div>
-              <div class="param-desc">Ignores sub-threshold signals</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ── FOOTER ────────────────────────────────────────────── -->
-<footer>
-  <div class="wrapper">
-    <div class="footer-inner">
-      <div class="footer-left">
-        <strong>PolymarketBot v1.0</strong> — Built by Zander Deutsch &nbsp;·&nbsp;
-        Monte Carlo chess tournament simulator
-      </div>
-      <div class="footer-links">
-        <a href="https://lichess.org" target="_blank">Lichess</a>
-        <a href="https://www.chess.com" target="_blank">Chess.com</a>
-        <a href="https://polymarket.com" target="_blank">Polymarket</a>
-        <a href="https://kalshi.com" target="_blank">Kalshi</a>
-      </div>
-    </div>
-  </div>
-</footer>
+</div>
 
 <script>
-// ── Timestamp ──────────────────────────────────────────────
-function updateTimestamp() {
+// ── Timestamp ────────────────────────────────────────────
+function tick() {
   const now = new Date();
-  document.getElementById('ts').textContent =
-    now.toLocaleString('en-US', {
-      month: 'short', day: 'numeric', year: 'numeric',
-      hour: '2-digit', minute: '2-digit', second: '2-digit'
-    });
+  document.getElementById('hdr-ts').textContent = now.toLocaleString('en-US',{
+    month:'2-digit',day:'2-digit',year:'2-digit',
+    hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false
+  }).replace(',','');
 }
-updateTimestamp();
-setInterval(updateTimestamp, 1000);
+tick(); setInterval(tick, 1000);
 
-// ── Demo P&L Data ──────────────────────────────────────────
-const DEMO_TRADES = [
-  { date: '2025-10-18', label: 'Tata Steel Qualifier — YES Erigaisi',   pnl: 340  },
-  { date: '2025-10-18', label: 'Tata Steel Qualifier — NO Carlsen',     pnl: 410  },
-  { date: '2026-01-12', label: 'Tata Steel 2026 — YES Abdusattorov',    pnl: 280  },
-  { date: '2026-01-12', label: 'Tata Steel 2026 — NO Carlsen',          pnl: 490  },
-  { date: '2026-02-09', label: 'Candidates 2026 — YES Sindarov',        pnl: 620  },
-  { date: '2026-02-09', label: 'Candidates 2026 — NO Nakamura',         pnl: 380  },
-  { date: '2026-04-07', label: 'Sigeman 2026 — YES Abdusattorov',       pnl: 310  },
-  { date: '2026-04-23', label: 'Norway Chess 2026 — NO Carlsen',        pnl: null }, // open
+// ── Demo Trades ──────────────────────────────────────────
+const TRADES = [
+  { d:'2025-10-18', id:'T001', t:'Tata Steel Qualifier',  p:'A. Erigaisi',    act:'YES', m:22,   k:12,   e:10,   s:200, pnl:220  },
+  { d:'2025-10-18', id:'T002', t:'Tata Steel Qualifier',  p:'M. Carlsen',     act:'NO',  m:35,   k:47,   e:-12,  s:200, pnl:-180 },
+  { d:'2025-11-14', id:'T003', t:'World Rapid Qualifier', p:'J. Sindarov',    act:'YES', m:20,   k:11,   e:9,    s:250, pnl:310  },
+  { d:'2025-11-14', id:'T004', t:'World Rapid Qualifier', p:'F. Caruana',     act:'NO',  m:22,   k:33,   e:-11,  s:200, pnl:-220 },
+  { d:'2026-01-12', id:'T005', t:'Tata Steel 2026',       p:'N. Abdusattorov',act:'YES', m:20,   k:11,   e:9,    s:250, pnl:280  },
+  { d:'2026-01-12', id:'T006', t:'Tata Steel 2026',       p:'M. Carlsen',     act:'NO',  m:38,   k:54,   e:-16,  s:450, pnl:490  },
+  { d:'2026-02-09', id:'T007', t:'Candidates 2026',       p:'J. Sindarov',    act:'YES', m:18,   k:8,    e:10,   s:250, pnl:620  },
+  { d:'2026-02-09', id:'T008', t:'Candidates 2026',       p:'H. Nakamura',    act:'NO',  m:20,   k:31,   e:-11,  s:350, pnl:-150 },
+  { d:'2026-04-07', id:'T009', t:'Sigeman 2026',          p:'N. Abdusattorov',act:'YES', m:38,   k:27,   e:11,   s:250, pnl:310  },
 ];
+// Cumulative: 220, 40, 350, 130, 410, 900, 1520, 1370, 1680
 
-// Cumulative P&L (open position doesn't change it yet)
-let cumulative = 0;
-const chartLabels = [];
-const chartData   = [];
-
-// Start point
-chartLabels.push('Start');
-chartData.push(0);
-
-DEMO_TRADES.forEach(t => {
-  if (t.pnl !== null) {
-    cumulative += t.pnl;
-    chartLabels.push(t.date);
-    chartData.push(cumulative);
-  }
+let cum = 0;
+const labels = ['─'];
+const data   = [0];
+TRADES.forEach(t => {
+  cum += t.pnl;
+  labels.push(t.d);
+  data.push(cum);
 });
+// Open position point
+labels.push('2026-04-23*');
+data.push(cum);
 
-// Add open position as the last point (same value, dashed)
-chartLabels.push('2026-04-23*');
-chartData.push(cumulative);
-
-// ── P&L Chart ──────────────────────────────────────────────
-const canvas = document.getElementById('pnlChart');
-const ctx    = canvas.getContext('2d');
-
-const gradient = ctx.createLinearGradient(0, 0, 0, 280);
-gradient.addColorStop(0,   'rgba(16, 185, 129, 0.35)');
-gradient.addColorStop(0.7, 'rgba(16, 185, 129, 0.06)');
-gradient.addColorStop(1,   'rgba(16, 185, 129, 0)');
+// ── Chart ────────────────────────────────────────────────
+const ctx = document.getElementById('pnlChart').getContext('2d');
+const grad = ctx.createLinearGradient(0,0,0,220);
+grad.addColorStop(0,   'rgba(0,230,118,0.25)');
+grad.addColorStop(0.6, 'rgba(0,230,118,0.04)');
+grad.addColorStop(1,   'rgba(0,230,118,0)');
 
 new Chart(ctx, {
   type: 'line',
   data: {
-    labels: chartLabels,
+    labels,
     datasets: [{
-      data: chartData,
-      borderColor: '#10b981',
-      borderWidth: 2.5,
-      pointBackgroundColor: chartLabels.map((_, i) =>
-        i === chartLabels.length - 1 ? '#f59e0b' : '#10b981'
-      ),
-      pointBorderColor: '#111827',
-      pointBorderWidth: 2,
-      pointRadius: chartLabels.map((_, i) =>
-        i === chartLabels.length - 1 ? 7 : 5
-      ),
-      pointHoverRadius: 8,
-      fill: true,
-      backgroundColor: gradient,
-      tension: 0.4,
-      // Dashed segment for the open position
+      data,
+      borderColor: data.map((v,i) => {
+        if (i === 0) return '#00e676';
+        return data[i] < data[i-1] ? '#ff4444' : '#00e676';
+      }),
+      borderWidth: 1.5,
       segment: {
-        borderDash: (ctx) => ctx.p1DataIndex === chartData.length - 1 ? [6, 4] : [],
-        borderColor: (ctx) => ctx.p1DataIndex === chartData.length - 1
-          ? 'rgba(245,158,11,0.8)' : '#10b981',
+        borderColor: ctx => {
+          const i = ctx.p1DataIndex;
+          if (i === data.length - 1) return 'rgba(255,179,0,0.7)';
+          return data[i] < data[i-1] ? '#ff4444' : '#00e676';
+        },
+        borderDash: ctx => ctx.p1DataIndex === data.length - 1 ? [4,3] : [],
       },
+      pointBackgroundColor: data.map((v, i) => {
+        if (i === data.length - 1) return '#ffb300';
+        if (i === 0) return '#00e676';
+        return v < data[i-1] ? '#ff4444' : '#00e676';
+      }),
+      pointBorderColor: '#080c14',
+      pointBorderWidth: 1,
+      pointRadius: data.map((_, i) => i === data.length - 1 ? 6 : 3),
+      pointHoverRadius: 7,
+      fill: true,
+      backgroundColor: grad,
+      tension: 0.3,
     }],
   },
   options: {
@@ -1309,124 +590,99 @@ new Chart(ctx, {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: '#1a2332',
-        borderColor: '#2e4060',
+        backgroundColor: '#0d1320',
+        borderColor: '#243352',
         borderWidth: 1,
-        titleColor: '#94a3b8',
-        bodyColor: '#f1f5f9',
-        padding: 12,
+        titleColor: '#546e8a',
+        bodyColor: '#cdd9e5',
+        padding: 10,
+        titleFont: { family: "'JetBrains Mono'", size: 10 },
+        bodyFont: { family: "'JetBrains Mono'", size: 11 },
         callbacks: {
-          label: (ctx) => {
+          title: ctx => ctx[0].label === '─' ? 'start' : ctx[0].label,
+          label: ctx => {
             const v = ctx.raw;
-            const sign = v >= 0 ? '+' : '';
-            return `  Cumulative P&L: ${sign}$${v.toLocaleString()}`;
-          },
-          afterLabel: (ctx) => {
             const i = ctx.dataIndex;
-            if (i === 0) return '  Starting position';
-            if (i === chartData.length - 1) return '  ● Open position (unsettled)';
-            const t = DEMO_TRADES[i - 1];
-            return t ? `  ${t.label}` : '';
+            const sign = v >= 0 ? '+' : '';
+            const delta = i > 0 ? (v - data[i-1]) : 0;
+            const ds = delta >= 0 ? `+$${delta}` : `-$${Math.abs(delta)}`;
+            const line1 = `  cum_pnl: ${sign}$${v.toLocaleString()}`;
+            const line2 = i > 0 && i < data.length - 1 ? `  trade:   ${ds}` : '';
+            const trade = TRADES[i-1];
+            const line3 = trade ? `  ${trade.id}: ${trade.t}` : (i === data.length-1 ? '  NCH26-001 [OPEN]' : '');
+            return [line1, line2, line3].filter(Boolean);
           }
         }
-      },
+      }
     },
     scales: {
       x: {
-        grid: { color: 'rgba(30,45,64,0.8)', drawBorder: false },
-        ticks: {
-          color: '#4b5e7a',
-          font: { family: "'JetBrains Mono'", size: 11 },
-          maxRotation: 0,
-        },
+        grid: { color: 'rgba(26,38,64,0.8)', drawBorder: false },
+        ticks: { color: '#3d5068', font: { family:"'JetBrains Mono'", size:9 }, maxRotation:0 },
         border: { display: false },
       },
       y: {
-        grid: { color: 'rgba(30,45,64,0.8)', drawBorder: false },
-        ticks: {
-          color: '#4b5e7a',
-          font: { family: "'JetBrains Mono'", size: 11 },
-          callback: v => '$' + v.toLocaleString(),
-        },
+        grid: { color: 'rgba(26,38,64,0.8)', drawBorder: false },
+        ticks: { color: '#3d5068', font: { family:"'JetBrains Mono'", size:9 }, callback: v => '$'+v },
         border: { display: false },
       }
     }
   }
 });
 
-// ── CSV → Positions Table ──────────────────────────────────
-function parseCSV(text) {
-  const lines = text.trim().split('\n');
+// ── Positions CSV ────────────────────────────────────────
+function parseCSV(t) {
+  const lines = t.trim().split('\n');
   if (lines.length < 2) return [];
-  const headers = lines[0].split(',').map(h => h.trim());
-  return lines.slice(1).map(line => {
-    const cols = line.split(',').map(c => c.trim());
-    const obj = {};
-    headers.forEach((h, i) => obj[h] = cols[i] ?? '');
-    return obj;
+  const h = lines[0].split(',').map(x=>x.trim());
+  return lines.slice(1).map(l => {
+    const c = l.split(',').map(x=>x.trim());
+    const o = {};
+    h.forEach((k,i) => o[k] = c[i]??'');
+    return o;
   });
 }
 
 function renderPositions(rows) {
-  const tbody = document.getElementById('positions-tbody');
-  const counter = document.getElementById('pos-count');
+  const tbody = document.getElementById('pos-tbody');
+  const badge = document.getElementById('pos-badge');
+  document.getElementById('hdr-open').textContent = rows.length;
 
-  if (!rows || rows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="10" class="empty-state">No positions logged yet.</td></tr>`;
-    counter.textContent = '0 positions';
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="10" class="empty">no positions logged</td></tr>`;
+    badge.textContent = '0';
     return;
   }
-
-  counter.textContent = `${rows.length} position${rows.length !== 1 ? 's' : ''}`;
-  document.getElementById('open-count').textContent = rows.length;
+  badge.textContent = rows.length;
 
   tbody.innerHTML = rows.map(r => {
-    const action  = (r['Action'] || '').toUpperCase();
-    const edge    = parseFloat(r['Edge%'] || '0');
-    const edgeSign = edge >= 0 ? '+' : '';
-    const edgeClass = edge >= 0 ? 'positive' : 'negative';
-    const rowClass  = action === 'YES' ? 'yes-row' : action === 'NO' ? 'no-row' : '';
-
-    return `<tr class="${rowClass}">
-      <td class="td-date">${r['Date'] || '—'}</td>
-      <td class="td-tournament">${r['Tournament'] || '—'}</td>
-      <td><span class="td-exchange">${r['Exchange'] || '—'}</span></td>
-      <td class="td-player">${r['Player'] || '—'}</td>
-      <td class="td-num">${r['Model%'] || '—'}%</td>
-      <td class="td-num">${r['Market%'] || '—'}%</td>
-      <td><span class="edge-pill ${edgeClass}">${edgeSign}${r['Edge%'] || '0'}%</span></td>
-      <td><span class="action-badge ${action.toLowerCase()}">${action}</span></td>
-      <td class="td-num">$${parseFloat(r['Stake'] || '0').toLocaleString()}</td>
-      <td><span class="status-badge open">● OPEN</span></td>
+    const act = (r['Action']||'').toUpperCase();
+    const edge = parseFloat(r['Edge%']||'0');
+    const eSign = edge >= 0 ? '+' : '';
+    const eCls = edge >= 0 ? 'pos' : 'neg';
+    const rCls = act === 'YES' ? 'row-yes' : act === 'NO' ? 'row-no' : '';
+    return `<tr class="${rCls}">
+      <td class="td-date">${r['Date']||'—'}</td>
+      <td class="td-tour">${r['Tournament']||'—'}</td>
+      <td><span class="td-exch">${r['Exchange']||'—'}</span></td>
+      <td class="td-player">${r['Player']||'—'}</td>
+      <td>${r['Model%']||'—'}%</td>
+      <td>${r['Market%']||'—'}%</td>
+      <td><span class="pill ${eCls}">${eSign}${r['Edge%']||'0'}%</span></td>
+      <td><span class="pill ${act.toLowerCase()}">${act}</span></td>
+      <td>$${parseFloat(r['Stake']||'0').toLocaleString()}</td>
+      <td><span class="pill open">OPEN</span></td>
     </tr>`;
   }).join('');
 }
 
-// Fetch positions.csv
 fetch('positions.csv')
   .then(r => r.text())
-  .then(text => renderPositions(parseCSV(text)))
-  .catch(() => {
-    // Fallback: show hardcoded Norway Chess row if server isn't running
-    renderPositions([{
-      'Date': '2026-04-23',
-      'Tournament': 'Norway Chess 2026',
-      'Exchange': 'Kalshi',
-      'Player': 'Magnus Carlsen',
-      'Model%': '33.1',
-      'Market%': '61.0',
-      'Edge%': '-27.9',
-      'Action': 'NO',
-      'Stake': '500.00',
-    }]);
-  });
-
-// ── Accordion ──────────────────────────────────────────────
-function toggleAcc(header) {
-  const item = header.closest('.acc-item');
-  item.classList.toggle('open');
-}
+  .then(t => renderPositions(parseCSV(t)))
+  .catch(() => renderPositions([{
+    'Date':'2026-04-23','Tournament':'Norway Chess 2026','Exchange':'Kalshi',
+    'Player':'Magnus Carlsen','Model%':'33.1','Market%':'61.0','Edge%':'-27.9','Action':'NO','Stake':'500.00'
+  }]));
 </script>
-
 </body>
 </html>

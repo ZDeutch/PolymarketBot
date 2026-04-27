@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PolymarketBot — How It Works</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:      #0a0e1a;
+      --surface: #111827;
+      --border:  #1e2d40;
+      --cyan:    #00d4ff;
+      --green:   #10b981;
+      --red:     #ef4444;
+      --yellow:  #f59e0b;
+      --text:    #f1f5f9;
+      --dim:     #94a3b8;
+      --muted:   #4b5e7a;
+      --mono:    'JetBrains Mono', monospace;
+      --sans:    'Inter', sans-serif;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: var(--sans); line-height: 1.7;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.02) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 18px 0;
+    }
+    .hdr-inner {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: var(--mono); font-size: 12px;
+      color: var(--cyan); text-decoration: none;
+      border: 1px solid var(--border); border-radius: 4px;
+      padding: 6px 14px;
+      transition: background 0.15s;
+    }
+    .back-btn:hover { background: rgba(0,212,255,0.06); }
+    .hdr-title { font-family: var(--mono); font-size: 13px; color: var(--dim); }
+
+    /* Hero */
+    .hero { padding: 64px 0 48px; }
+    .tag {
+      display: inline-block; font-family: var(--mono); font-size: 11px;
+      color: var(--cyan); background: rgba(0,212,255,0.08);
+      border: 1px solid rgba(0,212,255,0.2); border-radius: 20px;
+      padding: 4px 14px; margin-bottom: 20px; letter-spacing: 0.4px;
+    }
+    .hero h1 {
+      font-size: 42px; font-weight: 800; letter-spacing: -1.2px;
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .hero p { font-size: 18px; color: var(--dim); max-width: 600px; }
+
+    /* Section */
+    section { padding-bottom: 56px; }
+    h2 {
+      font-size: 24px; font-weight: 700; letter-spacing: -0.4px;
+      margin-bottom: 6px;
+    }
+    .section-lead { font-size: 15px; color: var(--dim); margin-bottom: 28px; }
+
+    /* Step */
+    .steps { display: flex; flex-direction: column; gap: 2px; }
+    .step {
+      display: flex; gap: 20px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 22px 24px;
+    }
+    .step-num {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.25);
+      color: var(--cyan); font-family: var(--mono); font-size: 13px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center; margin-top: 2px;
+    }
+    .step h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+    .step p  { font-size: 14px; color: var(--dim); }
+
+    /* Formula card */
+    .formula-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 24px; margin-bottom: 16px;
+    }
+    .formula-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+    .formula-card .sub { font-size: 13px; color: var(--dim); margin-bottom: 16px; }
+    .code-block {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 16px 18px;
+      font-family: var(--mono); font-size: 13px; color: var(--cyan);
+      line-height: 1.9; margin: 12px 0;
+    }
+    .code-block .comment { color: var(--muted); font-size: 11px; }
+    .formula-card p { font-size: 14px; color: var(--dim); margin-top: 12px; }
+
+    /* Two col */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* Param grid */
+    .params { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 16px; }
+    .param {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 14px 16px;
+    }
+    .param .pname { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 5px; }
+    .param .pval  { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--text); }
+    .param .pdesc { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+    /* FAQ */
+    .faq { display: flex; flex-direction: column; gap: 2px; }
+    .qa {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 20px 22px;
+    }
+    .qa .q { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .qa .a { font-size: 14px; color: var(--dim); }
+
+    /* Divider */
+    hr { border: none; border-top: 1px solid var(--border); margin-bottom: 48px; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      font-size: 13px; color: var(--muted);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--cyan); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="hdr-inner">
+      <a class="back-btn" href="dashboard.html">← DASHBOARD</a>
+      <span class="hdr-title">POLYMARKETBOT / METHODOLOGY</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="tag">⚡ How It Works</div>
+    <h1>Finding Mispriced Chess<br>Prediction Markets</h1>
+    <p>A plain-English walkthrough of how PolymarketBot models tournament win probabilities and identifies edges against market prices.</p>
+  </div>
+
+  <hr>
+
+  <!-- THE BIG IDEA -->
+  <section>
+    <h2>The Big Idea</h2>
+    <p class="section-lead">Prediction markets let you bet on who wins a chess tournament. Like any market, they can be wrong. PolymarketBot builds its own probability model and bets when the model disagrees significantly with the market price.</p>
+    <div class="formula-card">
+      <h3>What is "edge"?</h3>
+      <div class="code-block">
+        edge = model_probability − market_price<br><br>
+        <span class="comment">// edge &gt; 0  →  market underprices the player  →  BUY YES</span><br>
+        <span class="comment">// edge &lt; 0  →  market overprices the player   →  BUY NO</span><br>
+        <span class="comment">// |edge| &lt; 8% →  within noise, no bet</span>
+      </div>
+      <p>For example: if the model says Magnus Carlsen has a 33% chance of winning Norway Chess, but Kalshi is selling YES contracts at 61¢, the edge is −28%. The market thinks he's nearly twice as likely to win as the model does — so we buy NO (betting against Carlsen winning).</p>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- PIPELINE -->
+  <section>
+    <h2>The Pipeline</h2>
+    <p class="section-lead">Every run of the bot follows these 7 steps automatically.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <h3>Fetch tournament metadata from Lichess</h3>
+          <p>Pulls the current round results and player list from the Lichess Broadcast API. If the tournament hasn't started yet (no broadcast), uses a pre-configured player list and a synthetic schedule.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <h3>Get player ratings</h3>
+          <p>Loads current FIDE classical ratings from a hardcoded table (updated after each rating list). For a handful of players, also checks Chess.com — but only when the Chess.com rating is known to be accurate (some top GMs have inflated online ratings).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <h3>Build the remaining schedule</h3>
+          <p>Computes all remaining games in the round-robin, excluding games already played. Handles single and double round-robins automatically based on total rounds vs. player count.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <h3>Run 50,000 Monte Carlo simulations</h3>
+          <p>Simulates the full remaining tournament 50,000 times. Each iteration plays out every remaining game using the Elo win probability formula, the Kryukov draw-rate model, and blended TPR ratings. Counts how often each player wins to get a win probability.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div>
+          <h3>Fetch market prices</h3>
+          <p>For Polymarket events, hits the Gamma API → CLOB API to get the live YES midpoint price. For Kalshi, reads from hardcoded prices manually updated before each run (Kalshi doesn't have a public API).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div>
+          <h3>Calculate edges and size positions</h3>
+          <p>Compares model probabilities to market prices. For any edge ≥ 8%, computes a quarter-Kelly stake size. Caps total tournament exposure at 5% of bankroll ($500 on a $10K bankroll).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">7</div>
+        <div>
+          <h3>Log to positions.csv</h3>
+          <p>Writes every actionable position (those with a non-zero stake) to a CSV file with the date, tournament, exchange, edge, and stake size. The dashboard reads this file live.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- MODEL -->
+  <section>
+    <h2>The Model</h2>
+    <p class="section-lead">Three components make the simulation more accurate than naive Elo alone.</p>
+
+    <div class="formula-card">
+      <h3>1 — Elo Win Probability</h3>
+      <div class="sub">How likely is player A to beat player B in a single game?</div>
+      <div class="code-block">
+        P(A wins) = 1 / (1 + 10^((R_B − R_A) / 400))<br><br>
+        <span class="comment">// White gets +35 Elo advantage before the calculation</span><br>
+        <span class="comment">// The leftover probability (after P(A wins) and P(draw)) goes to B</span>
+      </div>
+      <p>Standard FIDE Elo formula. A 200-point gap means the stronger player wins ~76% of decisive games. The +35 white bonus is a well-documented first-move advantage at elite level.</p>
+    </div>
+
+    <div class="formula-card">
+      <h3>2 — Kryukov Draw-Rate Model</h3>
+      <div class="sub">How likely is this specific game to be drawn?</div>
+      <div class="code-block">
+        draw% = −|ΔR| / 32.49<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ exp((avg_rating − 2254.7) / 208.49)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ 23.87<br><br>
+        <span class="comment">// avg_rating = average of both players' ratings</span><br>
+        <span class="comment">// |ΔR| = absolute rating difference</span>
+      </div>
+      <p>At the top level, games between equally matched 2800+ players draw more than 60% of the time. The exponential term captures this surge. A bigger rating gap means fewer draws (one player is just better). This beats simpler draw models — tested against 2024–2026 elite tournament data.</p>
+    </div>
+
+    <div class="formula-card">
+      <h3>3 — Tournament Performance Rating (TPR) Blending</h3>
+      <div class="sub">Static FIDE ratings miss recent form. TPR captures it.</div>
+      <div class="code-block">
+        tpr_weight  = min(elite_games / 15, 1.0) × 0.55<br>
+        fide_weight = 1.0 − tpr_weight<br><br>
+        adjusted_rating = fide_weight × fide_elo + tpr_weight × tpr<br><br>
+        velocity = (tpr − fide_elo) × 0.15<br>
+        adjusted_rating += clamp(velocity, −50, +50)<br><br>
+        <span class="comment">// tpr computed from 2600+ opposition games only</span><br>
+        <span class="comment">// 650+ players in db across 7 tournaments (2024–2026)</span>
+      </div>
+      <p>FIDE ratings update monthly and lag performance. A player who just won the Candidates tournament is probably stronger than their FIDE number suggests. TPR from recent elite games captures current form, weighted by how many games we have (more games = more reliable).</p>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- SIZING -->
+  <section>
+    <h2>Position Sizing</h2>
+    <p class="section-lead">How much to bet, given an edge.</p>
+
+    <div class="formula-card">
+      <h3>Quarter-Kelly Criterion</h3>
+      <div class="code-block">
+        f* = (b·p − q) / b<br><br>
+        <span class="comment">// b = net odds paid on a win</span><br>
+        <span class="comment">// p = model win probability</span><br>
+        <span class="comment">// q = 1 − p (probability of loss)</span><br><br>
+        stake = (f* × 0.25) × bankroll<br>
+        stake = max(stake, $100)
+      </div>
+      <p>Kelly tells you the fraction of bankroll that maximizes long-run growth. We use quarter-Kelly (25%) as a conservative hedge against model error. A wrong model with full Kelly sizing leads to ruin — quarter-Kelly survives mistakes while still being profitable if the model is right.</p>
+    </div>
+
+    <div class="params">
+      <div class="param">
+        <div class="pname">kelly_fraction</div><div class="pval">0.25</div>
+        <div class="pdesc">25% of full Kelly</div>
+      </div>
+      <div class="param">
+        <div class="pname">edge_min</div><div class="pval">8%</div>
+        <div class="pdesc">3pt buffer above 5% EV floor</div>
+      </div>
+      <div class="param">
+        <div class="pname">exposure_cap</div><div class="pval">5%</div>
+        <div class="pdesc">Max per tournament</div>
+      </div>
+      <div class="param">
+        <div class="pname">min_stake</div><div class="pval">$100</div>
+        <div class="pdesc">Ignore tiny signals</div>
+      </div>
+      <div class="param">
+        <div class="pname">bankroll</div><div class="pval">$10K</div>
+        <div class="pdesc">Simulated starting capital</div>
+      </div>
+      <div class="param">
+        <div class="pname">min_market_price</div><div class="pval">5%</div>
+        <div class="pdesc">Filter illiquid contracts</div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- FAQ -->
+  <section>
+    <h2>Common Questions</h2>
+    <p class="section-lead"></p>
+    <div class="faq">
+      <div class="qa">
+        <div class="q">Why chess specifically?</div>
+        <div class="a">Chess has well-understood rating systems (FIDE Elo) and rich historical data. Elo is a proven, calibrated predictor of game outcomes — better than most sports. This gives the model a real statistical foundation rather than vibes.</div>
+      </div>
+      <div class="qa">
+        <div class="q">Why stop betting after 4 rounds?</div>
+        <div class="a">The pre-tournament edge disappears as results come in. By round 5+, the market has already observed half the tournament and repriced aggressively. Our edge is highest before round 1, when we have the most information advantage over the market.</div>
+      </div>
+      <div class="qa">
+        <div class="q">Why does the model think Carlsen is so much less likely to win than the market?</div>
+        <div class="a">In a 6-player double round-robin, there are 5 opponents each nearly as strong as Carlsen (2730–2762 Elo). Combinatorially, Carlsen can't win every tournament. His base rate in a perfectly even 6-player field would be ~17%. Even with his rating advantage, 33% is the right number — the market's 61% is the one that's hard to justify mathematically.</div>
+      </div>
+      <div class="qa">
+        <div class="q">What's a Tournament Performance Rating (TPR)?</div>
+        <div class="a">TPR measures how well a player actually performed in a tournament, given their opponents' ratings. It's like a live Elo that only looks at elite games (2600+ opposition). Javokhir Sindarov won the 2026 Candidates — his TPR from that tournament was far above his static FIDE rating, so the model correctly assigned him higher win probability for future events.</div>
+      </div>
+      <div class="qa">
+        <div class="q">Is this real money?</div>
+        <div class="a">The bankroll and stakes shown are simulated. This is a research and model-validation project.</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;width:100%">
+    <span>PolymarketBot v1.0 — Built by Zander Deutsch</span>
+    <span>
+      <a href="dashboard.html">← Dashboard</a>
+      &nbsp;·&nbsp;
+      <a href="https://lichess.org" target="_blank">Lichess</a>
+      &nbsp;·&nbsp;
+      <a href="https://polymarket.com" target="_blank">Polymarket</a>
+      &nbsp;·&nbsp;
+      <a href="https://kalshi.com" target="_blank">Kalshi</a>
+    </span>
+  </div>
+</footer>
+
+</body>
+</html>
