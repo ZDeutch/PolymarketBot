@@ -480,9 +480,17 @@ KNOWN_RATINGS_RAPID = {
     "Fedoseev Vladimir":          2690,
     "Hans Moke Niemann":          2646,   # rapid #40
     "Niemann Hans Moke":          2646,
+    "Hans Niemann":               2646,   # Kalshi alias
     "Wesley So":                  2705,   # rapid #15
     "Alireza Firouzja":           2755,   # rapid #2
     "Firouzja Alireza":           2755,
+    # GCT Poland 2026 — Super Rapid & Blitz
+    "Maxime Vachier-Lagrave":     2643,   # rapid ~#55 (April 2026)
+    "Vachier-Lagrave Maxime":     2643,
+    "Jan-Krzysztof Duda":         2660,   # rapid ~#42 (April 2026)
+    "Duda Jan-Krzysztof":         2660,
+    "Radoslaw Wojtaszek":         2622,   # rapid ~#70 (April 2026)
+    "Wojtaszek Radoslaw":         2622,
 }
 
 # FIDE live blitz ratings — April 23, 2026.
@@ -513,9 +521,17 @@ KNOWN_RATINGS_BLITZ = {
     "Vincent Keymer":             2621,   # blitz #70
     "Hans Moke Niemann":          2699,   # blitz #21
     "Niemann Hans Moke":          2699,
+    "Hans Niemann":               2699,   # Kalshi alias
     "Wesley So":                  2798,   # blitz #3
     "Alireza Firouzja":           2796,   # blitz #4
     "Firouzja Alireza":           2796,
+    # GCT Poland 2026 — Super Rapid & Blitz
+    "Maxime Vachier-Lagrave":     2631,   # blitz ~#65 (April 2026)
+    "Vachier-Lagrave Maxime":     2631,
+    "Jan-Krzysztof Duda":         2672,   # blitz ~#35 (April 2026)
+    "Duda Jan-Krzysztof":         2672,
+    "Radoslaw Wojtaszek":         2618,   # blitz ~#75 (April 2026)
+    "Wojtaszek Radoslaw":         2618,
 }
 
 _KNOWN_RATINGS_BY_FORMAT = {

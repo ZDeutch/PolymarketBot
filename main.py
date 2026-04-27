@@ -60,39 +60,39 @@ from simulators import chess_simulator as simulator
 from edge_calculator import find_edges, size_positions
 from config import SIMULATIONS, BANKROLL, MIN_EDGE
 
-# ─── Current tournament: Grand Chess Tour 2026 Finals ─────────────────────────
+# ─── Current tournament: GCT Poland 2026 — Super Rapid & Blitz ────────────────
 # Update POLYMARKET_SLUGS and KALSHI_PRICES for each new tournament.
 # POLYMARKET_SLUGS keys are also used as the pre-tournament player list fallback.
 
 POLYMARKET_SLUGS = {
-    # GCT 2026 Finals — Kalshi is the active exchange (no Polymarket market)
-    "Fabiano Caruana":            "TODO",
-    "Vincent Keymer":             "TODO",
-    "Maxime Vachier-Lagrave":     "TODO",
-    "Nodirbek Abdusattorov":      "TODO",
+    # GCT Poland 2026 Super Rapid & Blitz — Kalshi is the active exchange
     "Alireza Firouzja":           "TODO",
-    "Rameshbabu Praggnanandhaa":  "TODO",
+    "Jan-Krzysztof Duda":         "TODO",
     "Javokhir Sindarov":          "TODO",
-    "Anish Giri":                 "TODO",
-    "Hans Niemann":               "TODO",
+    "Fabiano Caruana":            "TODO",
+    "Maxime Vachier-Lagrave":     "TODO",
     "Wesley So":                  "TODO",
+    "Gukesh Dommaraju":           "TODO",
+    "Hans Niemann":               "TODO",
+    "Radoslaw Wojtaszek":         "TODO",
+    "Vladimir Fedoseev":          "TODO",
 }
 
-# Kalshi YES prices — Grand Chess Tour 2026 Finals
+# Kalshi YES prices — GCT Poland 2026 Super Rapid & Blitz
 # Last updated: April 27, 2026 from Kalshi screenshot (Chance column midpoints).
-# URL: kalshi.com/markets/kxchessgrandtour/grand-chess-tour/kxchessgrandtour-26
+# URL: kalshi.com/markets/kxchesspoland/grand-chess-tour-super-rapid--blitz-poland/kxchesspoland-26
 # Update these before each run using live prices from the Kalshi market page.
 KALSHI_PRICES = {
-    "Fabiano Caruana":            0.23,
-    "Vincent Keymer":             0.19,
-    "Maxime Vachier-Lagrave":     0.18,
-    "Nodirbek Abdusattorov":      0.12,
-    "Alireza Firouzja":           0.11,
-    "Rameshbabu Praggnanandhaa":  0.10,
-    "Javokhir Sindarov":          0.07,
-    "Anish Giri":                 0.06,
-    "Hans Niemann":               0.07,
+    "Alireza Firouzja":           0.48,
+    "Jan-Krzysztof Duda":         0.19,
+    "Javokhir Sindarov":          0.19,
+    "Fabiano Caruana":            0.14,
+    "Maxime Vachier-Lagrave":     0.05,
     "Wesley So":                  0.05,
+    "Gukesh Dommaraju":           0.03,
+    "Hans Niemann":               0.03,
+    "Radoslaw Wojtaszek":         0.03,
+    "Vladimir Fedoseev":          0.03,
 }
 
 MAX_RETRIES = 3
