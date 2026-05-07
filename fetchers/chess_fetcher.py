@@ -107,6 +107,7 @@ PLAYER_NAME_TO_USERNAME = {
     "Warmerdam Max":              "maxwarmerdam",
     "Alexei Shirov":              "alexeishipov",
     "Ding Liren":                 "dinglirenofficial",
+    "Liren Ding":                 "dinglirenofficial",
 }
 
 
@@ -389,7 +390,7 @@ def get_player_rating(username: str, fmt: str = "classical") -> int | None:
 
 # Hardcoded fallback ratings for players not reachable via Chess.com
 # (e.g. missing classical games, unconfirmed usernames).
-# Sourced from FIDE live ratings (post-Candidates 2026) — April 23, 2026.
+# Sourced from 2700chess.com live ratings — April 27, 2026, 14:00 GMT.
 # Rounded to nearest integer; official May 2026 list drops May 1.
 KNOWN_RATINGS = {
     # ── Sigeman 2026 ──────────────────────────────────────────────────────────
@@ -398,14 +399,14 @@ KNOWN_RATINGS = {
     "Abdusattorov Nodirbek":      2780,
     "Arjun Erigaisi":             2751,   # live #11 (unchanged)
     "Erigaisi Arjun":             2751,
-    "Jorden van Foreest":         2736,   # live #15 (unchanged)
-    "Jorden Van Foreest":         2736,
+    "Jorden van Foreest":         2735,   # live #16 (2700chess Apr 27)
+    "Jorden Van Foreest":         2735,
     "Nils Grandelius":            2662,   # live #52 (unchanged)
-    "Yagiz Kaan Erdogmus":        2709,   # live #30 (was 2687, +22 post-Candidates)
-    "Erdogmus Yagiz Kaan":        2709,
+    "Yagiz Kaan Erdogmus":        2708,   # FIDE May 2026 list
+    "Erdogmus Yagiz Kaan":        2708,
     "Andy Woodward":              2635,   # live #91 (unchanged)
     "Woodward Andy":              2635,
-    "Zhu Jiner":                  2554,   # April 2026 FIDE (not in live top-100)
+    "Zhu Jiner":                  2546,   # FIDE May 2026 list
     # ── Candidates 2026 ───────────────────────────────────────────────────────
     "Fabiano Caruana":            2788,   # live #3 (was 2793, −5)
     "Hikaru Nakamura":            2792,   # live #2 (was 2810, −18)
@@ -418,44 +419,53 @@ KNOWN_RATINGS = {
     "Andrey Esipenko":            2684,   # live #40 (was 2698, −14)
     # ── Norway Chess 2026 ────────────────────────────────────────────────────
     "Wesley So":                  2754,   # live #9 (classical)
-    "Alireza Firouzja":           2759,   # live #8 (classical)
+    "Alireza Firouzja":           2759,   # FIDE May 2026 list
     "Firouzja Alireza":           2759,
     # ── GCT 2026 Finals — new players ────────────────────────────────────────
-    "Maxime Vachier-Lagrave":     2706,   # live ~#32 (April 2026)
-    "Vachier-Lagrave Maxime":     2706,
-    "Jan-Krzysztof Duda":         2720,   # live ~#23 (April 2026)
-    "Duda Jan-Krzysztof":         2720,
-    "Levon Aronian":              2737,   # live ~#14 (April 2026)
-    "Aronian Levon":              2737,
-    "Bogdan-Daniel Deac":         2674,   # live ~#51 (April 2026)
-    "Deac Bogdan-Daniel":         2674,
-    "Ivan Saric":                 2614,   # live ~#85 (April 2026)
-    "Saric Ivan":                 2614,
-    "Radoslaw Wojtaszek":         2682,   # live ~#43 (April 2026)
-    "Wojtaszek Radoslaw":         2682,
-    # Kalshi name aliases
-    "Hans Niemann":               2742,   # alias for Hans Moke Niemann
+    "Maxime Vachier-Lagrave":     2717,   # live #27 (2700chess Apr 27)
+    "Vachier-Lagrave Maxime":     2717,
+    "Jan-Krzysztof Duda":         2739,   # live #13 (2700chess Apr 27)
+    "Duda Jan-Krzysztof":         2739,
+    "Levon Aronian":              2724,   # live #24 (2700chess Apr 27)
+    "Aronian Levon":              2724,
+    "Bogdan-Daniel Deac":         2650,   # live #67 (2700chess Apr 27)
+    "Deac Bogdan-Daniel":         2650,
+    "Ivan Saric":                 2657,   # live #58 (2700chess Apr 27)
+    "Saric Ivan":                 2657,
+    "Radoslaw Wojtaszek":         2650,   # FIDE May 2026 list
+    "Wojtaszek Radoslaw":         2650,
+    # Kalshi / alternate name aliases
+    "Hans Niemann":               2728,   # alias for Hans Moke Niemann
     "Rameshbabu Praggnanandhaa":  2733,   # alias for Praggnanandhaa R
-    # ── Other elite players ───────────────────────────────────────────────────
-    "Gukesh D":                   2732,   # live #17 (was 2783, −51 post-WCC title defense)
+    "Ding Liren":                 2738,   # FIDE May 2026 list
+    "Liren Ding":                 2738,
+    "Ian Nepomniachtchi":         2729,   # live #22 (2700chess Apr 27)
+    "Nepomniachtchi Ian":         2729,
+    # ── Other elite players ────────────────────────────────────────────────────
+    "Alexei Shirov":              2597,   # FIDE May 2026 list
+    "Nijat Abasov":               2599,   # FIDE May 2026 list
+    "Abasov Nijat":               2599,
+    "Vidit Gujrathi":             2708,   # FIDE May 2026 list
+    "Vidit Santosh Gujrathi":     2708,
+    "Gukesh D":                   2732,   # FIDE May 2026 list
     "Gukesh Dommaraju":           2732,
     "D Gukesh":                   2732,
-    "Vincent Keymer":             2762,   # live #7 (was 2726, +36)
-    "Chithambaram VR. Aravindh":  2693,   # live #37 (was 2603, +90!)
-    "Aravindh Chithambaram":      2693,
-    "Hans Moke Niemann":          2742,   # live #12 (was 2663, +79!)
-    "Niemann Hans Moke":          2742,
-    "Vladimir Fedoseev":          2703,   # live #33 (was 2674, +29)
-    "Fedoseev Vladimir":          2703,
-    "Matthias Bluebaum":          2696,   # live #34 (was 2700, −4)
-    "Matthias Blübaum":           2696,
+    "Vincent Keymer":             2759,   # live #7 (2700chess Apr 27)
+    "Chithambaram VR. Aravindh":  2692,   # live #38 (2700chess Apr 27)
+    "Aravindh Chithambaram":      2692,
+    "Hans Moke Niemann":          2728,   # FIDE May 2026 list
+    "Niemann Hans Moke":          2728,
+    "Vladimir Fedoseev":          2700,   # live #35 (2700chess Apr 27)
+    "Fedoseev Vladimir":          2700,
+    "Matthias Bluebaum":          2694,   # FIDE May 2026 list
+    "Matthias Blübaum":           2694,
     "Thai Dai Van Nguyen":        2633,   # live #95 (was 2612, +21)
     "Nguyen Thai Dai Van":        2633,
-    "Max Warmerdam":              2598,
-    "Warmerdam Max":              2598,
+    "Max Warmerdam":              2520,   # FIDE May 2026 list (significant drop)
+    "Warmerdam Max":              2520,
 }
 
-# FIDE live rapid ratings — April 23, 2026.
+# FIDE May 2026 list (rapid_rating_list_xml.zip — updated monthly).
 KNOWN_RATINGS_RAPID = {
     "Magnus Carlsen":             2832,   # rapid #1
     "Arjun Erigaisi":             2741,   # rapid #4
@@ -485,15 +495,46 @@ KNOWN_RATINGS_RAPID = {
     "Alireza Firouzja":           2755,   # rapid #2
     "Firouzja Alireza":           2755,
     # GCT Poland 2026 — Super Rapid & Blitz
-    "Maxime Vachier-Lagrave":     2643,   # rapid ~#55 (April 2026)
-    "Vachier-Lagrave Maxime":     2643,
-    "Jan-Krzysztof Duda":         2660,   # rapid ~#42 (April 2026)
-    "Duda Jan-Krzysztof":         2660,
-    "Radoslaw Wojtaszek":         2622,   # rapid ~#70 (April 2026)
-    "Wojtaszek Radoslaw":         2622,
+    "Maxime Vachier-Lagrave":     2735,   # FIDE May 2026
+    "Vachier-Lagrave Maxime":     2735,
+    "Jan-Krzysztof Duda":         2683,   # rapid #25 (2700chess Apr 27)
+    "Duda Jan-Krzysztof":         2683,
+    "Radoslaw Wojtaszek":         2612,   # rapid #81 (2700chess Apr 27)
+    "Wojtaszek Radoslaw":         2612,
+    "Levon Aronian":              2730,   # rapid #7 (2700chess Apr 27)
+    "Aronian Levon":              2730,
+    "Bogdan-Daniel Deac":         2613,
+    "Deac Bogdan-Daniel":         2613,
+    # Additional players — FIDE May 2026
+    "Ding Liren":                 2716,
+    "Liren Ding":                 2716,
+    "Ian Nepomniachtchi":         2726,
+    "Nepomniachtchi Ian":         2726,
+    "Matthias Bluebaum":          2587,
+    "Matthias Blübaum":           2587,
+    "Jorden van Foreest":         2595,
+    "Jorden Van Foreest":         2595,
+    "Vidit Gujrathi":             2638,
+    "Vidit Santosh Gujrathi":     2638,
+    "Nijat Abasov":               2557,
+    "Abasov Nijat":               2557,
+    "Ivan Saric":                 2595,
+    "Saric Ivan":                 2595,
+    "Yagiz Kaan Erdogmus":        2493,
+    "Erdogmus Yagiz Kaan":        2493,
+    "Thai Dai Van Nguyen":        2516,
+    "Nguyen Thai Dai Van":        2516,
+    "Max Warmerdam":              2510,
+    "Warmerdam Max":              2510,
+    "Aravindh Chithambaram":      2576,
+    "Chithambaram VR. Aravindh":  2576,
+    "Andy Woodward":              2521,
+    "Woodward Andy":              2521,
+    "Alexei Shirov":              2610,
+    "Zhu Jiner":                  2479,
 }
 
-# FIDE live blitz ratings — April 23, 2026.
+# FIDE May 2026 list (blitz_rating_list_xml.zip — updated monthly).
 KNOWN_RATINGS_BLITZ = {
     "Magnus Carlsen":             2869,   # blitz #1
     "Hikaru Nakamura":            2838,   # blitz #2
@@ -526,18 +567,64 @@ KNOWN_RATINGS_BLITZ = {
     "Alireza Firouzja":           2796,   # blitz #4
     "Firouzja Alireza":           2796,
     # GCT Poland 2026 — Super Rapid & Blitz
-    "Maxime Vachier-Lagrave":     2631,   # blitz ~#65 (April 2026)
-    "Vachier-Lagrave Maxime":     2631,
-    "Jan-Krzysztof Duda":         2672,   # blitz ~#35 (April 2026)
-    "Duda Jan-Krzysztof":         2672,
-    "Radoslaw Wojtaszek":         2618,   # blitz ~#75 (April 2026)
-    "Wojtaszek Radoslaw":         2618,
+    "Maxime Vachier-Lagrave":     2761,   # blitz #9 (2700chess Apr 27)
+    "Vachier-Lagrave Maxime":     2761,
+    "Jan-Krzysztof Duda":         2743,   # blitz #13 (2700chess Apr 27)
+    "Duda Jan-Krzysztof":         2743,
+    "Radoslaw Wojtaszek":         2558,   # FIDE May 2026
+    "Wojtaszek Radoslaw":         2558,
+    "Levon Aronian":              2740,   # blitz #14 (2700chess Apr 27)
+    "Aronian Levon":              2740,
+    "Bogdan-Daniel Deac":         2649,
+    "Deac Bogdan-Daniel":         2649,
+    # Additional players — FIDE May 2026
+    "Ding Liren":                 2757,
+    "Liren Ding":                 2757,
+    "Ian Nepomniachtchi":         2765,
+    "Nepomniachtchi Ian":         2765,
+    "Nils Grandelius":            2575,
+    "Vidit Gujrathi":             2688,
+    "Vidit Santosh Gujrathi":     2688,
+    "Nijat Abasov":               2555,
+    "Abasov Nijat":               2555,
+    "Ivan Saric":                 2600,
+    "Saric Ivan":                 2600,
+    "Yagiz Kaan Erdogmus":        2546,
+    "Erdogmus Yagiz Kaan":        2546,
+    "Thai Dai Van Nguyen":        2563,
+    "Nguyen Thai Dai Van":        2563,
+    "Max Warmerdam":              2584,
+    "Warmerdam Max":              2584,
+    "Aravindh Chithambaram":      2550,
+    "Chithambaram VR. Aravindh":  2550,
+    "Andy Woodward":              2496,
+    "Woodward Andy":              2496,
+    "Alexei Shirov":              2616,
+    "Zhu Jiner":                  2411,
 }
 
+def _build_rapid_blitz_ratings() -> dict:
+    """Averages rapid and blitz FIDE ratings for combined rapid+blitz events."""
+    all_keys = set(KNOWN_RATINGS_RAPID) | set(KNOWN_RATINGS_BLITZ)
+    result = {}
+    for name in all_keys:
+        r = KNOWN_RATINGS_RAPID.get(name)
+        b = KNOWN_RATINGS_BLITZ.get(name)
+        if r and b:
+            result[name] = round((r + b) / 2)
+        elif r:
+            result[name] = r
+        elif b:
+            result[name] = b
+    return result
+
+KNOWN_RATINGS_RAPID_BLITZ = _build_rapid_blitz_ratings()
+
 _KNOWN_RATINGS_BY_FORMAT = {
-    "classical": KNOWN_RATINGS,
-    "rapid":     KNOWN_RATINGS_RAPID,
-    "blitz":     KNOWN_RATINGS_BLITZ,
+    "classical":   KNOWN_RATINGS,
+    "rapid":       KNOWN_RATINGS_RAPID,
+    "blitz":       KNOWN_RATINGS_BLITZ,
+    "rapid_blitz": KNOWN_RATINGS_RAPID_BLITZ,
 }
 
 

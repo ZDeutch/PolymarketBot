@@ -1,6 +1,9 @@
-Date,Tournament,Exchange,Format,Player,Model%,Market%,Edge%,Action,Stake
-2026-04-23,Norway Chess 2026,Kalshi,classical,Magnus Carlsen,33.1,61.0,-27.9,NO,500.00
-2026-04-27,Grand Chess Tour 2026 Finals,Kalshi,classical,Maxime Vachier-Lagrave,3.6,18.0,-14.4,NO,500.00
-2026-04-27,GCT Poland 2026 Super Rapid & Blitz,Kalshi,rapid,Alireza Firouzja,25.2,48.0,-22.8,NO,178.09
-2026-04-27,GCT Poland 2026 Super Rapid & Blitz,Kalshi,rapid,Jan-Krzysztof Duda,4.9,19.0,-14.1,NO,278.62
-2026-04-27,GCT Poland 2026 Super Rapid & Blitz,Kalshi,rapid,Fabiano Caruana,23.9,14.0,9.9,YES,43.29
+Date,Tournament,Exchange,Format,Player,Model%,Market%,Edge%,Action,Stake,EntryPrice
+2026-04-23,Norway Chess 2026,Kalshi,classical,Magnus Carlsen,33.1,61.0,-27.9,NO,500.00,0.3900
+2026-04-27,Grand Chess Tour 2026 Finals,Kalshi,classical,Maxime Vachier-Lagrave,3.6,18.0,-14.4,NO,500.00,0.8200
+
+2026-04-28,GCT Poland 2026 Super Rapid & Blitz,Kalshi,rapid_blitz,Alireza Firouzja,22.2,48.0,-25.8,NO,156.71,0.5200
+2026-04-28,GCT Poland 2026 Super Rapid & Blitz,Kalshi,rapid_blitz,Wesley So,16.9,5.0,11.9,YES,36.62,0.0500
+2026-04-28,GCT Poland 2026 Super Rapid & Blitz,Kalshi,rapid_blitz,Jan-Krzysztof Duda,8.8,19.0,-10.2,NO,156.09,0.8100
+2026-04-28,GCT Poland 2026 Super Rapid & Blitz,Kalshi,rapid_blitz,Javokhir Sindarov,9.2,19.0,-9.8,NO,150.58,0.8100
+

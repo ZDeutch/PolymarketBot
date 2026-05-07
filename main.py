@@ -28,7 +28,7 @@ Arguments:
                    Use before the Lichess broadcast is set up.
   --total-rounds   Total rounds in the tournament (used with --no-broadcast
                    to detect single vs double round-robin).
-  --format         Time control: classical (default), rapid, or blitz.
+  --format         Time control: classical (default), rapid, blitz, or rapid_blitz.
   --check          Show edge table only; do not write to positions.csv.
   --force          Override the >4-round gate for research runs.
 
@@ -59,6 +59,7 @@ from fetchers import chess_fetcher as fetcher
 from simulators import chess_simulator as simulator
 from edge_calculator import find_edges, size_positions
 from config import SIMULATIONS, BANKROLL, MIN_EDGE
+import freshness
 
 # ─── Current tournament: GCT Poland 2026 — Super Rapid & Blitz ────────────────
 # Update POLYMARKET_SLUGS and KALSHI_PRICES for each new tournament.
@@ -102,7 +103,7 @@ ROUNDS_GATE = 4   # exit if more rounds than this are complete (use --force to o
 
 CSV_FILE    = "positions.csv"
 CSV_HEADERS = ["Date", "Tournament", "Exchange", "Format",
-               "Player", "Model%", "Market%", "Edge%", "Action", "Stake"]
+               "Player", "Model%", "Market%", "Edge%", "Action", "Stake", "EntryPrice"]
 
 
 # ─── Price fetching ────────────────────────────────────────────────────────────
@@ -151,22 +152,43 @@ def get_polymarket_prices() -> dict:
     return prices
 
 
-def get_kalshi_prices() -> dict:
-    """Returns hardcoded Kalshi YES prices from KALSHI_PRICES.
+def get_kalshi_prices(event_ticker: str | None = None) -> dict:
+    """Live Kalshi YES prices via the public API (auto-fetched).
 
-    Update KALSHI_PRICES at the top of this file before each run
-    using the live prices shown on the Kalshi market page.
+    If event_ticker is provided, hits the Kalshi public API. Otherwise
+    falls back to hardcoded KALSHI_PRICES (legacy path).
+
+    Returns {player_name: yes_mid_price}.
     """
+    if event_ticker:
+        from fetchers.kalshi_fetcher import KalshiClient
+        print(f"  Source: Kalshi live (event {event_ticker})")
+        try:
+            c = KalshiClient(env="prod")
+            data = c.get_event_prices(event_ticker)
+            prices: dict = {}
+            for player, p in data.items():
+                mid = p.get("mid")
+                if mid is None:
+                    print(f"  {player}: no price (skipping)")
+                    continue
+                prices[player] = round(mid, 4)
+                print(f"  {player}: {mid:.3f}  "
+                      f"(bid={p.get('yes_bid')}, ask={p.get('yes_ask')})")
+            return prices
+        except Exception as e:
+            print(f"  Live fetch failed: {e} — falling back to KALSHI_PRICES")
     print("  Source: KALSHI_PRICES (hardcoded — update before each run)")
     for player, price in KALSHI_PRICES.items():
         print(f"  {player}: {price:.3f}")
     return dict(KALSHI_PRICES)
 
 
-def get_market_prices(exchange: str) -> dict:
+def get_market_prices(exchange: str,
+                      kalshi_event: str | None = None) -> dict:
     """Dispatches to the appropriate price source."""
     if exchange == "kalshi":
-        return get_kalshi_prices()
+        return get_kalshi_prices(event_ticker=kalshi_event)
     return get_polymarket_prices()
 
 
@@ -192,6 +214,8 @@ def save_to_csv(sized: list,
         for e in sized:
             if e["action"] == "neutral" or e["stake"] <= 0:
                 continue
+            entry_price = (e["market"] if e["action"] == "YES"
+                           else 1 - e["market"])
             w.writerow([
                 today,
                 tournament_name,
@@ -203,6 +227,7 @@ def save_to_csv(sized: list,
                 f"{e['edge'] * 100:.1f}",
                 e["action"],
                 f"{e['stake']:.2f}",
+                f"{entry_price:.4f}",
             ])
 
     return CSV_FILE
@@ -218,7 +243,9 @@ def run(tournament_name: str,
         fmt: str = "classical",
         exchange: str = "polymarket",
         no_broadcast: bool = False,
-        total_rounds_hint: int | None = None) -> None:
+        total_rounds_hint: int | None = None,
+        skip_freshness_check: bool = False,
+        kalshi_event: str | None = None) -> None:
     """Full pipeline: fetch → simulate → edge table → CSV log."""
 
     print("=" * 60)
@@ -227,6 +254,18 @@ def run(tournament_name: str,
         print(f"Tour ID:  {tour_id}")
     print(f"Format:   {fmt}  |  Exchange: {exchange}")
     print("=" * 60)
+
+    # ── Freshness gate ────────────────────────────────────────────────────────
+    # Hard-blocks the run unless every required input has been confirmed fresh.
+    # Override with --skip-freshness-check (research only, never trade).
+    if skip_freshness_check:
+        print("\n[freshness] BYPASSED via --skip-freshness-check (research mode)")
+    else:
+        freshness.assert_fresh(tournament_name, exchange, no_broadcast)
+
+    # If user didn't pass --tour-id explicitly, fall back to ledger lookup.
+    if tour_id is None and not no_broadcast:
+        tour_id = freshness.get_tour_id(tournament_name)
 
     # ── Step 1: Tournament metadata ───────────────────────────────────────────
     tournament = {}
@@ -317,8 +356,13 @@ def run(tournament_name: str,
     )
 
     # ── Step 6: Market prices ─────────────────────────────────────────────────
+    # Auto-discover Kalshi event ticker if not given explicitly.
+    if exchange == "kalshi" and not kalshi_event:
+        kalshi_event = freshness.get_kalshi_event(tournament_name)
+        if kalshi_event:
+            print(f"\nResolved Kalshi event: {kalshi_event} (from freshness ledger)")
     print(f"\nFetching {exchange.capitalize()} prices...")
-    market_prices = get_market_prices(exchange)
+    market_prices = get_market_prices(exchange, kalshi_event=kalshi_event)
     if not market_prices:
         print("WARNING: No market prices — showing model-only output.")
 
@@ -400,7 +444,7 @@ if __name__ == "__main__":
                         help="Polymarket event slug (required when --exchange polymarket "
                              "and slugs are configured)")
     parser.add_argument("--format", default="classical",
-                        choices=["classical", "rapid", "blitz"],
+                        choices=["classical", "rapid", "blitz", "rapid_blitz"],
                         dest="fmt",
                         help="Tournament time control (default: classical)")
     parser.add_argument("--check", action="store_true",
@@ -408,6 +452,14 @@ if __name__ == "__main__":
     parser.add_argument("--force", action="store_true",
                         help=f"Override the >{ROUNDS_GATE}-round gate; "
                              "run analysis mid-tournament for research")
+    parser.add_argument("--skip-freshness-check", action="store_true",
+                        dest="skip_freshness_check",
+                        help="Bypass the freshness gate. RESEARCH ONLY — never trade with this.")
+    parser.add_argument("--kalshi-event", default=None,
+                        dest="kalshi_event",
+                        help="Kalshi event ticker (e.g. KXCHESSPOLAND-26). "
+                             "Triggers live API price fetch instead of KALSHI_PRICES. "
+                             "Auto-loaded from ledger if not specified.")
 
     args = parser.parse_args()
     run(
@@ -420,4 +472,6 @@ if __name__ == "__main__":
         exchange=args.exchange,
         no_broadcast=args.no_broadcast,
         total_rounds_hint=args.total_rounds_hint,
+        skip_freshness_check=args.skip_freshness_check,
+        kalshi_event=args.kalshi_event,
     )

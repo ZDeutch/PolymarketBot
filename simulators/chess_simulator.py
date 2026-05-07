@@ -58,25 +58,81 @@ import random
 
 _TPR_DATA        = {}
 _TPR_DATA_LOADED = False
+_TPR_DATA_PATH   = None   # explicit override for backtests
+
+
+TPR_STALENESS_DAYS = 14   # warn if tpr_data.json is older than this
+
+
+def set_tpr_data_path(path: str | None) -> None:
+    """Override the TPR data source. Pass None to reset to default.
+
+    Forces a reload on the next call to any function that needs TPR data.
+    Used by the backtest runner to swap in per-case (asof-rebuilt) datasets.
+    """
+    global _TPR_DATA, _TPR_DATA_LOADED, _TPR_DATA_PATH
+    _TPR_DATA_PATH   = path
+    _TPR_DATA        = {}
+    _TPR_DATA_LOADED = False
 
 
 def _load_tpr_data() -> None:
-    """Loads tpr_data.json once on first call; no-ops on subsequent calls."""
+    """Loads tpr_data.json once on first call; no-ops on subsequent calls.
+
+    Emits a staleness warning if the file's `generated_at` timestamp is
+    older than TPR_STALENESS_DAYS. Does not block — re-run
+    `python tpr_builder.py` to refresh.
+    """
     global _TPR_DATA, _TPR_DATA_LOADED
     if _TPR_DATA_LOADED:
         return
-    path = os.path.join(os.path.dirname(__file__), "..", "tpr_data.json")
+    if _TPR_DATA_PATH:
+        path = _TPR_DATA_PATH
+    else:
+        path = os.path.join(os.path.dirname(__file__), "..", "tpr_data.json")
     try:
         with open(path) as f:
             raw = json.load(f)
         _TPR_DATA = raw.get("players", {})
         _TPR_DATA_LOADED = True
         print(f"  Loaded TPR data: {len(_TPR_DATA)} players")
+
+        # Staleness check
+        gen_at = raw.get("generated_at")
+        if gen_at:
+            try:
+                from datetime import datetime
+                ts = datetime.fromisoformat(gen_at)
+                age_days = (datetime.now() - ts).days
+                if age_days > TPR_STALENESS_DAYS:
+                    print(
+                        f"  WARNING: tpr_data.json is {age_days} days old "
+                        f"(>{TPR_STALENESS_DAYS}). Run `python tpr_builder.py` to refresh."
+                    )
+                else:
+                    print(f"  TPR data age: {age_days} day(s)")
+            except Exception:
+                pass
     except Exception as e:
         print(f"  WARNING: could not load tpr_data.json: {e}")
         _TPR_DATA_LOADED = True   # don't retry
 
 # ─── TPR blend ────────────────────────────────────────────────────────────────
+
+def get_player_sigma(player: str) -> float:
+    """Returns per-player performance σ (Elo) from tpr_data.json.
+
+    Falls back to DEFAULT_SIGMA when no volatility estimate is available.
+    """
+    _load_tpr_data()
+    data = _TPR_DATA.get(player)
+    if not data:
+        return DEFAULT_SIGMA
+    vol = data.get("volatility")
+    if vol is None:
+        return DEFAULT_SIGMA
+    return float(vol)
+
 
 def get_adjusted_rating(player: str, fide_elo: float) -> float:
     """Blends FIDE Elo with elite TPR for a more accurate strength estimate.
@@ -129,6 +185,10 @@ def get_adjusted_rating(player: str, fide_elo: float) -> float:
 # ─── Constants ────────────────────────────────────────────────────────────────
 
 WHITE_BONUS = 35  # Elo points added to white's effective rating (Sonas, 266k games)
+
+# Per-iteration performance noise. DEFAULT_SIGMA is used as a fallback
+# when a player has no per-player volatility estimate in tpr_data.json.
+DEFAULT_SIGMA = 50.0
 
 # Must-win draw adjustment (Change 6)
 MUST_WIN_DRAW_FACTOR = 0.85   # 15 % relative draw-rate reduction per must-win player
@@ -255,10 +315,13 @@ def simulate_tournament(ratings: dict,
         initial_games_left[w] = initial_games_left.get(w, 0) + 1
         initial_games_left[b] = initial_games_left.get(b, 0) + 1
 
+    # Precompute per-player σ once (outside the inner loop)
+    sigmas = {p: get_player_sigma(p) for p in players}
+
     for _ in range(n):
-        # Sample performance ratings: apply TPR blend first, then σ=50 noise
+        # Sample performance ratings: TPR blend ± per-player σ noise
         perf = {
-            p: random.gauss(get_adjusted_rating(p, ratings[p]), 50)
+            p: random.gauss(get_adjusted_rating(p, ratings[p]), sigmas[p])
             for p in players
         }
 

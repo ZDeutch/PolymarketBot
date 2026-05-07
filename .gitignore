@@ -3,4 +3,13 @@ venv/
 credentials.json
 __pycache__/
 pnl_chart.png
-.claude/\nbot.pid\n*.log\n*.txt
+.claude/
+bot.pid
+*.pid
+*.log
+overnight_log.txt
+.freshness.json
+backtest/_tpr_cache/
+*.pem
+# Local PGN cache — 28 MB, managed manually outside git
+elite_games_2020_present.pgn

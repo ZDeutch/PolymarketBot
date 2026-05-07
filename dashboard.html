@@ -82,19 +82,23 @@
     .h-metric .val.green  { color: var(--green); }
     .h-metric .val.yellow { color: var(--yellow); }
     .h-metric .val.cyan   { color: var(--cyan); }
+    .h-metric .val.red    { color: var(--red); }
 
     .h-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 
     .live-dot {
       display: flex; align-items: center; gap: 5px;
       font-size: 10px; color: var(--green);
+      cursor: pointer; user-select: none;
     }
     .live-dot::before {
       content: ''; width: 6px; height: 6px; border-radius: 50%;
       background: var(--green);
       animation: blink 2s ease-in-out infinite;
     }
+    .live-dot.fetching::before { background: var(--yellow); animation: spin 0.8s linear infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    @keyframes spin  { to { transform: rotate(360deg); } }
 
     .ts { font-size: 10px; color: var(--muted); }
 
@@ -121,12 +125,14 @@
       padding: 0 20px;
       display: flex; align-items: center; gap: 24px;
       height: 28px; font-size: 10px; color: var(--muted);
+      overflow-x: auto;
     }
-    .sb-item { display: flex; align-items: center; gap: 5px; }
+    .sb-item { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
     .sb-item .k { color: var(--dim); }
     .sb-item .v { color: var(--text); }
-    .sb-item .v.ok  { color: var(--green); }
-    .sb-item .v.warn{ color: var(--yellow); }
+    .sb-item .v.ok   { color: var(--green); }
+    .sb-item .v.warn { color: var(--yellow); }
+    .sb-item .v.err  { color: var(--red); }
 
     /* ── MAIN LAYOUT ─────────────────────────────── */
     .main {
@@ -160,6 +166,7 @@
       background: var(--bg); color: var(--cyan);
       border: 1px solid var(--border2);
     }
+    .panel-hdr .badge.live { color: var(--green); border-color: rgba(0,230,118,0.3); background: rgba(0,230,118,0.06); }
     .panel-body { padding: 10px; }
 
     /* ── KV ROWS ─────────────────────────────────── */
@@ -203,7 +210,7 @@
     .signal-action.no  { background: rgba(255,68,68,0.15); color: var(--red); }
     .signal-action.yes { background: rgba(0,230,118,0.15); color: var(--green); }
     .signal-player { font-weight: 600; color: var(--bright); margin-bottom: 4px; }
-    .signal-row { display: flex; gap: 10px; }
+    .signal-row { display: flex; gap: 10px; flex-wrap: wrap; }
     .signal-stat .sk { font-size: 9px; color: var(--muted); }
     .signal-stat .sv { font-size: 11px; font-weight: 500; }
 
@@ -236,10 +243,11 @@
       padding: 6px 10px;
       font-size: 9px; font-weight: 500; color: var(--muted);
       text-transform: uppercase; letter-spacing: 0.8px;
-      text-align: left; white-space: nowrap;
+      text-align: right; white-space: nowrap;
       border-bottom: 1px solid var(--border);
     }
-    thead th:not(:nth-child(-n+4)) { text-align: right; }
+    thead th:nth-child(1),
+    thead th:nth-child(2) { text-align: left; }
     tbody tr { border-bottom: 1px solid var(--border); }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: rgba(255,255,255,0.02); }
@@ -249,23 +257,46 @@
       padding: 7px 10px; white-space: nowrap;
       text-align: right;
     }
-    td:nth-child(1),td:nth-child(2),td:nth-child(3),td:nth-child(4) { text-align: left; }
-    .td-date { font-size: 10px; color: var(--muted); }
-    .td-tour { font-size: 11px; }
-    .td-exch { font-size: 9px; padding: 2px 6px; border-radius: 2px; background: rgba(0,212,255,0.1); color: var(--cyan); }
+    td:nth-child(1), td:nth-child(2) { text-align: left; }
+
     .td-player { font-weight: 600; color: var(--bright); }
+    .td-tour   { font-size: 9px; color: var(--muted); margin-top: 2px; }
+
+    /* Group header rows */
+    .group-hdr { border-left: none !important; }
+    .group-hdr td {
+      background: var(--bg3);
+      border-top: 2px solid var(--border2);
+      border-bottom: 1px solid var(--border);
+      padding: 5px 10px;
+      text-align: left !important;
+      font-size: 9px; letter-spacing: 0.5px;
+    }
+    .gh-name   { color: var(--text); font-weight: 600; margin-right: 10px; }
+    .gh-ticker { color: var(--cyan); margin-right: 10px; }
+    .gh-group-pnl { font-weight: 700; }
+    .gh-group-pnl.pos { color: var(--green); }
+    .gh-group-pnl.neg { color: var(--red); }
+
+    /* P&L coloring */
+    .pnl-pos { color: var(--green); font-weight: 600; }
+    .pnl-neg { color: var(--red);   font-weight: 600; }
+    .pnl-na  { color: var(--dim); }
+
+    .price-entry { color: var(--muted); }
+    .price-now   { color: var(--bright); }
+
     .pill {
       display: inline-block; padding: 1px 7px; border-radius: 2px;
       font-size: 10px; font-weight: 600;
     }
-    .pill.pos { background: rgba(0,230,118,0.12); color: var(--green); }
-    .pill.neg { background: rgba(255,68,68,0.12); color: var(--red); }
-    .pill.no  { background: rgba(255,68,68,0.12); color: var(--red); }
-    .pill.yes { background: rgba(0,230,118,0.12); color: var(--green); }
-    .pill.open{ background: rgba(255,179,0,0.12); color: var(--yellow); }
+    .pill.no  { background: rgba(255,68,68,0.12);  color: var(--red); }
+    .pill.yes { background: rgba(0,230,118,0.12);  color: var(--green); }
+    .pill.open{ background: rgba(255,179,0,0.12);  color: var(--yellow); }
 
-    /* ── IDLE STATE ──────────────────────────────── */
+    /* ── IDLE / ERROR STATE ──────────────────────── */
     .empty { padding: 20px; text-align: center; color: var(--dim); font-size: 11px; }
+    .err-row td { color: var(--yellow) !important; text-align: center !important; font-size: 10px; }
   </style>
 </head>
 <body>
@@ -283,12 +314,16 @@
 
     <div class="h-metrics">
       <div class="h-metric">
-        <div class="lbl">n_sim</div>
-        <div class="val cyan">50,000</div>
+        <div class="lbl">invested</div>
+        <div class="val cyan" id="hdr-invested">—</div>
       </div>
       <div class="h-metric">
-        <div class="lbl">edge_min</div>
-        <div class="val">8.0%</div>
+        <div class="lbl">unr_p&l</div>
+        <div class="val" id="hdr-pnl">—</div>
+      </div>
+      <div class="h-metric">
+        <div class="lbl">return%</div>
+        <div class="val" id="hdr-ret">—</div>
       </div>
       <div class="h-metric">
         <div class="lbl">kelly_f</div>
@@ -299,17 +334,13 @@
         <div class="val">$10,000</div>
       </div>
       <div class="h-metric">
-        <div class="lbl">exposure_cap</div>
-        <div class="val">5.0%</div>
-      </div>
-      <div class="h-metric">
         <div class="lbl">open</div>
-        <div class="val yellow" id="hdr-open">1</div>
+        <div class="val yellow" id="hdr-open">—</div>
       </div>
     </div>
 
     <div class="h-right">
-      <div class="live-dot">LIVE</div>
+      <div class="live-dot" id="live-dot" onclick="manualRefresh()" title="Click to refresh">LIVE</div>
       <div class="ts" id="hdr-ts">—</div>
       <a class="btn-methodology" href="methodology.html" target="_blank">METHODOLOGY ↗</a>
     </div>
@@ -318,14 +349,13 @@
 
 <!-- ── STATUS BAR ─────────────────────────────────────── -->
 <div class="statusbar">
-  <div class="sb-item"><span class="k">tournament:</span><span class="v">Norway Chess 2026</span></div>
   <div class="sb-item"><span class="k">exchange:</span><span class="v">kalshi</span></div>
-  <div class="sb-item"><span class="k">format:</span><span class="v">classical</span></div>
-  <div class="sb-item"><span class="k">rounds_complete:</span><span class="v">0 / 10</span></div>
-  <div class="sb-item"><span class="k">gate:</span><span class="v ok">OK (≤4)</span></div>
-  <div class="sb-item"><span class="k">broadcast:</span><span class="v warn">pre-tournament</span></div>
-  <div class="sb-item"><span class="k">ratings_src:</span><span class="v ok">KNOWN_RATINGS (6/6)</span></div>
-  <div class="sb-item"><span class="k">tpr_db:</span><span class="v ok">650 players · 662 games</span></div>
+  <div class="sb-item"><span class="k">positions:</span><span class="v" id="sb-positions">—</span></div>
+  <div class="sb-item"><span class="k">data_age:</span><span class="v ok" id="sb-data-age">—</span></div>
+  <div class="sb-item"><span class="k">next_refresh:</span><span class="v" id="sb-next">—</span></div>
+  <div class="sb-item"><span class="k">n_sim:</span><span class="v">50,000</span></div>
+  <div class="sb-item"><span class="k">edge_min:</span><span class="v">8.0%</span></div>
+  <div class="sb-item"><span class="k">tpr_db:</span><span class="v ok">711 games · 9 tournaments</span></div>
 </div>
 
 <!-- ── MAIN GRID ───────────────────────────────────────── -->
@@ -334,19 +364,14 @@
   <!-- LEFT ──────────────────────────────────────────── -->
   <div class="col">
 
-    <!-- Active Tournament -->
+    <!-- Active Tournaments -->
     <div class="panel">
-      <div class="panel-hdr">ACTIVE_TOURNAMENT <span class="badge">PRE</span></div>
+      <div class="panel-hdr">ACTIVE_MARKETS <span class="badge live" id="left-badge">3 events</span></div>
       <div class="panel-body">
-        <div class="kv-list">
-          <div class="kv"><span class="k">name</span><span class="v cyan">Norway Chess 2026</span></div>
-          <div class="kv"><span class="k">players</span><span class="v">6 (DRR)</span></div>
-          <div class="kv"><span class="k">total_rounds</span><span class="v">10</span></div>
-          <div class="kv"><span class="k">rounds_done</span><span class="v">0</span></div>
-          <div class="kv"><span class="k">start_date</span><span class="v">2026-05-25</span></div>
-          <div class="kv"><span class="k">location</span><span class="v">Oslo, NOR</span></div>
-          <div class="kv"><span class="k">exchange</span><span class="v yellow">Kalshi</span></div>
-          <div class="kv"><span class="k">broadcast</span><span class="v yellow">pending</span></div>
+        <div class="kv-list" id="active-markets">
+          <div class="kv"><span class="k">Norway Chess 2026</span><span class="v cyan">NCH-26</span></div>
+          <div class="kv"><span class="k">GCT Finals 2026</span><span class="v cyan">GCTF-26</span></div>
+          <div class="kv"><span class="k">GCT Poland 2026</span><span class="v cyan">GCTPL-26</span></div>
         </div>
       </div>
     </div>
@@ -369,17 +394,17 @@
       </div>
     </div>
 
-    <!-- Norway Field Ratings -->
+    <!-- Portfolio Stats -->
     <div class="panel">
-      <div class="panel-hdr">FIELD_RATINGS · NCH26</div>
+      <div class="panel-hdr">PORTFOLIO_STATS</div>
       <div class="panel-body">
         <div class="kv-list">
-          <div class="kv"><span class="k">Carlsen, M.</span><span class="v cyan">2840</span></div>
-          <div class="kv"><span class="k">Keymer, V.</span><span class="v">2762</span></div>
-          <div class="kv"><span class="k">So, W.</span><span class="v">2754</span></div>
-          <div class="kv"><span class="k">Firouzja, A.</span><span class="v">2759</span></div>
-          <div class="kv"><span class="k">Gukesh, D.</span><span class="v">2732</span></div>
-          <div class="kv"><span class="k">Praggnanandhaa, R.</span><span class="v">2733</span></div>
+          <div class="kv"><span class="k">total_invested</span><span class="v cyan" id="ps-invested">—</span></div>
+          <div class="kv"><span class="k">total_value</span><span class="v" id="ps-value">—</span></div>
+          <div class="kv"><span class="k">unrealized_pnl</span><span class="v" id="ps-pnl">—</span></div>
+          <div class="kv"><span class="k">return%</span><span class="v" id="ps-ret">—</span></div>
+          <div class="kv"><span class="k">open_positions</span><span class="v yellow" id="ps-open">—</span></div>
+          <div class="kv"><span class="k">last_updated</span><span class="v" id="ps-updated">—</span></div>
         </div>
       </div>
     </div>
@@ -391,41 +416,38 @@
 
     <!-- P&L Chart -->
     <div class="panel">
-      <div class="panel-hdr">CUMULATIVE_P&L <span class="badge" style="color:var(--yellow);border-color:var(--yellow);background:rgba(255,179,0,0.08)">ILLUSTRATIVE</span></div>
+      <div class="panel-hdr">UNREALIZED_P&L · BY_POSITION <span class="badge live">LIVE</span></div>
       <div class="chart-metrics-bar">
-        <div class="cm"><div class="cl">settled_pnl</div><div class="cv green">+$1,680</div></div>
-        <div class="cm"><div class="cl">trades</div><div class="cv text">9</div></div>
-        <div class="cm"><div class="cl">w / l</div><div class="cv text">6 <span style="color:var(--dim)">/</span> <span style="color:var(--red)">3</span></div></div>
-        <div class="cm"><div class="cl">win_rate</div><div class="cv text">66.7%</div></div>
-        <div class="cm"><div class="cl">avg_edge</div><div class="cv green">+9.1%</div></div>
-        <div class="cm"><div class="cl">max_dd</div><div class="cv red">−$310</div></div>
-        <div class="cm"><div class="cl">open</div><div class="cv yellow">1</div></div>
+        <div class="cm"><div class="cl">invested</div><div class="cv cyan" id="cm-invested">—</div></div>
+        <div class="cm"><div class="cl">current_value</div><div class="cv text" id="cm-value">—</div></div>
+        <div class="cm"><div class="cl">unrealized_pnl</div><div class="cv" id="cm-pnl">—</div></div>
+        <div class="cm"><div class="cl">return%</div><div class="cv" id="cm-ret">—</div></div>
+        <div class="cm"><div class="cl">positions</div><div class="cv text" id="cm-pos">—</div></div>
+        <div class="cm"><div class="cl">last_update</div><div class="cv text" style="font-size:11px" id="cm-ts">—</div></div>
       </div>
       <div class="chart-wrap"><canvas id="pnlChart"></canvas></div>
-      <div class="chart-note">† illustrative track record — see positions table for live data</div>
+      <div class="chart-note">unrealized only — click <span style="color:var(--green)">LIVE</span> dot to refresh · auto-refreshes every 30s</div>
     </div>
 
     <!-- Live Positions -->
     <div class="panel" style="flex:1;">
-      <div class="panel-hdr">POSITIONS <span class="badge" id="pos-badge">loading</span></div>
+      <div class="panel-hdr">POSITIONS <span class="badge" id="pos-badge">loading…</span></div>
       <div class="tbl-wrap">
         <table>
           <thead>
             <tr>
-              <th>date</th>
-              <th>tournament</th>
-              <th>exch</th>
               <th>player</th>
-              <th>model%</th>
-              <th>mkt%</th>
-              <th>edge%</th>
-              <th>action</th>
+              <th>side</th>
               <th>stake</th>
-              <th>status</th>
+              <th>entry</th>
+              <th>current</th>
+              <th>value</th>
+              <th>P&L $</th>
+              <th>P&L %</th>
             </tr>
           </thead>
           <tbody id="pos-tbody">
-            <tr><td colspan="10" class="empty">fetching positions.csv…</td></tr>
+            <tr><td colspan="8" class="empty">fetching live data…</td></tr>
           </tbody>
         </table>
       </div>
@@ -436,23 +458,11 @@
   <!-- RIGHT ──────────────────────────────────────────── -->
   <div class="col">
 
-    <!-- Active Signals -->
+    <!-- Live Position Signals -->
     <div class="panel">
-      <div class="panel-hdr">ACTIVE_SIGNALS</div>
+      <div class="panel-hdr">OPEN_POSITIONS <span class="badge live">LIVE</span></div>
       <div class="panel-body" id="signals-body">
-        <div class="signal">
-          <div class="signal-top">
-            <span class="signal-id">NCH26-001 · 2026-04-23</span>
-            <span class="signal-action no">NO</span>
-          </div>
-          <div class="signal-player">M. Carlsen</div>
-          <div class="signal-row">
-            <div class="signal-stat"><div class="sk">model</div><div class="sv" style="color:var(--text)">33.1%</div></div>
-            <div class="signal-stat"><div class="sk">market</div><div class="sv" style="color:var(--text)">61.0%</div></div>
-            <div class="signal-stat"><div class="sk">edge</div><div class="sv" style="color:var(--red)">−27.9%</div></div>
-            <div class="signal-stat"><div class="sk">stake</div><div class="sv" style="color:var(--yellow)">$500</div></div>
-          </div>
-        </div>
+        <div class="empty">fetching…</div>
       </div>
     </div>
 
@@ -461,44 +471,25 @@
       <div class="panel-hdr">LAST_RUN</div>
       <div class="panel-body">
         <div class="kv-list">
-          <div class="kv"><span class="k">timestamp</span><span class="v">2026-04-23</span></div>
-          <div class="kv"><span class="k">players_loaded</span><span class="v green">6 / 6</span></div>
-          <div class="kv"><span class="k">ratings_source</span><span class="v">KNOWN_RATINGS</span></div>
-          <div class="kv"><span class="k">completed_games</span><span class="v">0</span></div>
-          <div class="kv"><span class="k">remaining_games</span><span class="v">30</span></div>
-          <div class="kv"><span class="k">schedule_type</span><span class="v cyan">double RR</span></div>
-          <div class="kv"><span class="k">tpr_players_hit</span><span class="v">6 / 6</span></div>
+          <div class="kv"><span class="k">timestamp</span><span class="v">2026-04-28</span></div>
+          <div class="kv"><span class="k">tournament</span><span class="v cyan">GCT Poland 2026</span></div>
+          <div class="kv"><span class="k">positions_logged</span><span class="v green">4</span></div>
+          <div class="kv"><span class="k">total_stake</span><span class="v">$500.00</span></div>
           <div class="kv"><span class="k">gate_status</span><span class="v green">PASS (0 ≤ 4)</span></div>
+          <div class="kv"><span class="k">tpr_players_hit</span><span class="v">10 / 10</span></div>
         </div>
       </div>
     </div>
 
-    <!-- Norway Model Output -->
+    <!-- Data Status -->
     <div class="panel">
-      <div class="panel-hdr">MODEL_OUTPUT · NCH26</div>
+      <div class="panel-hdr">DATA_STATUS</div>
       <div class="panel-body">
-        <div class="kv-list">
-          <div class="kv"><span class="k">Carlsen</span>
-            <span><span style="color:var(--muted);font-size:10px">33.1% </span><span class="pill neg">61.0%</span></span>
-          </div>
-          <div class="kv"><span class="k">Firouzja</span>
-            <span><span style="color:var(--muted);font-size:10px">17.1% </span><span class="pill" style="background:rgba(200,200,200,0.08);color:var(--muted)">14.0%</span></span>
-          </div>
-          <div class="kv"><span class="k">Keymer</span>
-            <span><span style="color:var(--muted);font-size:10px">14.1% </span><span class="pill" style="background:rgba(200,200,200,0.08);color:var(--muted)">11.0%</span></span>
-          </div>
-          <div class="kv"><span class="k">So</span>
-            <span><span style="color:var(--muted);font-size:10px">13.4% </span><span class="pill" style="background:rgba(200,200,200,0.08);color:var(--muted)">10.0%</span></span>
-          </div>
-          <div class="kv"><span class="k">Praggnanandhaa</span>
-            <span><span style="color:var(--muted);font-size:10px">12.1% </span><span class="pill" style="background:rgba(200,200,200,0.08);color:var(--muted)">8.0%</span></span>
-          </div>
-          <div class="kv"><span class="k">Gukesh</span>
-            <span><span style="color:var(--muted);font-size:10px">10.3% </span><span class="pill" style="background:rgba(200,200,200,0.08);color:var(--muted)">7.0%</span></span>
-          </div>
-        </div>
-        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:9px;color:var(--muted)">
-          model% · market% &nbsp;|&nbsp; actionable: <span style="color:var(--red)">1 (NO Carlsen)</span>
+        <div class="kv-list" id="data-status-list">
+          <div class="kv"><span class="k">KXCHESSNORWAY-26</span><span class="v" id="ds-norway">—</span></div>
+          <div class="kv"><span class="k">KXCHESSGRANDTOUR-26</span><span class="v" id="ds-gct">—</span></div>
+          <div class="kv"><span class="k">KXCHESSPOLAND-26</span><span class="v" id="ds-poland">—</span></div>
+          <div class="kv"><span class="k">server</span><span class="v ok">http://localhost:8080</span></div>
         </div>
       </div>
     </div>
@@ -507,182 +498,440 @@
 </div>
 
 <script>
-// ── Timestamp ────────────────────────────────────────────
-function tick() {
+// ═══════════════════════════════════════════════════════════════
+// State
+// ═══════════════════════════════════════════════════════════════
+let pnlChart    = null;
+let lastData    = null;
+let countdown   = 30;
+let clockTick   = null;  // setInterval for clock
+let refreshTick = null;  // setInterval for countdown + auto-refresh
+
+// ═══════════════════════════════════════════════════════════════
+// Clock
+// ═══════════════════════════════════════════════════════════════
+function tickClock() {
   const now = new Date();
-  document.getElementById('hdr-ts').textContent = now.toLocaleString('en-US',{
-    month:'2-digit',day:'2-digit',year:'2-digit',
-    hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false
+  document.getElementById('hdr-ts').textContent = now.toLocaleString('en-US', {
+    month:'2-digit', day:'2-digit', year:'2-digit',
+    hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false
   }).replace(',','');
 }
-tick(); setInterval(tick, 1000);
+clockTick = setInterval(tickClock, 1000);
+tickClock();
 
-// ── Demo Trades ──────────────────────────────────────────
-const TRADES = [
-  { d:'2025-10-18', id:'T001', t:'Tata Steel Qualifier',  p:'A. Erigaisi',    act:'YES', m:22,   k:12,   e:10,   s:200, pnl:220  },
-  { d:'2025-10-18', id:'T002', t:'Tata Steel Qualifier',  p:'M. Carlsen',     act:'NO',  m:35,   k:47,   e:-12,  s:200, pnl:-180 },
-  { d:'2025-11-14', id:'T003', t:'World Rapid Qualifier', p:'J. Sindarov',    act:'YES', m:20,   k:11,   e:9,    s:250, pnl:310  },
-  { d:'2025-11-14', id:'T004', t:'World Rapid Qualifier', p:'F. Caruana',     act:'NO',  m:22,   k:33,   e:-11,  s:200, pnl:-220 },
-  { d:'2026-01-12', id:'T005', t:'Tata Steel 2026',       p:'N. Abdusattorov',act:'YES', m:20,   k:11,   e:9,    s:250, pnl:280  },
-  { d:'2026-01-12', id:'T006', t:'Tata Steel 2026',       p:'M. Carlsen',     act:'NO',  m:38,   k:54,   e:-16,  s:450, pnl:490  },
-  { d:'2026-02-09', id:'T007', t:'Candidates 2026',       p:'J. Sindarov',    act:'YES', m:18,   k:8,    e:10,   s:250, pnl:620  },
-  { d:'2026-02-09', id:'T008', t:'Candidates 2026',       p:'H. Nakamura',    act:'NO',  m:20,   k:31,   e:-11,  s:350, pnl:-150 },
-  { d:'2026-04-07', id:'T009', t:'Sigeman 2026',          p:'N. Abdusattorov',act:'YES', m:38,   k:27,   e:11,   s:250, pnl:310  },
-];
-// Cumulative: 220, 40, 350, 130, 410, 900, 1520, 1370, 1680
-
-let cum = 0;
-const labels = ['─'];
-const data   = [0];
-TRADES.forEach(t => {
-  cum += t.pnl;
-  labels.push(t.d);
-  data.push(cum);
-});
-// Open position point
-labels.push('2026-04-23*');
-data.push(cum);
-
-// ── Chart ────────────────────────────────────────────────
-const ctx = document.getElementById('pnlChart').getContext('2d');
-const grad = ctx.createLinearGradient(0,0,0,220);
-grad.addColorStop(0,   'rgba(0,230,118,0.25)');
-grad.addColorStop(0.6, 'rgba(0,230,118,0.04)');
-grad.addColorStop(1,   'rgba(0,230,118,0)');
-
-new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels,
-    datasets: [{
-      data,
-      borderColor: data.map((v,i) => {
-        if (i === 0) return '#00e676';
-        return data[i] < data[i-1] ? '#ff4444' : '#00e676';
-      }),
-      borderWidth: 1.5,
-      segment: {
-        borderColor: ctx => {
-          const i = ctx.p1DataIndex;
-          if (i === data.length - 1) return 'rgba(255,179,0,0.7)';
-          return data[i] < data[i-1] ? '#ff4444' : '#00e676';
-        },
-        borderDash: ctx => ctx.p1DataIndex === data.length - 1 ? [4,3] : [],
-      },
-      pointBackgroundColor: data.map((v, i) => {
-        if (i === data.length - 1) return '#ffb300';
-        if (i === 0) return '#00e676';
-        return v < data[i-1] ? '#ff4444' : '#00e676';
-      }),
-      pointBorderColor: '#080c14',
-      pointBorderWidth: 1,
-      pointRadius: data.map((_, i) => i === data.length - 1 ? 6 : 3),
-      pointHoverRadius: 7,
-      fill: true,
-      backgroundColor: grad,
-      tension: 0.3,
-    }],
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    interaction: { mode: 'index', intersect: false },
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        backgroundColor: '#0d1320',
-        borderColor: '#243352',
-        borderWidth: 1,
-        titleColor: '#546e8a',
-        bodyColor: '#cdd9e5',
-        padding: 10,
-        titleFont: { family: "'JetBrains Mono'", size: 10 },
-        bodyFont: { family: "'JetBrains Mono'", size: 11 },
-        callbacks: {
-          title: ctx => ctx[0].label === '─' ? 'start' : ctx[0].label,
-          label: ctx => {
-            const v = ctx.raw;
-            const i = ctx.dataIndex;
-            const sign = v >= 0 ? '+' : '';
-            const delta = i > 0 ? (v - data[i-1]) : 0;
-            const ds = delta >= 0 ? `+$${delta}` : `-$${Math.abs(delta)}`;
-            const line1 = `  cum_pnl: ${sign}$${v.toLocaleString()}`;
-            const line2 = i > 0 && i < data.length - 1 ? `  trade:   ${ds}` : '';
-            const trade = TRADES[i-1];
-            const line3 = trade ? `  ${trade.id}: ${trade.t}` : (i === data.length-1 ? '  NCH26-001 [OPEN]' : '');
-            return [line1, line2, line3].filter(Boolean);
-          }
-        }
-      }
-    },
-    scales: {
-      x: {
-        grid: { color: 'rgba(26,38,64,0.8)', drawBorder: false },
-        ticks: { color: '#3d5068', font: { family:"'JetBrains Mono'", size:9 }, maxRotation:0 },
-        border: { display: false },
-      },
-      y: {
-        grid: { color: 'rgba(26,38,64,0.8)', drawBorder: false },
-        ticks: { color: '#3d5068', font: { family:"'JetBrains Mono'", size:9 }, callback: v => '$'+v },
-        border: { display: false },
-      }
-    }
+// ═══════════════════════════════════════════════════════════════
+// Fetch & refresh loop
+// ═══════════════════════════════════════════════════════════════
+async function fetchPnl() {
+  const dot = document.getElementById('live-dot');
+  dot.classList.add('fetching');
+  dot.textContent = 'LOADING';
+  try {
+    const resp = await fetch('/api/pnl');
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error);
+    lastData = data;
+    renderAll(data);
+    countdown = data.refresh_secs || 30;
+  } catch (e) {
+    showError(e.message);
+  } finally {
+    dot.classList.remove('fetching');
+    dot.textContent = 'LIVE';
   }
-});
-
-// ── Positions CSV ────────────────────────────────────────
-function parseCSV(t) {
-  const lines = t.trim().split('\n');
-  if (lines.length < 2) return [];
-  const h = lines[0].split(',').map(x=>x.trim());
-  return lines.slice(1).map(l => {
-    const c = l.split(',').map(x=>x.trim());
-    const o = {};
-    h.forEach((k,i) => o[k] = c[i]??'');
-    return o;
-  });
 }
 
-function renderPositions(rows) {
+function startRefreshLoop() {
+  fetchPnl();
+  refreshTick = setInterval(() => {
+    countdown--;
+    document.getElementById('sb-next').textContent = `${countdown}s`;
+    if (countdown <= 0) {
+      countdown = 30;
+      fetchPnl();
+    }
+  }, 1000);
+}
+
+function manualRefresh() {
+  countdown = 30;
+  fetchPnl();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Render all panels
+// ═══════════════════════════════════════════════════════════════
+function renderAll(data) {
+  updateHeaderMetrics(data);
+  updateStatusBar(data);
+  updateChart(data);
+  renderPositionsTable(data);
+  renderSignals(data);
+  updatePortfolioStats(data);
+  updateDataStatus(data);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Header metrics
+// ═══════════════════════════════════════════════════════════════
+function updateHeaderMetrics(data) {
+  const pnl    = data.total_pnl     ?? 0;
+  const pnlPct = data.total_pnl_pct ?? 0;
+
+  document.getElementById('hdr-invested').textContent = `$${fmt(data.total_invested)}`;
+  document.getElementById('hdr-open').textContent     = data.positions.length;
+
+  const pnlEl = document.getElementById('hdr-pnl');
+  pnlEl.textContent  = (pnl >= 0 ? '+' : '') + '$' + fmt(Math.abs(pnl));
+  pnlEl.className    = 'val ' + (pnl >= 0 ? 'green' : 'red');
+
+  const retEl = document.getElementById('hdr-ret');
+  retEl.textContent  = (pnlPct >= 0 ? '+' : '') + pnlPct.toFixed(1) + '%';
+  retEl.className    = 'val ' + (pnlPct >= 0 ? 'green' : 'red');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Status bar
+// ═══════════════════════════════════════════════════════════════
+function updateStatusBar(data) {
+  document.getElementById('sb-positions').textContent = data.positions.length;
+  const ts = new Date(data.updated_at);
+  document.getElementById('sb-data-age').textContent =
+    ts.toLocaleTimeString('en-US', { hour12: false });
+  document.getElementById('sb-next').textContent = `${countdown}s`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Chart — horizontal bar, one bar per position
+// ═══════════════════════════════════════════════════════════════
+function buildChartData(positions) {
+  const labels = positions.map(p => lastName(p.player));
+  const values = positions.map(p => p.unrealized_pnl ?? 0);
+  const bgCols = values.map(v => v >= 0 ? 'rgba(0,230,118,0.20)' : 'rgba(255,68,68,0.20)');
+  const bdCols = values.map(v => v >= 0 ? '#00e676' : '#ff4444');
+  return { labels, values, bgCols, bdCols, positions };
+}
+
+function initChart(data) {
+  const { labels, values, bgCols, bdCols, positions } = buildChartData(data.positions);
+  const ctx = document.getElementById('pnlChart').getContext('2d');
+
+  pnlChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data:            values,
+        backgroundColor: bgCols,
+        borderColor:     bdCols,
+        borderWidth:     1,
+        borderRadius:    2,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0d1320',
+          borderColor:     '#243352',
+          borderWidth: 1,
+          titleColor: '#546e8a',
+          bodyColor:  '#cdd9e5',
+          padding: 10,
+          titleFont: { family: "'JetBrains Mono'", size: 10 },
+          bodyFont:  { family: "'JetBrains Mono'", size: 11 },
+          callbacks: {
+            title: ctx => positions[ctx[0].dataIndex].player,
+            label: ctx => {
+              const p   = positions[ctx.dataIndex];
+              const v   = ctx.raw;
+              const sgn = v >= 0 ? '+' : '';
+              return [
+                `  P&L:     ${sgn}$${Math.abs(v).toFixed(2)}`,
+                `  return:  ${sgn}${(p.unrealized_pnl_pct ?? 0).toFixed(1)}%`,
+                `  entry:   ${(p.entry_price * 100).toFixed(1)}¢ (${p.action})`,
+                `  current: ${((p.current_price ?? 0) * 100).toFixed(1)}¢`,
+                `  stake:   $${p.stake.toFixed(2)}`,
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid:   { color: 'rgba(26,38,64,0.8)', drawBorder: false },
+          border: { display: false },
+          ticks:  {
+            color: '#3d5068',
+            font:  { family: "'JetBrains Mono'", size: 9 },
+            callback: v => (v >= 0 ? '+$' : '-$') + Math.abs(v),
+          }
+        },
+        y: {
+          grid:   { color: 'rgba(26,38,64,0.8)', drawBorder: false },
+          border: { display: false },
+          ticks:  { color: '#cdd9e5', font: { family: "'JetBrains Mono'", size: 10 } }
+        }
+      }
+    }
+  });
+
+  updateChartMetricsBar(data);
+}
+
+function updateChart(data) {
+  if (!pnlChart) { initChart(data); return; }
+  const { values, bgCols, bdCols } = buildChartData(data.positions);
+  pnlChart.data.datasets[0].data            = values;
+  pnlChart.data.datasets[0].backgroundColor = bgCols;
+  pnlChart.data.datasets[0].borderColor     = bdCols;
+  pnlChart.update('active');
+  updateChartMetricsBar(data);
+}
+
+function updateChartMetricsBar(data) {
+  const pnl    = data.total_pnl     ?? 0;
+  const pnlPct = data.total_pnl_pct ?? 0;
+  const ts     = new Date(data.updated_at);
+
+  document.getElementById('cm-invested').textContent = '$' + fmt(data.total_invested);
+  document.getElementById('cm-value').textContent    = '$' + fmt(data.total_value);
+  document.getElementById('cm-pos').textContent      = data.positions.length;
+  document.getElementById('cm-ts').textContent =
+    ts.toLocaleTimeString('en-US', { hour12: false });
+
+  const pnlEl = document.getElementById('cm-pnl');
+  pnlEl.textContent = (pnl >= 0 ? '+$' : '-$') + fmt(Math.abs(pnl));
+  pnlEl.className   = 'cv ' + (pnl >= 0 ? 'green' : 'red');
+
+  const retEl = document.getElementById('cm-ret');
+  retEl.textContent = (pnlPct >= 0 ? '+' : '') + pnlPct.toFixed(1) + '%';
+  retEl.className   = 'cv ' + (pnlPct >= 0 ? 'green' : 'red');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Positions table (grouped by tournament)
+// ═══════════════════════════════════════════════════════════════
+function renderPositionsTable(data) {
   const tbody = document.getElementById('pos-tbody');
   const badge = document.getElementById('pos-badge');
-  document.getElementById('hdr-open').textContent = rows.length;
+  const positions = data.positions;
 
-  if (!rows.length) {
-    tbody.innerHTML = `<tr><td colspan="10" class="empty">no positions logged</td></tr>`;
-    badge.textContent = '0';
+  badge.textContent = positions.length;
+
+  if (!positions.length) {
+    tbody.innerHTML = `<tr><td colspan="8" class="empty">no positions found</td></tr>`;
     return;
   }
-  badge.textContent = rows.length;
 
-  tbody.innerHTML = rows.map(r => {
-    const act = (r['Action']||'').toUpperCase();
-    const edge = parseFloat(r['Edge%']||'0');
-    const eSign = edge >= 0 ? '+' : '';
-    const eCls = edge >= 0 ? 'pos' : 'neg';
-    const rCls = act === 'YES' ? 'row-yes' : act === 'NO' ? 'row-no' : '';
-    return `<tr class="${rCls}">
-      <td class="td-date">${r['Date']||'—'}</td>
-      <td class="td-tour">${r['Tournament']||'—'}</td>
-      <td><span class="td-exch">${r['Exchange']||'—'}</span></td>
-      <td class="td-player">${r['Player']||'—'}</td>
-      <td>${r['Model%']||'—'}%</td>
-      <td>${r['Market%']||'—'}%</td>
-      <td><span class="pill ${eCls}">${eSign}${r['Edge%']||'0'}%</span></td>
-      <td><span class="pill ${act.toLowerCase()}">${act}</span></td>
-      <td>$${parseFloat(r['Stake']||'0').toLocaleString()}</td>
-      <td><span class="pill open">OPEN</span></td>
+  // Group by tournament
+  const groups = [];
+  const seen   = new Map();
+  for (const p of positions) {
+    if (!seen.has(p.tournament)) {
+      seen.set(p.tournament, []);
+      groups.push({ tournament: p.tournament, ticker: p.event_ticker, rows: seen.get(p.tournament) });
+    }
+    seen.get(p.tournament).push(p);
+  }
+
+  let html = '';
+  for (const g of groups) {
+    const groupPnl = g.rows.reduce((s, r) => s + (r.unrealized_pnl ?? 0), 0);
+    const gpCls    = groupPnl >= 0 ? 'pos' : 'neg';
+    const gpSign   = groupPnl >= 0 ? '+$' : '-$';
+    const ticker   = g.ticker ?? '—';
+
+    html += `<tr class="group-hdr">
+      <td colspan="8">
+        <span class="gh-name">${g.tournament}</span>
+        <span class="gh-ticker">${ticker}</span>
+        <span class="gh-group-pnl ${gpCls}">P&L: ${gpSign}${Math.abs(groupPnl).toFixed(2)}</span>
+      </td>
     </tr>`;
+
+    for (const p of g.rows) {
+      const act     = p.action;
+      const rCls    = act === 'YES' ? 'row-yes' : 'row-no';
+      const entry_c = (p.entry_price   * 100).toFixed(1);
+      const cur_c   = p.current_price != null ? (p.current_price * 100).toFixed(1) : '—';
+      const val_s   = p.current_value != null ? '$' + fmt(p.current_value)         : '—';
+      const pnlCls  = p.unrealized_pnl != null
+        ? (p.unrealized_pnl >= 0 ? 'pnl-pos' : 'pnl-neg')
+        : 'pnl-na';
+      const pnlStr  = p.unrealized_pnl != null
+        ? (p.unrealized_pnl >= 0 ? '+$' : '-$') + Math.abs(p.unrealized_pnl).toFixed(2)
+        : '—';
+      const pnlPctStr = p.unrealized_pnl_pct != null
+        ? (p.unrealized_pnl_pct >= 0 ? '+' : '') + p.unrealized_pnl_pct.toFixed(1) + '%'
+        : '—';
+
+      html += `<tr class="${rCls}">
+        <td class="td-player">${p.player}</td>
+        <td><span class="pill ${act.toLowerCase()}">${act}</span></td>
+        <td>$${p.stake.toFixed(0)}</td>
+        <td class="price-entry">${entry_c}¢</td>
+        <td class="price-now">${cur_c}¢</td>
+        <td>${val_s}</td>
+        <td class="${pnlCls}">${pnlStr}</td>
+        <td class="${pnlCls}">${pnlPctStr}</td>
+      </tr>`;
+    }
+  }
+
+  tbody.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Signals panel (right column)
+// ═══════════════════════════════════════════════════════════════
+function renderSignals(data) {
+  const body = document.getElementById('signals-body');
+
+  if (!data.positions.length) {
+    body.innerHTML = `<div class="empty">no positions</div>`;
+    return;
+  }
+
+  body.innerHTML = data.positions.map(p => {
+    const act    = p.action;
+    const aCls   = act.toLowerCase();
+    const pnlCls = (p.unrealized_pnl ?? 0) >= 0 ? 'pnl-pos' : 'pnl-neg';
+    const pnlStr = p.unrealized_pnl != null
+      ? ((p.unrealized_pnl >= 0 ? '+' : '') + '$' + Math.abs(p.unrealized_pnl).toFixed(2))
+      : '—';
+    const pnlPct = p.unrealized_pnl_pct != null
+      ? ((p.unrealized_pnl_pct >= 0 ? '+' : '') + p.unrealized_pnl_pct.toFixed(1) + '%')
+      : '—';
+    const curStr = p.current_price != null
+      ? (p.current_price * 100).toFixed(1) + '¢'
+      : '—';
+    const shortTour = p.tournament
+      .replace('GCT Poland 2026 Super Rapid & Blitz', 'GCT Poland')
+      .replace('Grand Chess Tour 2026 Finals', 'GCT Finals')
+      .replace('Norway Chess 2026', 'Norway Chess');
+
+    return `<div class="signal ${aCls}">
+      <div class="signal-top">
+        <span class="signal-id">${shortTour} · ${p.date}</span>
+        <span class="signal-action ${aCls}">${act}</span>
+      </div>
+      <div class="signal-player">${p.player}</div>
+      <div class="signal-row">
+        <div class="signal-stat">
+          <div class="sk">stake</div>
+          <div class="sv" style="color:var(--yellow)">$${p.stake.toFixed(0)}</div>
+        </div>
+        <div class="signal-stat">
+          <div class="sk">entry</div>
+          <div class="sv" style="color:var(--muted)">${(p.entry_price*100).toFixed(1)}¢</div>
+        </div>
+        <div class="signal-stat">
+          <div class="sk">now</div>
+          <div class="sv" style="color:var(--bright)">${curStr}</div>
+        </div>
+        <div class="signal-stat">
+          <div class="sk">P&L</div>
+          <div class="sv ${pnlCls}">${pnlStr} (${pnlPct})</div>
+        </div>
+      </div>
+    </div>`;
   }).join('');
 }
 
-fetch('positions.csv')
-  .then(r => r.text())
-  .then(t => renderPositions(parseCSV(t)))
-  .catch(() => renderPositions([{
-    'Date':'2026-04-23','Tournament':'Norway Chess 2026','Exchange':'Kalshi',
-    'Player':'Magnus Carlsen','Model%':'33.1','Market%':'61.0','Edge%':'-27.9','Action':'NO','Stake':'500.00'
-  }]));
+// ═══════════════════════════════════════════════════════════════
+// Left portfolio stats
+// ═══════════════════════════════════════════════════════════════
+function updatePortfolioStats(data) {
+  const pnl    = data.total_pnl     ?? 0;
+  const pnlPct = data.total_pnl_pct ?? 0;
+  const ts     = new Date(data.updated_at);
+
+  document.getElementById('ps-invested').textContent = '$' + fmt(data.total_invested);
+  document.getElementById('ps-value').textContent    = '$' + fmt(data.total_value);
+  document.getElementById('ps-open').textContent     = data.positions.length;
+  document.getElementById('ps-updated').textContent  =
+    ts.toLocaleTimeString('en-US', { hour12: false });
+
+  const pnlEl = document.getElementById('ps-pnl');
+  pnlEl.textContent = (pnl >= 0 ? '+' : '') + '$' + fmt(Math.abs(pnl));
+  pnlEl.className   = 'v ' + (pnl >= 0 ? 'green' : 'red');
+
+  const retEl = document.getElementById('ps-ret');
+  retEl.textContent = (pnlPct >= 0 ? '+' : '') + pnlPct.toFixed(2) + '%';
+  retEl.className   = 'v ' + (pnlPct >= 0 ? 'green' : 'red');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Data status (right bottom panel)
+// ═══════════════════════════════════════════════════════════════
+function updateDataStatus(data) {
+  const tickers = {
+    'KXCHESSNORWAY-26':    document.getElementById('ds-norway'),
+    'KXCHESSGRANDTOUR-26': document.getElementById('ds-gct'),
+    'KXCHESSPOLAND-26':    document.getElementById('ds-poland'),
+  };
+
+  // Count data_ok per ticker
+  const counts = {};
+  const totals = {};
+  for (const p of data.positions) {
+    const t = p.event_ticker;
+    if (!t) continue;
+    counts[t] = (counts[t] || 0) + (p.data_ok ? 1 : 0);
+    totals[t] = (totals[t] || 0) + 1;
+  }
+
+  for (const [ticker, el] of Object.entries(tickers)) {
+    if (!el) continue;
+    const ok  = counts[ticker] ?? 0;
+    const tot = totals[ticker] ?? 0;
+    if (tot === 0) {
+      el.textContent = 'no positions';
+      el.className   = 'v';
+    } else if (ok === tot) {
+      el.textContent = `ok (${ok}/${tot})`;
+      el.className   = 'v ok';
+    } else {
+      el.textContent = `partial (${ok}/${tot})`;
+      el.className   = 'v warn';
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Error state
+// ═══════════════════════════════════════════════════════════════
+function showError(msg) {
+  document.getElementById('pos-tbody').innerHTML =
+    `<tr class="err-row"><td colspan="8">⚠ ${msg} — run: venv/bin/python server.py</td></tr>`;
+  document.getElementById('signals-body').innerHTML =
+    `<div class="empty" style="color:var(--yellow)">⚠ server unavailable</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Helpers
+// ═══════════════════════════════════════════════════════════════
+function fmt(n) {
+  if (n == null) return '—';
+  return parseFloat(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function lastName(name) {
+  const parts = name.trim().split(' ');
+  return parts[parts.length - 1];
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Boot
+// ═══════════════════════════════════════════════════════════════
+startRefreshLoop();
 </script>
 </body>
 </html>
