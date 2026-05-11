@@ -6,11 +6,9 @@ Two kinds of inputs:
 
   1. Auto-detected freshness (file mtime or in-file timestamp):
        - tpr_data.json           — uses 'generated_at'
-       - hardcoded_rounds        — uses HARDCODED_ROUNDS coverage of the
-                                   tournament being run
 
   2. User-attested freshness (recorded in `.freshness.json`):
-       - kalshi_prices           — hand-copied from kalshi.com market page
+       - kalshi_event            — Kalshi event ticker for live price fetch
        - polymarket_slugs        — hand-mapped to current event
        - tour_id_<tournament>    — Lichess tour ID for an active broadcast
 
@@ -122,11 +120,8 @@ def check_tpr_data() -> CheckResult:
 
 
 def check_kalshi_prices(tournament: str) -> CheckResult:
-    """Two valid paths satisfy this check:
-
-      A. (preferred) `kalshi_event::<tournament>` is recorded in the ledger
-         → main.py auto-fetches live prices via the Kalshi API at run time.
-      B. Manual KALSHI_PRICES update in main.py + ledger attestation.
+    """Satisfied when `kalshi_event::<tournament>` is recorded in the ledger.
+    main.py will auto-fetch live prices via the Kalshi API at run time.
     """
     ledger = _load_ledger()
     event_key = f"kalshi_event::{tournament}"
@@ -136,20 +131,12 @@ def check_kalshi_prices(tournament: str) -> CheckResult:
             f"auto-fetch via {ledger[event_key]['value']}",
             "(no action — live API fetch)",
         )
-    entry = ledger.get("kalshi_prices", {})
-    fresh, age = _check_age(entry.get("refreshed_at"),
-                            MAX_AGE_HOURS["kalshi_prices"])
-    if entry.get("tournament") and entry["tournament"] != tournament:
-        fresh = False
     return CheckResult(
-        "kalshi_prices", fresh, age,
-        f"tournament={entry.get('tournament', 'unset')} (no event_ticker mapped)",
-        f"PREFERRED: record the Kalshi event ticker (auto-fetches every run):\n"
+        "kalshi_prices", False, float("inf"),
+        "no event ticker mapped",
+        f"Register the Kalshi event ticker:\n"
         f"     venv/bin/python -m freshness mark kalshi_event "
-        f"\"{tournament}\" --value <EVENT_TICKER>\n"
-        f"   FALLBACK: hand-update KALSHI_PRICES in main.py, then:\n"
-        f"     venv/bin/python -m freshness mark kalshi_prices "
-        f"--tournament \"{tournament}\"",
+        f"\"{tournament}\" --value <EVENT_TICKER>",
     )
 
 

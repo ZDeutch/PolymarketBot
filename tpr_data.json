@@ -1,1007 +1,2623 @@
 {
-  "generated_at": "2026-05-04T19:18:52.188594",
+  "generated_at": "2026-05-07T14:59:41.887417",
   "tournaments_scanned": 9,
-  "total_elite_games": 711,
+  "total_elite_games": 3372,
   "players": {
     "A.R. Saleh Salem": {
-      "tpr": 2593.8,
-      "draw_rate": 0.6644,
-      "volatility": 54.8,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2717.3
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 14,
+      "weighted_games": 1.5,
+      "avg_opponent": 2638.9
     },
-    "Abdimalik Abdisalimov": {
-      "tpr": 2461.6,
-      "draw_rate": 0.167,
-      "volatility": 57.3,
-      "elite_games": 6,
-      "weighted_games": 3.13,
-      "avg_opponent": 2652.0
-    },
-    "Abhimanyu Mishra": {
-      "tpr": 2860.9,
-      "draw_rate": 0.6266,
-      "volatility": 50.9,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2722.9
-    },
-    "Abhimanyu Puranik": {
-      "tpr": 2678.3,
-      "draw_rate": 0.5708,
-      "volatility": 50.8,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2728.7
-    },
-    "Aditya Mittal": {
-      "tpr": 2689.1,
-      "draw_rate": 0.6242,
-      "volatility": 49.0,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2645.0
-    },
-    "Aleksandar Indjic": {
+    "Abasov Nijat": {
       "tpr": null,
       "draw_rate": null,
       "volatility": null,
       "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2616.0
+      "weighted_games": 0.19,
+      "avg_opponent": 2611.0
     },
-    "Aleksandra Goryachkina": {
-      "tpr": 2604.5,
-      "draw_rate": 0.3744,
-      "volatility": 49.1,
+    "Abasov Nijat (AZE)": {
+      "tpr": 2926.6,
+      "draw_rate": 0.437,
+      "volatility": 44.9,
+      "elite_games": 25,
+      "weighted_games": 9.1,
+      "avg_opponent": 2740.8
+    },
+    "Abhimanyu Mishra": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 7.52,
+      "avg_opponent": 2682.0
+    },
+    "Abhimanyu Puranik": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 4.97,
+      "avg_opponent": null
+    },
+    "Adam Kozak": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 1.83,
+      "avg_opponent": 2681.7
+    },
+    "Adams Michael": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
       "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2647.8
+      "weighted_games": 0.19,
+      "avg_opponent": 2636.8
+    },
+    "Aditya Mittal": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 6.87,
+      "avg_opponent": null
+    },
+    "Alan Pichot": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 13,
+      "weighted_games": 4.25,
+      "avg_opponent": 2652.0
+    },
+    "Aleksandar Indjic": {
+      "tpr": 2546.4,
+      "draw_rate": 0.3458,
+      "volatility": 65.2,
+      "elite_games": 32,
+      "weighted_games": 20.15,
+      "avg_opponent": 2672.6
+    },
+    "Alexander Areshchenko": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 3.97,
+      "avg_opponent": 2662.7
     },
     "Alexander Donchenko": {
-      "tpr": 2580.2,
-      "draw_rate": 0.3922,
-      "volatility": 68.4,
-      "elite_games": 16,
-      "weighted_games": 4.98,
-      "avg_opponent": 2705.1
+      "tpr": null,
+      "draw_rate": 0.2625,
+      "volatility": null,
+      "elite_games": 49,
+      "weighted_games": 24.93,
+      "avg_opponent": 2709.1
     },
     "Alexander Grischuk": {
       "tpr": null,
-      "draw_rate": 0.8002,
+      "draw_rate": null,
       "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2613.0
+      "elite_games": 5,
+      "weighted_games": 0.32,
+      "avg_opponent": null
+    },
+    "Alexandr Fier": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 0.86,
+      "avg_opponent": 2670.4
     },
     "Alexandr Predke": {
-      "tpr": 2719.8,
-      "draw_rate": 0.3741,
-      "volatility": 49.1,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2675.5
+      "tpr": 2633.1,
+      "draw_rate": 0.6648,
+      "volatility": 44.3,
+      "elite_games": 24,
+      "weighted_games": 10.93,
+      "avg_opponent": 2663.9
     },
     "Alexei Shirov": {
-      "tpr": 2773.2,
-      "draw_rate": 0.7482,
-      "volatility": 49.7,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2683.4
+      "tpr": null,
+      "draw_rate": 0.6024,
+      "volatility": null,
+      "elite_games": 20,
+      "weighted_games": 10.98,
+      "avg_opponent": 2678.2
     },
     "Alexey Sarana": {
-      "tpr": null,
-      "draw_rate": 0.6392,
-      "volatility": null,
-      "elite_games": 9,
-      "weighted_games": 4.44,
-      "avg_opponent": 2638.8
+      "tpr": 2680.0,
+      "draw_rate": 0.5161,
+      "volatility": 52.9,
+      "elite_games": 37,
+      "weighted_games": 15.64,
+      "avg_opponent": 2706.5
     },
     "Alireza Firouzja": {
-      "tpr": 2815.0,
-      "draw_rate": 0.2952,
+      "tpr": 2695.0,
+      "draw_rate": 0.4321,
       "volatility": 85.0,
-      "elite_games": 37,
-      "weighted_games": 7.85,
-      "avg_opponent": 2741.0
+      "elite_games": 75,
+      "weighted_games": 20.13,
+      "avg_opponent": 2753.7
+    },
+    "Amin Bassem (EGY)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.32,
+      "avg_opponent": 2684.0
     },
     "Andrei Volokitin": {
-      "tpr": 2648.9,
-      "draw_rate": 0.4998,
-      "volatility": 53.2,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2708.0
+      "tpr": 2653.8,
+      "draw_rate": 0.7856,
+      "volatility": 41.8,
+      "elite_games": 26,
+      "weighted_games": 13.52,
+      "avg_opponent": 2675.5
     },
     "Andrey Esipenko": {
-      "tpr": 2650.3,
-      "draw_rate": 0.6481,
-      "volatility": 55.3,
-      "elite_games": 22,
-      "weighted_games": 15.95,
-      "avg_opponent": 2714.7
+      "tpr": 2632.1,
+      "draw_rate": 0.6317,
+      "volatility": 41.1,
+      "elite_games": 17,
+      "weighted_games": 11.89,
+      "avg_opponent": 2729.9
     },
     "Andy Woodward": {
-      "tpr": 2767.9,
-      "draw_rate": 0.4985,
-      "volatility": 49.8,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2677.4
+      "tpr": 2707.9,
+      "draw_rate": 0.5844,
+      "volatility": 44.4,
+      "elite_games": 16,
+      "weighted_games": 14.33,
+      "avg_opponent": 2753.0
     },
     "Anish Giri": {
-      "tpr": 2788.7,
-      "draw_rate": 0.599,
-      "volatility": 56.0,
-      "elite_games": 41,
-      "weighted_games": 23.1,
-      "avg_opponent": 2721.2
+      "tpr": 2771.0,
+      "draw_rate": 0.6241,
+      "volatility": 50.8,
+      "elite_games": 101,
+      "weighted_games": 30.78,
+      "avg_opponent": 2734.6
+    },
+    "Ante Brkic": {
+      "tpr": 2581.6,
+      "draw_rate": 0.8098,
+      "volatility": 50.9,
+      "elite_games": 12,
+      "weighted_games": 4.31,
+      "avg_opponent": 2679.0
     },
     "Anton Demchenko": {
-      "tpr": 2665.2,
-      "draw_rate": 0.3758,
-      "volatility": 49.1,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2710.8
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 6.37,
+      "avg_opponent": 2717.2
+    },
+    "Anton Guijarro David": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.16,
+      "avg_opponent": 2639.0
     },
     "Anton Korobov": {
-      "tpr": 2583.8,
-      "draw_rate": 0.248,
-      "volatility": 49.6,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2673.1
+      "tpr": null,
+      "draw_rate": 0.6653,
+      "volatility": null,
+      "elite_games": 44,
+      "weighted_games": 19.65,
+      "avg_opponent": 2636.4
     },
-    "Aram Hakobyan": {
-      "tpr": 2689.4,
-      "draw_rate": 0.7499,
-      "volatility": 48.9,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2688.8
+    "Antonios Pavlidis": {
+      "tpr": 2593.1,
+      "draw_rate": 0.8088,
+      "volatility": 48.3,
+      "elite_games": 6,
+      "weighted_games": 4.6,
+      "avg_opponent": 2657.5
     },
     "Arjun Erigaisi": {
-      "tpr": 2774.2,
-      "draw_rate": 0.5846,
-      "volatility": 54.5,
-      "elite_games": 19,
-      "weighted_games": 10.8,
-      "avg_opponent": 2709.9
+      "tpr": 2728.8,
+      "draw_rate": 0.4571,
+      "volatility": 85.0,
+      "elite_games": 106,
+      "weighted_games": 36.0,
+      "avg_opponent": 2741.2
+    },
+    "Arkadij Naiditsch": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 1.36,
+      "avg_opponent": 2705.5
+    },
+    "Aronian Levon": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.16,
+      "avg_opponent": 2641.5
     },
     "Aryan Chopra": {
-      "tpr": 2623.7,
-      "draw_rate": 0.6276,
-      "volatility": 49.0,
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
       "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2667.4
+      "weighted_games": 6.62,
+      "avg_opponent": null
+    },
+    "Aryan Tari": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 17,
+      "weighted_games": 8.08,
+      "avg_opponent": 2701.0
     },
     "Awonder Liang": {
-      "tpr": 2690.9,
-      "draw_rate": 0.6242,
-      "volatility": 49.3,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2646.5
+      "tpr": 2800.2,
+      "draw_rate": 0.3215,
+      "volatility": 46.2,
+      "elite_games": 9,
+      "weighted_games": 5.35,
+      "avg_opponent": 2753.0
     },
     "Aydin Suleymanli": {
-      "tpr": 2668.8,
-      "draw_rate": 0.7513,
-      "volatility": 48.9,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2669.4
+      "tpr": null,
+      "draw_rate": 0.846,
+      "volatility": null,
+      "elite_games": 23,
+      "weighted_games": 12.44,
+      "avg_opponent": 2653.8
     },
-    "Baadur Jobava": {
-      "tpr": 2550.3,
-      "draw_rate": 0.7496,
-      "volatility": 49.6,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2639.4
+    "Bacrot Etienne (FRA)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 2.51,
+      "avg_opponent": 2702.0
     },
     "Bardiya Daneshvar": {
-      "tpr": 2495.5,
-      "draw_rate": 0.5715,
-      "volatility": 53.4,
-      "elite_games": 7,
-      "weighted_games": 3.64,
-      "avg_opponent": 2655.0
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 9,
+      "weighted_games": 1.1,
+      "avg_opponent": 2713.6
+    },
+    "Bartel Mateusz (POL)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.31,
+      "avg_opponent": 2668.0
     },
     "Bassem Amin": {
       "tpr": null,
       "draw_rate": null,
       "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2682.2
+      "elite_games": 19,
+      "weighted_games": 12.16,
+      "avg_opponent": 2623.3
+    },
+    "Benjamin Gledura": {
+      "tpr": null,
+      "draw_rate": 0.7349,
+      "volatility": null,
+      "elite_games": 22,
+      "weighted_games": 9.17,
+      "avg_opponent": 2652.6
+    },
+    "Berkes Ferenc (HUN)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 14,
+      "weighted_games": 2.76,
+      "avg_opponent": 2692.4
+    },
+    "Bluebaum Matthias": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 9,
+      "weighted_games": 0.21,
+      "avg_opponent": 2652.5
+    },
+    "Bluebaum Matthias (GER)": {
+      "tpr": 2721.1,
+      "draw_rate": 0.522,
+      "volatility": 48.4,
+      "elite_games": 9,
+      "weighted_games": 4.32,
+      "avg_opponent": 2695.2
+    },
+    "Bobby Cheng": {
+      "tpr": 2537.4,
+      "draw_rate": 0.4528,
+      "volatility": 52.9,
+      "elite_games": 6,
+      "weighted_games": 3.44,
+      "avg_opponent": 2654.0
     },
     "Bogdan-Daniel Deac": {
-      "tpr": 2527.5,
-      "draw_rate": 0.7485,
-      "volatility": 49.6,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2616.8
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 30,
+      "weighted_games": 19.43,
+      "avg_opponent": 2714.5
     },
-    "Boris Gelfand": {
+    "Bok Benjamin": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 0.23,
+      "avg_opponent": 2624.2
+    },
+    "Brkic Ante (CRO)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 5.31,
+      "avg_opponent": 2677.0
+    },
+    "Can Emre": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 0.12,
+      "avg_opponent": 2676.2
+    },
+    "Carlos Daniel Albornoz Cabrera": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 0.91,
+      "avg_opponent": 2680.2
+    },
+    "Carlsen Magnus (NOR)": {
+      "tpr": 2801.5,
+      "draw_rate": 0.6866,
+      "volatility": 48.1,
+      "elite_games": 19,
+      "weighted_games": 4.98,
+      "avg_opponent": 2681.1
+    },
+    "Caruana Fabiano": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 0.23,
+      "avg_opponent": 2687.5
+    },
+    "Caruana Fabiano (USA)": {
+      "tpr": 3008.3,
+      "draw_rate": 0.1884,
+      "volatility": 67.3,
+      "elite_games": 21,
+      "weighted_games": 3.24,
+      "avg_opponent": 2676.5
+    },
+    "Cheparinov Ivan (BUL)": {
       "tpr": null,
       "draw_rate": null,
       "volatility": null,
       "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2667.7
+      "weighted_games": 2.38,
+      "avg_opponent": 2694.0
     },
     "Chithambaram VR. Aravindh": {
-      "tpr": 2580.9,
-      "draw_rate": 0.5711,
-      "volatility": 48.7,
-      "elite_games": 7,
-      "weighted_games": 5.22,
-      "avg_opponent": 2741.4
+      "tpr": 2672.0,
+      "draw_rate": 0.5221,
+      "volatility": 59.0,
+      "elite_games": 29,
+      "weighted_games": 22.87,
+      "avg_opponent": 2708.1
     },
     "Cristobal Henriquez Villagra": {
-      "tpr": 2704.7,
-      "draw_rate": 0.6259,
-      "volatility": 49.0,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2661.1
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 9,
+      "weighted_games": 1.11,
+      "avg_opponent": 2668.3
+    },
+    "Daneshvar Bardiya (IRI)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.32,
+      "avg_opponent": 2686.0
     },
     "Daniel Dardha": {
-      "tpr": 2569.0,
-      "draw_rate": 0.6673,
-      "volatility": 54.5,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2690.0
+      "tpr": null,
+      "draw_rate": 0.5765,
+      "volatility": null,
+      "elite_games": 24,
+      "weighted_games": 9.55,
+      "avg_opponent": 2651.5
     },
-    "Daniil Dubov": {
-      "tpr": 2676.1,
-      "draw_rate": 0.833,
-      "volatility": 53.1,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2617.5
-    },
-    "Daniil Yuffa": {
+    "Daniele Vocaturo": {
       "tpr": null,
       "draw_rate": null,
       "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2658.3
+      "elite_games": 7,
+      "weighted_games": 1.1,
+      "avg_opponent": 2674.2
     },
     "David Anton Guijarro": {
-      "tpr": 2697.4,
-      "draw_rate": 0.335,
-      "volatility": 52.7,
+      "tpr": 2656.2,
+      "draw_rate": 0.3783,
+      "volatility": 42.0,
+      "elite_games": 38,
+      "weighted_games": 22.91,
+      "avg_opponent": 2694.6
+    },
+    "David Navara": {
+      "tpr": 2720.6,
+      "draw_rate": 0.6307,
+      "volatility": 41.4,
+      "elite_games": 37,
+      "weighted_games": 23.27,
+      "avg_opponent": 2678.4
+    },
+    "David W L Howell": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 11,
+      "weighted_games": 3.14,
+      "avg_opponent": 2621.7
+    },
+    "Deac Bogdan-Daniel (ROU)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.32,
+      "avg_opponent": 2688.0
+    },
+    "Denis Kadric": {
+      "tpr": 2404.7,
+      "draw_rate": 0.2985,
+      "volatility": 54.9,
       "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2697.0
+      "weighted_games": 4.41,
+      "avg_opponent": 2674.4
+    },
+    "Denis Lazavik": {
+      "tpr": 2786.5,
+      "draw_rate": 0.2961,
+      "volatility": 46.0,
+      "elite_games": 8,
+      "weighted_games": 5.58,
+      "avg_opponent": 2815.5
     },
     "Dennis Wagner": {
-      "tpr": 2434.0,
-      "draw_rate": 0.4293,
-      "volatility": 56.5,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2660.4
-    },
-    "Divya Deshmukh": {
-      "tpr": 2593.5,
-      "draw_rate": 0.3738,
-      "volatility": 49.0,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2637.1
-    },
-    "Dmitrij Kollars": {
       "tpr": null,
       "draw_rate": null,
       "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2611.0
-    },
-    "Ediz Gurel": {
-      "tpr": null,
-      "draw_rate": 0.6004,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2724.8
-    },
-    "Etienne Bacrot": {
-      "tpr": null,
-      "draw_rate": null,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2696.8
-    },
-    "Evgeniy Najer": {
-      "tpr": 2662.7,
-      "draw_rate": 0.7499,
-      "volatility": 48.8,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2662.5
-    },
-    "Fabiano Caruana": {
-      "tpr": 2778.1,
-      "draw_rate": 0.4792,
-      "volatility": 40.6,
-      "elite_games": 38,
-      "weighted_games": 16.52,
-      "avg_opponent": 2755.1
-    },
-    "Frederik Svane": {
-      "tpr": null,
-      "draw_rate": null,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2748.3
-    },
-    "Gabriel Sargissian": {
-      "tpr": null,
-      "draw_rate": 0.5974,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2713.4
-    },
-    "Grigoriy Oparin": {
-      "tpr": null,
-      "draw_rate": 0.6023,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2641.6
-    },
-    "Gukesh D": {
-      "tpr": 2705.0,
-      "draw_rate": 0.3875,
-      "volatility": 73.9,
-      "elite_games": 41,
-      "weighted_games": 13.28,
-      "avg_opponent": 2722.3
-    },
-    "Haik M. Martirosyan": {
-      "tpr": null,
-      "draw_rate": null,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2713.5
-    },
-    "Hans Moke Niemann": {
-      "tpr": 2770.2,
-      "draw_rate": 0.5947,
-      "volatility": 42.5,
-      "elite_games": 15,
-      "weighted_games": 9.38,
-      "avg_opponent": 2671.9
-    },
-    "Hikaru Nakamura": {
-      "tpr": 2739.9,
-      "draw_rate": 0.7216,
-      "volatility": 48.0,
-      "elite_games": 38,
-      "weighted_games": 16.39,
-      "avg_opponent": 2756.2
-    },
-    "Ian Nepomniachtchi": {
-      "tpr": 2732.9,
-      "draw_rate": 0.7009,
-      "volatility": 54.9,
-      "elite_games": 25,
-      "weighted_games": 6.12,
-      "avg_opponent": 2691.3
-    },
-    "Ihor Samunenkov": {
-      "tpr": 2606.8,
-      "draw_rate": 0.6235,
-      "volatility": 49.1,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2651.2
-    },
-    "Ivan Cheparinov": {
-      "tpr": 2721.7,
-      "draw_rate": 0.7132,
-      "volatility": 50.6,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2722.4
-    },
-    "Ivan Saric": {
-      "tpr": null,
-      "draw_rate": null,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2646.5
-    },
-    "Ivan Zemlyanskii": {
-      "tpr": 2618.0,
-      "draw_rate": 0.3761,
-      "volatility": 49.2,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2663.6
-    },
-    "Jaime Santos Latasa": {
-      "tpr": 2579.4,
-      "draw_rate": 0.7492,
-      "volatility": 49.7,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2669.0
-    },
-    "Jakhongir Vakhidov": {
-      "tpr": 2422.0,
-      "draw_rate": 0.4265,
-      "volatility": 56.6,
-      "elite_games": 7,
-      "weighted_games": 3.64,
-      "avg_opponent": 2649.7
-    },
-    "Javokhir Sindarov": {
-      "tpr": 2849.5,
-      "draw_rate": 0.6064,
-      "volatility": 73.8,
-      "elite_games": 29,
-      "weighted_games": 21.7,
-      "avg_opponent": 2711.6
-    },
-    "Jeffery Xiong": {
-      "tpr": 2710.0,
-      "draw_rate": 0.6662,
-      "volatility": 53.1,
-      "elite_games": 8,
-      "weighted_games": 4.15,
-      "avg_opponent": 2710.0
-    },
-    "Jon Ludvig Hammer": {
-      "tpr": 2437.0,
-      "draw_rate": 0.4281,
-      "volatility": 56.6,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2664.0
-    },
-    "Jonas Buhl Bjerre": {
-      "tpr": null,
-      "draw_rate": null,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2615.2
-    },
-    "Jorden van Foreest": {
-      "tpr": 2702.8,
-      "draw_rate": 0.5386,
-      "volatility": 70.4,
-      "elite_games": 24,
-      "weighted_games": 10.47,
-      "avg_opponent": 2693.0
-    },
-    "Jules Moussard": {
-      "tpr": 2612.5,
-      "draw_rate": 0.6262,
-      "volatility": 49.0,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2656.5
-    },
-    "Leon Luke Mendonca": {
-      "tpr": 2680.0,
-      "draw_rate": 0.4685,
-      "volatility": 48.2,
-      "elite_games": 9,
-      "weighted_games": 4.44,
-      "avg_opponent": 2705.9
-    },
-    "Levon Aronian": {
-      "tpr": 2644.2,
-      "draw_rate": 1.0,
-      "volatility": 52.7,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2644.2
-    },
-    "Liren Ding": {
-      "tpr": null,
-      "draw_rate": 0.543,
-      "volatility": null,
-      "elite_games": 18,
-      "weighted_games": 2.27,
-      "avg_opponent": 2754.4
-    },
-    "M. Amin Tabatabaei": {
-      "tpr": 2702.6,
-      "draw_rate": 0.5696,
-      "volatility": 51.2,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2651.7
-    },
-    "Magnus Carlsen": {
-      "tpr": null,
-      "draw_rate": 0.4255,
-      "volatility": null,
-      "elite_games": 13,
-      "weighted_games": 2.63,
-      "avg_opponent": 2774.8
-    },
-    "Mahammad Muradli": {
-      "tpr": null,
-      "draw_rate": 0.6002,
-      "volatility": null,
-      "elite_games": 5,
-      "weighted_games": 2.59,
-      "avg_opponent": 2642.8
-    },
-    "Maksim Chigaev": {
-      "tpr": null,
-      "draw_rate": 0.5971,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2708.4
-    },
-    "MarcAndria Maurizzi": {
-      "tpr": 2707.7,
-      "draw_rate": 0.2477,
-      "volatility": 48.9,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2709.0
-    },
-    "Mateusz Bartel": {
-      "tpr": 2664.1,
-      "draw_rate": 0.4998,
-      "volatility": 48.9,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2665.0
-    },
-    "Matthias Bluebaum": {
-      "tpr": 2745.7,
-      "draw_rate": 0.7369,
-      "volatility": 54.9,
-      "elite_games": 29,
-      "weighted_games": 21.71,
-      "avg_opponent": 2729.8
-    },
-    "Max Warmerdam": {
-      "tpr": 2585.2,
-      "draw_rate": 0.7,
-      "volatility": 58.5,
-      "elite_games": 17,
-      "weighted_games": 5.25,
-      "avg_opponent": 2689.2
-    },
-    "Maxim Matlakov": {
-      "tpr": 2615.0,
-      "draw_rate": 0.8732,
-      "volatility": 49.0,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2659.4
-    },
-    "Maxim Rodshtein": {
-      "tpr": null,
-      "draw_rate": null,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2746.2
-    },
-    "Maxime Lagarde": {
-      "tpr": 2666.7,
-      "draw_rate": 1.0,
-      "volatility": 48.8,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2666.8
-    },
-    "Maxime Vachier-Lagrave": {
-      "tpr": 2681.7,
-      "draw_rate": 0.2835,
-      "volatility": 50.8,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2630.9
-    },
-    "Mukhammadzokhid Suyarov": {
-      "tpr": 2471.3,
-      "draw_rate": 0.5704,
-      "volatility": 53.4,
-      "elite_games": 7,
-      "weighted_games": 3.64,
-      "avg_opponent": 2631.0
-    },
-    "Mukhiddin Madaminov": {
-      "tpr": 2541.4,
-      "draw_rate": 0.7136,
-      "volatility": 51.7,
-      "elite_games": 7,
-      "weighted_games": 3.64,
-      "avg_opponent": 2643.9
-    },
-    "Murali Karthikeyan": {
-      "tpr": 2495.2,
-      "draw_rate": 0.3352,
-      "volatility": 54.4,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2613.8
-    },
-    "Narayanan S L": {
-      "tpr": 2649.9,
-      "draw_rate": 1.0,
-      "volatility": 48.8,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2650.0
-    },
-    "Nihal Sarin": {
-      "tpr": 2774.8,
-      "draw_rate": 0.3359,
-      "volatility": 55.1,
-      "elite_games": 8,
-      "weighted_games": 4.12,
-      "avg_opponent": 2651.0
-    },
-    "Nijat Abasov": {
-      "tpr": null,
-      "draw_rate": null,
-      "volatility": null,
-      "elite_games": 9,
-      "weighted_games": 1.14,
-      "avg_opponent": 2765.6
-    },
-    "Nikita Vitiugov": {
-      "tpr": null,
-      "draw_rate": null,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2684.2
-    },
-    "Nikolas Theodorou": {
-      "tpr": null,
-      "draw_rate": null,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2742.8
-    },
-    "Nils Grandelius": {
-      "tpr": null,
-      "draw_rate": null,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2613.0
-    },
-    "Nodirbek Abdusattorov": {
-      "tpr": 2770.3,
-      "draw_rate": 0.5796,
-      "volatility": 48.3,
-      "elite_games": 26,
-      "weighted_games": 10.64,
-      "avg_opponent": 2703.0
-    },
-    "Nodirbek Yakubboev": {
-      "tpr": null,
-      "draw_rate": 0.1978,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2640.0
-    },
-    "Ortik Nigmatov": {
-      "tpr": 2567.8,
-      "draw_rate": 0.2487,
-      "volatility": 49.7,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2658.1
-    },
-    "Parham Maghsoodloo": {
-      "tpr": 2778.1,
-      "draw_rate": 0.3087,
-      "volatility": 62.5,
-      "elite_games": 16,
-      "weighted_games": 4.9,
-      "avg_opponent": 2712.1
-    },
-    "Pavel Eljanov": {
-      "tpr": 2482.3,
-      "draw_rate": 0.3738,
-      "volatility": 50.8,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2620.2
-    },
-    "Pentala Harikrishna": {
-      "tpr": 2551.7,
-      "draw_rate": 0.767,
-      "volatility": 52.3,
-      "elite_games": 9,
-      "weighted_games": 4.44,
-      "avg_opponent": 2642.1
-    },
-    "Praggnanandhaa R": {
-      "tpr": 2718.2,
-      "draw_rate": 0.6695,
-      "volatility": 41.6,
-      "elite_games": 58,
-      "weighted_games": 25.53,
-      "avg_opponent": 2733.0
-    },
-    "Radoslaw Wojtaszek": {
-      "tpr": 2496.4,
-      "draw_rate": 0.6673,
-      "volatility": 54.4,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2616.7
-    },
-    "Rasmus Svane": {
-      "tpr": 2586.4,
-      "draw_rate": 0.7146,
-      "volatility": 51.7,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2689.1
-    },
-    "Rauf Mamedov": {
-      "tpr": null,
-      "draw_rate": 0.6008,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2696.4
-    },
-    "Raunak Sadhwani": {
-      "tpr": null,
-      "draw_rate": 0.8014,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2610.6
-    },
-    "Ray Robson": {
-      "tpr": 2618.8,
-      "draw_rate": 0.7509,
-      "volatility": 48.8,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2618.5
-    },
-    "Richard Rapport": {
-      "tpr": 2723.7,
-      "draw_rate": 0.5024,
-      "volatility": 49.8,
-      "elite_games": 8,
-      "weighted_games": 4.15,
-      "avg_opponent": 2632.8
-    },
-    "Robert Hovhannisyan": {
-      "tpr": 2633.2,
-      "draw_rate": 0.4298,
-      "volatility": 51.7,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2735.9
-    },
-    "Ruslan Ponomariov": {
-      "tpr": 2682.8,
-      "draw_rate": 1.0,
-      "volatility": 48.8,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2682.9
-    },
-    "Sam Shankland": {
-      "tpr": 2635.6,
-      "draw_rate": 0.4304,
-      "volatility": 50.8,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2636.4
-    },
-    "Samuel Sevian": {
-      "tpr": 2642.2,
-      "draw_rate": 0.7123,
-      "volatility": 50.8,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2643.4
-    },
-    "Sanan Sjugirov": {
-      "tpr": null,
-      "draw_rate": null,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2709.5
-    },
-    "Santosh Gujrathi Vidit": {
-      "tpr": 2737.3,
-      "draw_rate": 0.6179,
-      "volatility": 56.7,
-      "elite_games": 25,
-      "weighted_games": 6.12,
-      "avg_opponent": 2700.6
-    },
-    "Shakhriyar Mamedyarov": {
-      "tpr": 2773.6,
-      "draw_rate": 0.6238,
-      "volatility": 50.8,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2636.0
-    },
-    "Shamsiddin Vokhidov": {
-      "tpr": null,
-      "draw_rate": null,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2670.5
-    },
-    "Shanglei Lu": {
-      "tpr": null,
-      "draw_rate": null,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2608.7
-    },
-    "Shant Sargsyan": {
-      "tpr": null,
-      "draw_rate": 0.8002,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2708.8
-    },
-    "Szymon Gumularz": {
-      "tpr": 2677.6,
-      "draw_rate": 0.4995,
-      "volatility": 48.9,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2679.0
-    },
-    "Tennyson Ewomazino Olisa": {
-      "tpr": null,
-      "draw_rate": 0.0,
-      "volatility": null,
-      "elite_games": 5,
-      "weighted_games": 2.59,
-      "avg_opponent": 2623.8
-    },
-    "Thai Dai Van Nguyen": {
-      "tpr": 2562.4,
-      "draw_rate": 0.5719,
-      "volatility": 48.7,
-      "elite_games": 7,
-      "weighted_games": 5.22,
-      "avg_opponent": 2723.3
-    },
-    "V Pranav": {
-      "tpr": 2718.0,
-      "draw_rate": 0.6238,
-      "volatility": 49.0,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2675.0
-    },
-    "Vasyl Ivanchuk": {
-      "tpr": 2713.9,
-      "draw_rate": 0.6235,
-      "volatility": 49.1,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2669.9
-    },
-    "Velimir Ivic": {
-      "tpr": null,
-      "draw_rate": null,
-      "volatility": null,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2748.0
-    },
-    "Vincent Keymer": {
-      "tpr": 2763.4,
-      "draw_rate": 0.3442,
-      "volatility": 43.6,
-      "elite_games": 16,
-      "weighted_games": 9.66,
-      "avg_opponent": 2670.9
-    },
-    "Vladimir Fedoseev": {
-      "tpr": 2650.5,
-      "draw_rate": 0.4712,
-      "volatility": 63.4,
-      "elite_games": 16,
-      "weighted_games": 9.66,
-      "avg_opponent": 2693.5
-    },
-    "Vladislav Artemiev": {
-      "tpr": 2618.0,
-      "draw_rate": 0.7142,
-      "volatility": 50.5,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2617.3
-    },
-    "Volodar Murzin": {
-      "tpr": 2672.2,
-      "draw_rate": 0.8308,
-      "volatility": 53.1,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2612.8
-    },
-    "Wei Yi": {
-      "tpr": 2744.5,
-      "draw_rate": 0.6937,
-      "volatility": 43.8,
-      "elite_games": 30,
-      "weighted_games": 14.98,
-      "avg_opponent": 2741.8
-    },
-    "Wenjun Ju": {
+      "elite_games": 12,
+      "weighted_games": 8.28,
+      "avg_opponent": 2680.0
+    },
+    "Deshmukh Divya": {
       "tpr": null,
       "draw_rate": null,
       "volatility": null,
       "elite_games": 8,
       "weighted_games": 0.81,
-      "avg_opponent": 2731.5
+      "avg_opponent": 2637.8
     },
-    "Xiangyu Xu": {
-      "tpr": 2504.0,
-      "draw_rate": 0.5728,
-      "volatility": 53.4,
+    "Dimitrios Mastrovasilis": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 1.34,
+      "avg_opponent": 2704.2
+    },
+    "Dimitris Alexakis": {
+      "tpr": 2196.7,
+      "draw_rate": 0.1558,
+      "volatility": 66.4,
+      "elite_games": 6,
+      "weighted_games": 5.29,
+      "avg_opponent": 2626.5
+    },
+    "Dmitrij Kollars": {
+      "tpr": 2603.7,
+      "draw_rate": 0.5483,
+      "volatility": 45.8,
+      "elite_games": 30,
+      "weighted_games": 13.91,
+      "avg_opponent": 2659.4
+    },
+    "Dominguez Perez Leinier": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 0.23,
+      "avg_opponent": 2641.7
+    },
+    "Dominguez Perez Leinier (USA)": {
+      "tpr": 2711.1,
+      "draw_rate": 0.5218,
+      "volatility": 48.3,
+      "elite_games": 13,
+      "weighted_games": 4.58,
+      "avg_opponent": 2694.2
+    },
+    "Dominik Horvath": {
+      "tpr": 2542.4,
+      "draw_rate": 0.7135,
+      "volatility": 50.3,
+      "elite_games": 7,
+      "weighted_games": 4.05,
+      "avg_opponent": 2646.7
+    },
+    "Duda Jan-Krzysztof (POL)": {
+      "tpr": 2838.0,
+      "draw_rate": 0.2541,
+      "volatility": 47.4,
+      "elite_games": 14,
+      "weighted_games": 5.58,
+      "avg_opponent": 2710.8
+    },
+    "Durarbayli Vasif": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 9,
+      "weighted_games": 0.21,
+      "avg_opponent": 2644.0
+    },
+    "Ediz Gurel": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 22,
+      "weighted_games": 12.32,
+      "avg_opponent": 2653.6
+    },
+    "Eduardo Iturrizaga Bonelli": {
+      "tpr": 2625.6,
+      "draw_rate": 0.987,
+      "volatility": 47.1,
       "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2663.0
+      "weighted_games": 4.88,
+      "avg_opponent": 2646.0
+    },
+    "Elham Amar": {
+      "tpr": 2905.1,
+      "draw_rate": 0.2783,
+      "volatility": 63.3,
+      "elite_games": 5,
+      "weighted_games": 3.17,
+      "avg_opponent": 2632.8
+    },
+    "Eline Roebers": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.8,
+      "avg_opponent": 2637.8
+    },
+    "Erigaisi Arjun (IND)": {
+      "tpr": 2507.6,
+      "draw_rate": 0.3449,
+      "volatility": 54.2,
+      "elite_games": 15,
+      "weighted_games": 3.77,
+      "avg_opponent": 2682.2
+    },
+    "Erik Van den Doel": {
+      "tpr": 2369.5,
+      "draw_rate": 0.3833,
+      "volatility": 58.3,
+      "elite_games": 5,
+      "weighted_games": 3.6,
+      "avg_opponent": 2621.6
+    },
+    "Erwin L'Ami": {
+      "tpr": 2599.3,
+      "draw_rate": 0.8296,
+      "volatility": 47.3,
+      "elite_games": 33,
+      "weighted_games": 11.81,
+      "avg_opponent": 2643.7
+    },
+    "Esipenko Andrey (FID)": {
+      "tpr": 2732.5,
+      "draw_rate": 0.4011,
+      "volatility": 51.3,
+      "elite_games": 10,
+      "weighted_games": 3.45,
+      "avg_opponent": 2701.4
+    },
+    "Etienne Bacrot": {
+      "tpr": null,
+      "draw_rate": 0.6117,
+      "volatility": null,
+      "elite_games": 26,
+      "weighted_games": 13.52,
+      "avg_opponent": 2666.3
+    },
+    "Fabiano Caruana": {
+      "tpr": 2742.6,
+      "draw_rate": 0.4547,
+      "volatility": 44.9,
+      "elite_games": 132,
+      "weighted_games": 48.36,
+      "avg_opponent": 2749.5
+    },
+    "Ferenc Berkes": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 0.97,
+      "avg_opponent": 2650.0
+    },
+    "Francesco Sonis": {
+      "tpr": 2572.6,
+      "draw_rate": 0.6033,
+      "volatility": 54.7,
+      "elite_games": 6,
+      "weighted_games": 3.05,
+      "avg_opponent": 2666.3
+    },
+    "Francisco Vallejo Pons": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.17,
+      "avg_opponent": 2668.0
+    },
+    "Frederik Svane": {
+      "tpr": 2633.7,
+      "draw_rate": 0.7402,
+      "volatility": 41.4,
+      "elite_games": 29,
+      "weighted_games": 16.36,
+      "avg_opponent": 2664.7
+    },
+    "Fressinet Laurent": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.16,
+      "avg_opponent": 2691.0
+    },
+    "Gabriel Sargissian": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 18,
+      "weighted_games": 10.05,
+      "avg_opponent": 2650.3
+    },
+    "Ganguly Surya Shekhar": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 0.12,
+      "avg_opponent": 2680.3
+    },
+    "Gata Kamsky": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 9,
+      "weighted_games": 6.77,
+      "avg_opponent": 2647.7
+    },
+    "Gawain C B Jones": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 1.56,
+      "avg_opponent": 2617.5
+    },
+    "Georg Meier": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 9,
+      "weighted_games": 5.06,
+      "avg_opponent": 2657.3
+    },
+    "Gergely Kantor": {
+      "tpr": 2536.2,
+      "draw_rate": 0.7196,
+      "volatility": 48.3,
+      "elite_games": 7,
+      "weighted_games": 4.75,
+      "avg_opponent": 2648.3
+    },
+    "Giri Anish": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 9,
+      "weighted_games": 0.21,
+      "avg_opponent": 2657.0
+    },
+    "Giri Anish (NED)": {
+      "tpr": 2458.4,
+      "draw_rate": 0.5076,
+      "volatility": 51.9,
+      "elite_games": 9,
+      "weighted_games": 4.32,
+      "avg_opponent": 2632.0
+    },
+    "Gleb Dudin": {
+      "tpr": 2702.5,
+      "draw_rate": 0.8255,
+      "volatility": 46.4,
+      "elite_games": 6,
+      "weighted_games": 5.41,
+      "avg_opponent": 2646.0
+    },
+    "Gledura Benjamin (HUN)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.32,
+      "avg_opponent": 2713.5
+    },
+    "Grandelius Nils (SWE)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 1.58,
+      "avg_opponent": 2672.0
+    },
+    "Grigoriy Oparin": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 6.62,
+      "avg_opponent": null
+    },
+    "Gudmundur Kjartansson": {
+      "tpr": null,
+      "draw_rate": 0.5979,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 2.6,
+      "avg_opponent": 2631.2
+    },
+    "Gukesh D": {
+      "tpr": 2737.9,
+      "draw_rate": 0.441,
+      "volatility": 71.4,
+      "elite_games": 128,
+      "weighted_games": 44.31,
+      "avg_opponent": 2730.4
+    },
+    "Gukesh D (IND)": {
+      "tpr": 2844.4,
+      "draw_rate": 0.6541,
+      "volatility": 53.2,
+      "elite_games": 12,
+      "weighted_games": 3.58,
+      "avg_opponent": 2713.2
+    },
+    "Gukesh D.": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.19,
+      "avg_opponent": 2704.9
+    },
+    "Guseinov Gadir": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.19,
+      "avg_opponent": 2625.0
+    },
+    "Guseinov Gadir (AZE)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.32,
+      "avg_opponent": 2681.5
+    },
+    "Haik M. Martirosyan": {
+      "tpr": 2756.3,
+      "draw_rate": 0.8247,
+      "volatility": 51.4,
+      "elite_games": 36,
+      "weighted_games": 23.5,
+      "avg_opponent": 2690.9
+    },
+    "Hans Moke Niemann": {
+      "tpr": 2788.8,
+      "draw_rate": 0.607,
+      "volatility": 76.3,
+      "elite_games": 47,
+      "weighted_games": 28.94,
+      "avg_opponent": 2699.2
+    },
+    "Hans Niemann": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 0.15,
+      "avg_opponent": 2766.8
+    },
+    "Harika Dronavalli": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.81,
+      "avg_opponent": 2637.8
+    },
+    "Harikrishna Pentala": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 0.23,
+      "avg_opponent": 2680.6
+    },
+    "Hikaru Nakamura": {
+      "tpr": 2734.9,
+      "draw_rate": 0.5442,
+      "volatility": 45.2,
+      "elite_games": 80,
+      "weighted_games": 34.06,
+      "avg_opponent": 2747.7
+    },
+    "Hovhannisyan Robert": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.16,
+      "avg_opponent": 2658.3
+    },
+    "Howell David W L": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.16,
+      "avg_opponent": 2625.0
+    },
+    "Howell David W L (ENG)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.32,
+      "avg_opponent": 2675.3
+    },
+    "Ian Nepomniachtchi": {
+      "tpr": 2774.6,
+      "draw_rate": 0.7216,
+      "volatility": 58.1,
+      "elite_games": 60,
+      "weighted_games": 9.07,
+      "avg_opponent": 2764.1
+    },
+    "Idani Pouya": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.16,
+      "avg_opponent": 2672.2
+    },
+    "Igor Kovalenko": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 12,
+      "weighted_games": 11.12,
+      "avg_opponent": null
+    },
+    "Ihor Samunenkov": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 4.24,
+      "avg_opponent": 2661.0
+    },
+    "Indjic Aleksandar": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 0.14,
+      "avg_opponent": 2711.3
+    },
+    "Ioannis Papaioannou": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.17,
+      "avg_opponent": 2733.0
+    },
+    "Isik Can": {
+      "tpr": 2491.1,
+      "draw_rate": 0.6097,
+      "volatility": 49.8,
+      "elite_games": 5,
+      "weighted_games": 4.54,
+      "avg_opponent": 2634.6
+    },
+    "Iturrizaga Bonelli Eduardo": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 0.14,
+      "avg_opponent": null
+    },
+    "Iturrizaga Bonelli Eduardo (ESP)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.31,
+      "avg_opponent": 2667.0
+    },
+    "Ivan Cheparinov": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 1.56,
+      "avg_opponent": 2680.0
+    },
+    "Ivan Saric": {
+      "tpr": 2588.7,
+      "draw_rate": 0.6127,
+      "volatility": 42.7,
+      "elite_games": 20,
+      "weighted_games": 15.33,
+      "avg_opponent": 2685.2
+    },
+    "Ivan Schitco": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 0.97,
+      "avg_opponent": 2708.4
+    },
+    "Ivanchuk Vasyl (UKR)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 13,
+      "weighted_games": 4.58,
+      "avg_opponent": 2726.2
+    },
+    "Jacek Tomczak": {
+      "tpr": 2565.4,
+      "draw_rate": 0.549,
+      "volatility": 43.6,
+      "elite_games": 9,
+      "weighted_games": 7.41,
+      "avg_opponent": 2633.6
+    },
+    "Jaime Santos Latasa": {
+      "tpr": 2504.8,
+      "draw_rate": 0.5693,
+      "volatility": 82.8,
+      "elite_games": 47,
+      "weighted_games": 22.23,
+      "avg_opponent": 2635.6
+    },
+    "Jakub Kosakowski": {
+      "tpr": 2589.3,
+      "draw_rate": 0.6585,
+      "volatility": 56.0,
+      "elite_games": 9,
+      "weighted_games": 8.04,
+      "avg_opponent": 2635.3
+    },
+    "Jan Klimkowski": {
+      "tpr": 2599.7,
+      "draw_rate": 0.8237,
+      "volatility": 48.7,
+      "elite_games": 6,
+      "weighted_games": 4.46,
+      "avg_opponent": 2665.5
+    },
+    "Jan Malek": {
+      "tpr": 2567.8,
+      "draw_rate": 0.4991,
+      "volatility": 45.9,
+      "elite_games": 6,
+      "weighted_games": 5.64,
+      "avg_opponent": 2626.8
+    },
+    "Jan Subelj": {
+      "tpr": 2615.6,
+      "draw_rate": 0.9618,
+      "volatility": 46.6,
+      "elite_games": 9,
+      "weighted_games": 5.17,
+      "avg_opponent": 2650.1
+    },
+    "Jan-Krzysztof Duda": {
+      "tpr": 2738.5,
+      "draw_rate": 0.5325,
+      "volatility": 71.7,
+      "elite_games": 40,
+      "weighted_games": 17.26,
+      "avg_opponent": 2718.3
+    },
+    "Javokhir Sindarov": {
+      "tpr": 2792.9,
+      "draw_rate": 0.529,
+      "volatility": 85.0,
+      "elite_games": 54,
+      "weighted_games": 36.4,
+      "avg_opponent": 2713.8
+    },
+    "Jesper Sondergaard Thybo": {
+      "tpr": null,
+      "draw_rate": 0.613,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 2.39,
+      "avg_opponent": 2640.8
+    },
+    "Johan-Sebastian Christiansen": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 1.94,
+      "avg_opponent": 2649.7
+    },
+    "Jonas Buhl Bjerre": {
+      "tpr": 2709.7,
+      "draw_rate": 0.4833,
+      "volatility": 45.7,
+      "elite_games": 33,
+      "weighted_games": 21.62,
+      "avg_opponent": 2665.8
+    },
+    "Jones Gawain C B": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.19,
+      "avg_opponent": null
+    },
+    "Jorden van Foreest": {
+      "tpr": 2733.3,
+      "draw_rate": 0.5418,
+      "volatility": 48.9,
+      "elite_games": 87,
+      "weighted_games": 37.92,
+      "avg_opponent": 2720.9
+    },
+    "Jorge Viterbo Ferreira": {
+      "tpr": 2794.7,
+      "draw_rate": 0.5572,
+      "volatility": 53.0,
+      "elite_games": 5,
+      "weighted_games": 3.82,
+      "avg_opponent": 2641.8
+    },
+    "Juraj Druska": {
+      "tpr": null,
+      "draw_rate": 0.5642,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 2.95,
+      "avg_opponent": 2613.8
+    },
+    "Keymer Vincent (GER)": {
+      "tpr": 2735.3,
+      "draw_rate": 0.61,
+      "volatility": 52.7,
+      "elite_games": 9,
+      "weighted_games": 3.38,
+      "avg_opponent": 2750.3
+    },
+    "Kirill Alekseenko": {
+      "tpr": 2788.7,
+      "draw_rate": 0.6736,
+      "volatility": 47.0,
+      "elite_games": 12,
+      "weighted_games": 8.62,
+      "avg_opponent": 2671.2
+    },
+    "Kirill Shevchenko": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 11,
+      "weighted_games": 2.02,
+      "avg_opponent": 2712.5
+    },
+    "Kollars Dmitrij": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.19,
+      "avg_opponent": null
+    },
+    "Korobov Anton": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 0.12,
+      "avg_opponent": 2606.0
+    },
+    "Korobov Anton (UKR)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.32,
+      "avg_opponent": 2617.0
+    },
+    "Kuzubov Yuriy": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 0.14,
+      "avg_opponent": null
+    },
+    "Lagarde Maxime": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.16,
+      "avg_opponent": 2643.0
+    },
+    "Laurent Fressinet": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 16,
+      "weighted_games": 6.8,
+      "avg_opponent": 2645.8
+    },
+    "Le Quang Liem (VIE)": {
+      "tpr": 2551.3,
+      "draw_rate": 0.6866,
+      "volatility": 53.9,
+      "elite_games": 8,
+      "weighted_games": 3.32,
+      "avg_opponent": 2664.0
+    },
+    "Leinier Dominguez": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 0.13,
+      "avg_opponent": 2750.6
+    },
+    "Leinier Dominguez Perez": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 17,
+      "weighted_games": 2.44,
+      "avg_opponent": 2730.9
+    },
+    "Leon Livaic": {
+      "tpr": 2572.1,
+      "draw_rate": 0.5849,
+      "volatility": 41.3,
+      "elite_games": 16,
+      "weighted_games": 10.77,
+      "avg_opponent": 2661.8
+    },
+    "Leon Luke Mendonca": {
+      "tpr": 2620.6,
+      "draw_rate": 0.6165,
+      "volatility": 66.0,
+      "elite_games": 34,
+      "weighted_games": 11.4,
+      "avg_opponent": 2692.6
+    },
+    "Leonardo Costa": {
+      "tpr": 2575.6,
+      "draw_rate": 0.5245,
+      "volatility": 45.7,
+      "elite_games": 8,
+      "weighted_games": 5.96,
+      "avg_opponent": 2651.2
+    },
+    "Levan Pantsulaia": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 1.72,
+      "avg_opponent": 2627.8
+    },
+    "Levon Aronian": {
+      "tpr": 2791.8,
+      "draw_rate": 0.368,
+      "volatility": 49.0,
+      "elite_games": 41,
+      "weighted_games": 5.76,
+      "avg_opponent": 2737.1
+    },
+    "Liam Vrolijk": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.8,
+      "avg_opponent": 2637.8
+    },
+    "Liem Le": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.21,
+      "avg_opponent": 2770.1
+    },
+    "Liren Ding": {
+      "tpr": 2707.2,
+      "draw_rate": 0.6284,
+      "volatility": 50.7,
+      "elite_games": 62,
+      "weighted_games": 8.75,
+      "avg_opponent": 2748.8
+    },
+    "Liviu-Dieter Nisipeanu": {
+      "tpr": 2551.6,
+      "draw_rate": 0.7631,
+      "volatility": 51.9,
+      "elite_games": 5,
+      "weighted_games": 3.5,
+      "avg_opponent": 2651.6
+    },
+    "Loek Van Wely": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 13,
+      "weighted_games": 10.67,
+      "avg_opponent": 2631.0
+    },
+    "Lorenzo Lodici": {
+      "tpr": 2812.9,
+      "draw_rate": 0.6273,
+      "volatility": 55.2,
+      "elite_games": 17,
+      "weighted_games": 12.58,
+      "avg_opponent": 2670.3
+    },
+    "Luka Paichadze": {
+      "tpr": 2391.0,
+      "draw_rate": 0.1957,
+      "volatility": 56.1,
+      "elite_games": 9,
+      "weighted_games": 3.99,
+      "avg_opponent": 2645.9
+    },
+    "Lukas Dotzer": {
+      "tpr": 2383.5,
+      "draw_rate": 0.3784,
+      "volatility": 54.6,
+      "elite_games": 6,
+      "weighted_games": 4.53,
+      "avg_opponent": 2643.5
+    },
+    "Luke J McShane": {
+      "tpr": 2635.9,
+      "draw_rate": 0.6506,
+      "volatility": 47.7,
+      "elite_games": 16,
+      "weighted_games": 7.43,
+      "avg_opponent": 2626.3
+    },
+    "M. Amin Tabatabaei": {
+      "tpr": 2896.6,
+      "draw_rate": 0.2705,
+      "volatility": 56.5,
+      "elite_games": 27,
+      "weighted_games": 10.19,
+      "avg_opponent": 2668.0
+    },
+    "Mads Andersen": {
+      "tpr": 2686.4,
+      "draw_rate": 0.8292,
+      "volatility": 68.1,
+      "elite_games": 10,
+      "weighted_games": 5.4,
+      "avg_opponent": 2657.3
+    },
+    "Maghsoodloo Parham": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.16,
+      "avg_opponent": 2683.4
+    },
+    "Maghsoodloo Parham (IRI)": {
+      "tpr": 2652.3,
+      "draw_rate": 0.2802,
+      "volatility": 49.2,
+      "elite_games": 10,
+      "weighted_games": 4.38,
+      "avg_opponent": 2716.0
+    },
+    "Magnus Carlsen": {
+      "tpr": 2821.5,
+      "draw_rate": 0.3563,
+      "volatility": 58.9,
+      "elite_games": 92,
+      "weighted_games": 26.89,
+      "avg_opponent": 2764.2
+    },
+    "Mahammad Muradli": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 11,
+      "weighted_games": 10.3,
+      "avg_opponent": 2653.0
+    },
+    "Maksim Chigaev": {
+      "tpr": 2816.9,
+      "draw_rate": 0.4861,
+      "volatility": 51.6,
+      "elite_games": 8,
+      "weighted_games": 6.01,
+      "avg_opponent": 2619.8
+    },
+    "Mamedov Rauf": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.19,
+      "avg_opponent": 2624.7
+    },
+    "Mamedov Rauf (AZE)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 2.38,
+      "avg_opponent": 2736.3
+    },
+    "Mamedyarov Shakhriyar": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.16,
+      "avg_opponent": 2659.0
+    },
+    "MarcAndria Maurizzi": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 26,
+      "weighted_games": 22.85,
+      "avg_opponent": 2668.5
+    },
+    "Marc`Andria Maurizzi": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 1.2,
+      "avg_opponent": 2646.1
+    },
+    "Markus Ragger": {
+      "tpr": 2644.0,
+      "draw_rate": 0.9839,
+      "volatility": 49.6,
+      "elite_games": 10,
+      "weighted_games": 4.32,
+      "avg_opponent": 2657.4
+    },
+    "Markus Robert": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 0.14,
+      "avg_opponent": 2646.8
+    },
+    "Martin Kraemer": {
+      "tpr": 2608.6,
+      "draw_rate": 0.3396,
+      "volatility": 45.0,
+      "elite_games": 8,
+      "weighted_games": 6.19,
+      "avg_opponent": 2644.6
+    },
+    "Martin Petrov": {
+      "tpr": 2541.4,
+      "draw_rate": 0.2262,
+      "volatility": 50.7,
+      "elite_games": 7,
+      "weighted_games": 4.08,
+      "avg_opponent": 2669.6
+    },
+    "Matamoros Franco Carlos S. (ECU)": {
+      "tpr": 2540.2,
+      "draw_rate": 0.3975,
+      "volatility": 46.8,
+      "elite_games": 8,
+      "weighted_games": 5.19,
+      "avg_opponent": 2608.0
+    },
+    "Mateusz Bartel": {
+      "tpr": 2605.7,
+      "draw_rate": 0.3844,
+      "volatility": 43.8,
+      "elite_games": 19,
+      "weighted_games": 8.6,
+      "avg_opponent": 2672.4
+    },
+    "Matthias Bluebaum": {
+      "tpr": 2710.6,
+      "draw_rate": 0.7699,
+      "volatility": 43.9,
+      "elite_games": 53,
+      "weighted_games": 33.98,
+      "avg_opponent": 2713.0
+    },
+    "Max Warmerdam": {
+      "tpr": 2616.8,
+      "draw_rate": 0.4666,
+      "volatility": 45.5,
+      "elite_games": 40,
+      "weighted_games": 10.76,
+      "avg_opponent": 2718.0
+    },
+    "Maxim Rodshtein": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.16,
+      "avg_opponent": 2766.0
+    },
+    "Maxime Lagarde": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 21,
+      "weighted_games": 17.8,
+      "avg_opponent": 2693.0
+    },
+    "Maxime Vachier-Lagrave": {
+      "tpr": 2667.1,
+      "draw_rate": 0.6598,
+      "volatility": 43.8,
+      "elite_games": 40,
+      "weighted_games": 16.58,
+      "avg_opponent": 2712.5
+    },
+    "McShane Luke J": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.19,
+      "avg_opponent": 2625.0
+    },
+    "Melkumyan Hrant": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.19,
+      "avg_opponent": 2682.4
+    },
+    "Michael Adams": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 9,
+      "weighted_games": 1.75,
+      "avg_opponent": 2648.0
+    },
+    "Mikhail Al. Antipov": {
+      "tpr": null,
+      "draw_rate": 0.3383,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 2.61,
+      "avg_opponent": 2687.0
+    },
+    "Mikheil Mchedlishvili": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 0.98,
+      "avg_opponent": 2715.2
+    },
+    "Moranda Wojciech": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 0.12,
+      "avg_opponent": 2631.0
+    },
+    "Moussard Jules": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.16,
+      "avg_opponent": 2732.8
+    },
+    "Moussard Jules (FRA)": {
+      "tpr": 2662.5,
+      "draw_rate": 0.6795,
+      "volatility": 53.1,
+      "elite_games": 10,
+      "weighted_games": 4.38,
+      "avg_opponent": 2734.5
+    },
+    "Murali Karthikeyan": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 4.05,
+      "avg_opponent": 2693.0
+    },
+    "Mustafa Yilmaz": {
+      "tpr": 2597.2,
+      "draw_rate": 0.7268,
+      "volatility": 51.4,
+      "elite_games": 22,
+      "weighted_games": 4.16,
+      "avg_opponent": 2663.5
+    },
+    "Nakamura Hikaru (USA)": {
+      "tpr": null,
+      "draw_rate": 0.0852,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 2.38,
+      "avg_opponent": 2675.0
+    },
+    "Narayanan S.L.": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.19,
+      "avg_opponent": 2654.3
+    },
+    "Narayanan.S.L (IND)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.32,
+      "avg_opponent": 2686.0
+    },
+    "Nepomniachtchi Ian (FID)": {
+      "tpr": 2693.5,
+      "draw_rate": 0.2716,
+      "volatility": 45.8,
+      "elite_games": 16,
+      "weighted_games": 5.71,
+      "avg_opponent": 2686.4
+    },
+    "Ngoc Truong Son Nguyen": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 9,
+      "weighted_games": 1.75,
+      "avg_opponent": 2686.0
+    },
+    "Niclas Huschenbeth": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.69,
+      "avg_opponent": 2678.2
+    },
+    "Nihal Sarin (IND)": {
+      "tpr": 2536.6,
+      "draw_rate": 0.3645,
+      "volatility": 56.5,
+      "elite_games": 10,
+      "weighted_games": 3.45,
+      "avg_opponent": 2709.6
+    },
+    "Nijat Abasov": {
+      "tpr": 2637.6,
+      "draw_rate": 0.794,
+      "volatility": 48.2,
+      "elite_games": 30,
+      "weighted_games": 6.45,
+      "avg_opponent": 2734.5
+    },
+    "Nikita Meshkovs": {
+      "tpr": 2550.6,
+      "draw_rate": 0.4211,
+      "volatility": 47.4,
+      "elite_games": 6,
+      "weighted_games": 4.91,
+      "avg_opponent": 2625.5
+    },
+    "Nikita Vitiugov": {
+      "tpr": 2685.6,
+      "draw_rate": 0.7482,
+      "volatility": 85.0,
+      "elite_games": 23,
+      "weighted_games": 12.73,
+      "avg_opponent": 2661.7
+    },
+    "Nikolas Theodorou": {
+      "tpr": 2488.7,
+      "draw_rate": 0.4063,
+      "volatility": 52.6,
+      "elite_games": 15,
+      "weighted_games": 5.75,
+      "avg_opponent": 2686.1
+    },
+    "Nikolozi Kacharava": {
+      "tpr": 2679.8,
+      "draw_rate": 0.6186,
+      "volatility": 42.6,
+      "elite_games": 13,
+      "weighted_games": 8.37,
+      "avg_opponent": 2651.1
+    },
+    "Nils Grandelius": {
+      "tpr": 2504.9,
+      "draw_rate": 0.4221,
+      "volatility": 85.0,
+      "elite_games": 16,
+      "weighted_games": 9.2,
+      "avg_opponent": 2693.1
+    },
+    "Nisipeanu Liviu-Dieter": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.19,
+      "avg_opponent": 2633.7
+    },
+    "Nodirbek Abdusattorov": {
+      "tpr": 2821.5,
+      "draw_rate": 0.6397,
+      "volatility": 50.3,
+      "elite_games": 93,
+      "weighted_games": 34.36,
+      "avg_opponent": 2722.5
+    },
+    "Nodirbek Yakubboev": {
+      "tpr": 2687.2,
+      "draw_rate": 0.5549,
+      "volatility": 65.1,
+      "elite_games": 22,
+      "weighted_games": 9.6,
+      "avg_opponent": 2694.5
+    },
+    "Onyshchuk Volodymyr": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.16,
+      "avg_opponent": null
+    },
+    "Parham Maghsoodloo": {
+      "tpr": 2716.0,
+      "draw_rate": 0.6693,
+      "volatility": 58.7,
+      "elite_games": 56,
+      "weighted_games": 20.53,
+      "avg_opponent": 2723.2
+    },
+    "Paulius Pultinevicius": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 1.72,
+      "avg_opponent": 2653.6
+    },
+    "Pavel Eljanov": {
+      "tpr": 2788.1,
+      "draw_rate": 0.666,
+      "volatility": 45.0,
+      "elite_games": 13,
+      "weighted_games": 10.2,
+      "avg_opponent": 2664.1
+    },
+    "Pentala Harikrishna": {
+      "tpr": 2666.1,
+      "draw_rate": 0.6504,
+      "volatility": 73.5,
+      "elite_games": 23,
+      "weighted_games": 8.44,
+      "avg_opponent": 2705.7
+    },
+    "Peter Leko": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 9,
+      "weighted_games": 1.75,
+      "avg_opponent": 2688.3
+    },
+    "Piorun Kacper": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 0.14,
+      "avg_opponent": 2611.0
+    },
+    "Ponomariov Ruslan (UKR)": {
+      "tpr": 2817.3,
+      "draw_rate": 0.6912,
+      "volatility": 52.4,
+      "elite_games": 10,
+      "weighted_games": 3.45,
+      "avg_opponent": 2683.4
+    },
+    "Pouya Idani": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 13,
+      "weighted_games": 8.6,
+      "avg_opponent": 2679.6
+    },
+    "Praggnanandhaa": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 0.31,
+      "avg_opponent": 2801.2
+    },
+    "Praggnanandhaa R": {
+      "tpr": 2715.7,
+      "draw_rate": 0.6366,
+      "volatility": 50.2,
+      "elite_games": 114,
+      "weighted_games": 34.2,
+      "avg_opponent": 2738.2
+    },
+    "Praggnanandhaa R (IND)": {
+      "tpr": 3016.5,
+      "draw_rate": 0.2863,
+      "volatility": 50.8,
+      "elite_games": 26,
+      "weighted_games": 6.37,
+      "avg_opponent": 2749.0
+    },
+    "Praggnanandhaa R.": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.16,
+      "avg_opponent": 2672.8
+    },
+    "Pultinevicius Paulius": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 0.14,
+      "avg_opponent": 2640.0
+    },
+    "Quang Liem Le": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 18,
+      "weighted_games": 2.09,
+      "avg_opponent": 2756.7
+    },
+    "Radjabov Teimour (AZE)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.32,
+      "avg_opponent": 2656.0
+    },
+    "Radoslaw Wojtaszek": {
+      "tpr": 2540.9,
+      "draw_rate": 0.3795,
+      "volatility": 45.1,
+      "elite_games": 29,
+      "weighted_games": 17.85,
+      "avg_opponent": 2679.0
+    },
+    "Ragger Markus (AUT)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.31,
+      "avg_opponent": 2659.0
+    },
+    "Rasmus Svane": {
+      "tpr": 2700.3,
+      "draw_rate": 0.6037,
+      "volatility": 44.9,
+      "elite_games": 16,
+      "weighted_games": 11.84,
+      "avg_opponent": 2659.3
+    },
+    "Rauf Mamedov": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 13,
+      "weighted_games": 2.02,
+      "avg_opponent": 2697.8
+    },
+    "Ray Robson": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 0.96,
+      "avg_opponent": 2650.0
+    },
+    "Richard Rapport": {
+      "tpr": 2681.5,
+      "draw_rate": 0.4808,
+      "volatility": 79.2,
+      "elite_games": 38,
+      "weighted_games": 7.28,
+      "avg_opponent": 2714.2
+    },
+    "Robert Hovhannisyan": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 19,
+      "weighted_games": 11.82,
+      "avg_opponent": 2628.0
+    },
+    "Robert Markus": {
+      "tpr": 2554.2,
+      "draw_rate": 0.7061,
+      "volatility": 45.6,
+      "elite_games": 8,
+      "weighted_games": 5.97,
+      "avg_opponent": 2637.8
+    },
+    "Robson Ray (USA)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 0.38,
+      "avg_opponent": 2693.0
+    },
+    "Roven Vogel": {
+      "tpr": 2483.5,
+      "draw_rate": 0.2339,
+      "volatility": 44.4,
+      "elite_games": 10,
+      "weighted_games": 7.9,
+      "avg_opponent": 2641.5
+    },
+    "Ruslan Ponomariov": {
+      "tpr": 2662.0,
+      "draw_rate": 0.9337,
+      "volatility": 50.7,
+      "elite_games": 28,
+      "weighted_games": 12.45,
+      "avg_opponent": 2658.6
+    },
+    "Rustam Kasimdzhanov": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 13,
+      "weighted_games": 10.19,
+      "avg_opponent": 2638.3
+    },
+    "Sabino Brunello": {
+      "tpr": 2497.5,
+      "draw_rate": 0.5835,
+      "volatility": 73.3,
+      "elite_games": 9,
+      "weighted_games": 5.46,
+      "avg_opponent": 2636.0
+    },
+    "Sadhwani Raunak": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 0.12,
+      "avg_opponent": 2676.3
+    },
+    "Safarli Eltaj (AZE)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.31,
+      "avg_opponent": 2683.0
+    },
+    "Salem A.R. Saleh (UAE)": {
+      "tpr": null,
+      "draw_rate": 0.057,
+      "volatility": null,
+      "elite_games": 14,
+      "weighted_games": 4.64,
+      "avg_opponent": 2616.7
+    },
+    "Sanal Vahap (TUR)": {
+      "tpr": 2678.6,
+      "draw_rate": 0.5216,
+      "volatility": 48.1,
+      "elite_games": 11,
+      "weighted_games": 4.45,
+      "avg_opponent": 2677.5
+    },
+    "Sanan Sjugirov": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 1.94,
+      "avg_opponent": 2677.5
+    },
+    "Santos Latasa Jaime": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 9,
+      "weighted_games": 0.21,
+      "avg_opponent": 2630.5
+    },
+    "Santos Latasa Jaime (ESP)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 2.51,
+      "avg_opponent": 2701.8
+    },
+    "Santosh Gujrathi Vidit": {
+      "tpr": 2735.1,
+      "draw_rate": 0.536,
+      "volatility": 62.5,
+      "elite_games": 41,
+      "weighted_games": 5.29,
+      "avg_opponent": 2728.8
+    },
+    "Sarana Alexey (SRB)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.51,
+      "avg_opponent": 2734.0
+    },
+    "Sargissian Gabriel": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.19,
+      "avg_opponent": 2710.1
+    },
+    "Sarin Nihal": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.24,
+      "avg_opponent": 2662.9
+    },
+    "Sasa Martinovic": {
+      "tpr": 2693.6,
+      "draw_rate": 0.7089,
+      "volatility": 51.5,
+      "elite_games": 7,
+      "weighted_games": 3.52,
+      "avg_opponent": 2644.4
+    },
+    "Sasikiran Krishnan": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 0.12,
+      "avg_opponent": null
+    },
+    "Schitco Ivan (MDA)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.32,
+      "avg_opponent": 2687.7
+    },
+    "Shakhriyar Mamedyarov": {
+      "tpr": 2677.3,
+      "draw_rate": 0.8641,
+      "volatility": 44.4,
+      "elite_games": 35,
+      "weighted_games": 11.37,
+      "avg_opponent": 2719.3
+    },
+    "Shamsiddin Vokhidov": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 11,
+      "weighted_games": 2.03,
+      "avg_opponent": 2683.2
+    },
+    "Shankland Sam": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.16,
+      "avg_opponent": 2659.0
+    },
+    "Shant Sargsyan": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 23,
+      "weighted_games": 12.51,
+      "avg_opponent": 2692.6
+    },
+    "Shawn Rodrigue-Lemieux": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.05,
+      "avg_opponent": 2671.2
+    },
+    "Shevchenko Kirill": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.19,
+      "avg_opponent": 2611.0
+    },
+    "Shirov Alexei": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 0.23,
+      "avg_opponent": 2643.7
+    },
+    "Sindarov Javokhir": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.16,
+      "avg_opponent": 2666.7
+    },
+    "Sindarov Javokhir (UZB)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 1.44,
+      "avg_opponent": 2691.0
+    },
+    "So Wesley": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 0.23,
+      "avg_opponent": 2635.9
+    },
+    "So Wesley (USA)": {
+      "tpr": 2755.9,
+      "draw_rate": 0.6794,
+      "volatility": 53.0,
+      "elite_games": 10,
+      "weighted_games": 3.45,
+      "avg_opponent": 2661.8
+    },
+    "Stefan Beukema": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.81,
+      "avg_opponent": 2637.8
+    },
+    "Stremavicius Titas": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 0.14,
+      "avg_opponent": 2657.8
+    },
+    "Svane Rasmus": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.19,
+      "avg_opponent": 2638.5
+    },
+    "Svane Rasmus (GER)": {
+      "tpr": 2604.0,
+      "draw_rate": 0.6734,
+      "volatility": 53.3,
+      "elite_games": 11,
+      "weighted_games": 4.44,
+      "avg_opponent": 2694.1
+    },
+    "Svidler Peter (FID)": {
+      "tpr": 2561.4,
+      "draw_rate": 0.6361,
+      "volatility": 52.3,
+      "elite_games": 10,
+      "weighted_games": 3.45,
+      "avg_opponent": 2651.0
+    },
+    "Szymon Gumularz": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 3.77,
+      "avg_opponent": 2660.3
+    },
+    "Tamas Banusz": {
+      "tpr": null,
+      "draw_rate": 0.3278,
+      "volatility": null,
+      "elite_games": 11,
+      "weighted_games": 5.52,
+      "avg_opponent": 2662.4
+    },
+    "Tamir Nabaty": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.16,
+      "avg_opponent": 2677.0
+    },
+    "Tari Aryan (NOR)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.32,
+      "avg_opponent": 2738.5
+    },
+    "Ter-Sahakyan Samvel": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 0.14,
+      "avg_opponent": 2680.5
+    },
+    "Thai Dai Van Nguyen": {
+      "tpr": 2559.8,
+      "draw_rate": 0.479,
+      "volatility": 42.0,
+      "elite_games": 22,
+      "weighted_games": 11.95,
+      "avg_opponent": 2713.1
+    },
+    "Titas Stremavicius": {
+      "tpr": null,
+      "draw_rate": 0.5388,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 2.63,
+      "avg_opponent": 2674.7
+    },
+    "Tuan Minh Le": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.17,
+      "avg_opponent": 2646.5
+    },
+    "V Pranav": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 9,
+      "weighted_games": 7.45,
+      "avg_opponent": null
+    },
+    "Valentin Dragnev": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 1.91,
+      "avg_opponent": 2714.4
+    },
+    "Valery Kazakouski": {
+      "tpr": null,
+      "draw_rate": 0.0732,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 2.67,
+      "avg_opponent": 2656.2
+    },
+    "Vallejo Pons Francisco": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.16,
+      "avg_opponent": 2628.7
+    },
+    "Vallejo Pons Francisco (ESP)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.32,
+      "avg_opponent": 2683.0
+    },
+    "Van Foreest Jorden": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 11,
+      "weighted_games": 0.26,
+      "avg_opponent": 2651.2
+    },
+    "Van Foreest Jorden (NED)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.32,
+      "avg_opponent": 2688.0
+    },
+    "Vasif Durarbayli": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 7.52,
+      "avg_opponent": 2711.0
+    },
+    "Vasyl Ivanchuk": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 35,
+      "weighted_games": 20.61,
+      "avg_opponent": 2668.7
+    },
+    "Velimir Ivic": {
+      "tpr": 2557.9,
+      "draw_rate": 0.6186,
+      "volatility": 76.5,
+      "elite_games": 14,
+      "weighted_games": 8.42,
+      "avg_opponent": 2646.0
+    },
+    "Victor Bologan": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 4.28,
+      "avg_opponent": 2639.3
+    },
+    "Vidit Santosh Gujrathi": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 0.23,
+      "avg_opponent": 2653.3
+    },
+    "Vidit Santosh Gujrathi (IND)": {
+      "tpr": 2744.4,
+      "draw_rate": 0.3292,
+      "volatility": 43.4,
+      "elite_games": 19,
+      "weighted_games": 7.77,
+      "avg_opponent": 2703.9
+    },
+    "Vignir Vatnar Stefansson": {
+      "tpr": 2595.2,
+      "draw_rate": 0.3213,
+      "volatility": 85.0,
+      "elite_games": 10,
+      "weighted_games": 6.35,
+      "avg_opponent": 2644.1
+    },
+    "Vincent Keymer": {
+      "tpr": 2700.6,
+      "draw_rate": 0.4902,
+      "volatility": 50.3,
+      "elite_games": 72,
+      "weighted_games": 28.64,
+      "avg_opponent": 2709.6
+    },
+    "Vitiugov Nikita (FID)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.32,
+      "avg_opponent": 2615.0
+    },
+    "Vladimir Fedoseev": {
+      "tpr": 2734.0,
+      "draw_rate": 0.5479,
+      "volatility": 54.0,
+      "elite_games": 55,
+      "weighted_games": 31.15,
+      "avg_opponent": 2705.8
+    },
+    "Vocaturo Daniele (ITA)": {
+      "tpr": null,
+      "draw_rate": 0.1337,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 3.44,
+      "avg_opponent": 2678.0
+    },
+    "Volodar Murzin": {
+      "tpr": 2674.3,
+      "draw_rate": 0.849,
+      "volatility": 42.9,
+      "elite_games": 14,
+      "weighted_games": 10.39,
+      "avg_opponent": 2671.5
+    },
+    "Volodymyr Onyshchuk": {
+      "tpr": null,
+      "draw_rate": 0.3899,
+      "volatility": null,
+      "elite_games": 23,
+      "weighted_games": 13.32,
+      "avg_opponent": 2642.8
+    },
+    "Volokitin Andrei": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 0.14,
+      "avg_opponent": 2639.0
+    },
+    "Wang Hao (CHN)": {
+      "tpr": 2722.2,
+      "draw_rate": 0.7463,
+      "volatility": 48.7,
+      "elite_games": 13,
+      "weighted_games": 4.58,
+      "avg_opponent": 2665.5
+    },
+    "Warmerdam Max": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 10,
+      "weighted_games": 0.23,
+      "avg_opponent": 2674.0
+    },
+    "Wei Yi": {
+      "tpr": 2760.3,
+      "draw_rate": 0.6453,
+      "volatility": 41.2,
+      "elite_games": 71,
+      "weighted_games": 26.06,
+      "avg_opponent": 2744.1
+    },
+    "Wei Yi (CHN)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.32,
+      "avg_opponent": 2667.0
+    },
+    "Wenjun Ju": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 13,
+      "weighted_games": 1.31,
+      "avg_opponent": 2724.9
+    },
+    "Wesley So": {
+      "tpr": 2814.9,
+      "draw_rate": 0.4711,
+      "volatility": 53.0,
+      "elite_games": 58,
+      "weighted_games": 12.64,
+      "avg_opponent": 2730.2
+    },
+    "Wojciech Moranda": {
+      "tpr": 2427.1,
+      "draw_rate": 0.4016,
+      "volatility": 55.1,
+      "elite_games": 5,
+      "weighted_games": 4.22,
+      "avg_opponent": 2674.2
+    },
+    "Wojtaszek Radoslaw": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 0.16,
+      "avg_opponent": 2631.0
+    },
+    "Wojtaszek Radoslaw (POL)": {
+      "tpr": 2623.9,
+      "draw_rate": 0.6804,
+      "volatility": 54.3,
+      "elite_games": 11,
+      "weighted_games": 4.45,
+      "avg_opponent": 2739.0
+    },
+    "Xiangzhi Bu": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 9,
+      "weighted_games": 1.75,
+      "avg_opponent": 2710.3
     },
     "Yagiz Kaan Erdogmus": {
-      "tpr": 2721.9,
-      "draw_rate": 0.6051,
-      "volatility": 76.4,
-      "elite_games": 15,
-      "weighted_games": 9.37,
-      "avg_opponent": 2736.4
+      "tpr": 2716.0,
+      "draw_rate": 0.5715,
+      "volatility": 40.3,
+      "elite_games": 26,
+      "weighted_games": 19.94,
+      "avg_opponent": 2711.4
+    },
+    "Yakubboev Nodirbek": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 0.19,
+      "avg_opponent": 2687.5
     },
     "Yangyi Yu": {
-      "tpr": 2727.2,
-      "draw_rate": 0.4269,
-      "volatility": 51.7,
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 11,
+      "weighted_games": 2.03,
+      "avg_opponent": 2683.4
+    },
+    "Yilmaz Mustafa": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 5,
+      "weighted_games": 0.12,
+      "avg_opponent": 2737.8
+    },
+    "Yilmaz Mustafa (TUR)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
       "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2623.9
+      "weighted_games": 2.38,
+      "avg_opponent": 2737.7
+    },
+    "Yu Yangyi (CHN)": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 6,
+      "weighted_games": 1.32,
+      "avg_opponent": 2662.0
+    },
+    "Yue Wang": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 7,
+      "weighted_games": 1.36,
+      "avg_opponent": 2668.0
+    },
+    "Yuriy Kryvoruchko": {
+      "tpr": null,
+      "draw_rate": null,
+      "volatility": null,
+      "elite_games": 8,
+      "weighted_games": 5.64,
+      "avg_opponent": 2629.0
     },
     "Yuriy Kuzubov": {
-      "tpr": 2667.0,
-      "draw_rate": 0.4998,
-      "volatility": 48.8,
-      "elite_games": 8,
-      "weighted_games": 4.17,
-      "avg_opponent": 2667.0
+      "tpr": 2641.8,
+      "draw_rate": 0.9781,
+      "volatility": 50.7,
+      "elite_games": 14,
+      "weighted_games": 10.52,
+      "avg_opponent": 2657.8
+    },
+    "Zhu Jiner": {
+      "tpr": 2565.8,
+      "draw_rate": 0.2862,
+      "volatility": 45.8,
+      "elite_games": 7,
+      "weighted_games": 6.93,
+      "avg_opponent": 2730.1
     }
   }
 }

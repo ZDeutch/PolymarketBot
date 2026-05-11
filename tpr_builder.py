@@ -30,52 +30,13 @@ from collections import defaultdict
 
 HEADERS = {"User-Agent": "PolymarketBot/1.0"}
 
-# Hardcoded round IDs for each elite tournament.
-# Round IDs are the 8-char Lichess broadcast round identifiers found in
-# the broadcast URL: lichess.org/broadcast/-/{round-name}/{round_id}
-# Notes:
-#   - Sinquefield Cup 2024/2025 omitted — not on Lichess (USCF broadcast ban)
-#   - WCC 2024 omitted — only 14 classical games, insufficient data
-#   - Round lists are partial where only some IDs were recoverable;
-#     partial data is still useful for TPR estimation.
-HARDCODED_ROUNDS = {
-    "Tata Steel 2024": [
-        "iSglSzjv", "haD9x5TT", "OrHsLFq5",
-        "msGCthzJ", "cmDGoJr1", "ubgeWaHz",
-        "k0StVoen", "EDCwDiqA", "L43YRQWv",
-    ],
-    "Candidates 2024": [
-        "AjqSsU1w", "GenKIJ8A", "xQgaUu2y",
-        "CPS9dENa", "MDiLWQ5M", "nUycmG6L",
-        "vfqUR38R", "eJghIBZe", "S4zisI6M",
-    ],
-    "Norway Chess 2024": [
-        "I9TLGEOt", "sbOHYOVj", "xmZcMs9U",
-        "Whq5YPU7", "Qvlkp2yF", "C5Zzd9mM",
-    ],
-    "Tata Steel 2025": [
-        "FRGTkE8Z", "LPs7X3dM", "T4KlhCEf",
-        "TU7qC17C", "pdNmUOnu", "9nR8UQz9",
-        "W4XtM3HF", "4qFZzDfZ",
-    ],
-    "Norway Chess 2025": [
-        "elkTUv1R", "8Ma8Q5pQ", "4MpGqf5j",
-    ],
-    "Grand Swiss 2025": [
-        "xSCoiNg0", "UnZivDF9", "gLwN3kib",
-        "zmaKVsPL", "ADzdjVmn", "iAnC0jAl",
-        "xtmbmvSP", "FpwTKfvI",
-    ],
-    "Candidates 2026": [
-        # Populated at runtime via get_tournament("BLA70Vds") (direct tour ID)
-    ],
-    "Sigeman 2026": [
-        # Add round IDs as each round is broadcast on Lichess.
-        # Find IDs in the broadcast URL:
-        #   lichess.org/broadcast/-/{round-name}/{round_id}
-        # e.g. "will-magnus-carlsen-win..." → round_id is the 8-char suffix
-    ],
-}
+# Additional round IDs to fetch from Lichess beyond what auto_tours discovers.
+# auto_tours (below) already handles Candidates 2026, Sigeman 2026, and any
+# tour registered in the freshness ledger — so this is normally empty.
+# Add entries here only for tournaments NOT reachable via a tour ID
+# (e.g. individual round IDs from a tournament with no Lichess broadcast page).
+# Most historical data comes from elite_games_2020_present.pgn, not Lichess fetches.
+HARDCODED_ROUNDS: dict[str, list[str]] = {}
 
 MIN_OPPONENT_RATING = 2600
 MIN_GAMES_FOR_TPR   = 5   # need at least 5 games to compute reliable TPR
@@ -95,17 +56,6 @@ _ASOF_DATE = None                  # populated by run(asof=...); excludes games 
 ELITE_PGN_PATH: str = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "elite_games_2020_present.pgn"
 )
-
-# HARDCODED_ROUNDS keys whose games are fully covered by the local PGN file.
-# When the PGN loads successfully, Lichess API fetches for these are skipped.
-PGN_COVERED_ROUNDS: frozenset[str] = frozenset({
-    "Tata Steel 2024",
-    "Candidates 2024",
-    "Norway Chess 2024",
-    "Tata Steel 2025",
-    "Norway Chess 2025",
-    "Grand Swiss 2025",
-})
 
 
 def _parse_pgn_date(date_str: str):
@@ -679,7 +629,7 @@ def run(asof: "datetime.date | str | None" = None,
               f"(half-life ≈ {RECENCY_TIME_CONSTANT_DAYS * 0.693 / 30:.1f} months)")
     else:
         print("Recency weighting: DISABLED (all games equal weight)")
-    print(f"Fetching games from {len(HARDCODED_ROUNDS)} tournaments")
+    print("Loading games from local PGN + Lichess auto-fetch...")
 
     # ── Auto-fetch round IDs from freshness ledger ────────────────────────────
     # Any tour_id::<tournament> entry in .freshness.json is resolved to its
@@ -746,9 +696,6 @@ def run(asof: "datetime.date | str | None" = None,
 
     # ── Step 2: Fetch remaining rounds from Lichess (with dedup) ─────────────
     for tour_name, round_ids in HARDCODED_ROUNDS.items():
-        if pgn_loaded and tour_name in PGN_COVERED_ROUNDS:
-            print(f"\n{tour_name} — skipped (covered by local PGN)")
-            continue
         print(f"\n{tour_name} ({len(round_ids)} rounds)")
         tour_games = 0
         for round_id in round_ids:

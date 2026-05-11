@@ -14,7 +14,8 @@ Simulation model:
     draw probability multiplied by
     MUST_WIN_DRAW_FACTOR (0.85) per such player
   - +35 Elo white piece bonus
-  - TPR-blended ratings with N(rating, σ=50)
+  - TPR-blended ratings with N(rating, σ) where σ is per-player from
+    tpr_data.json (default 50 if not found)
     performance variance per iteration
   - Random tiebreak (simplified)
   - 50,000 iterations default
@@ -297,7 +298,7 @@ def simulate_tournament(ratings: dict,
     """Runs n Monte Carlo simulations of the remaining tournament.
 
     Each iteration:
-      1. Samples per-player performance ratings from N(rating, σ=50)
+      1. Samples per-player performance ratings from N(rating, σ) where σ is per-player
       2. Seeds scores from actual completed results
       3. Simulates all remaining games (with must-win draw adjustment)
       4. Awards the win to the highest scorer (random tiebreak)

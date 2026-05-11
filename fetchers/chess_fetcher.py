@@ -388,10 +388,9 @@ def get_player_rating(username: str, fmt: str = "classical") -> int | None:
         return None
 
 
-# Hardcoded fallback ratings for players not reachable via Chess.com
-# (e.g. missing classical games, unconfirmed usernames).
-# Sourced from 2700chess.com live ratings — April 27, 2026, 14:00 GMT.
-# Rounded to nearest integer; official May 2026 list drops May 1.
+# Hardcoded fallback ratings for players not reachable via Chess.com.
+# Sourced from FIDE May 2026 official rating lists (classical/rapid/blitz XML).
+# Update monthly via: python fetchers/fide_fetcher.py --fmt all --diff
 KNOWN_RATINGS = {
     # ── Sigeman 2026 ──────────────────────────────────────────────────────────
     "Magnus Carlsen":             2840,   # live #1 (unchanged)
@@ -702,9 +701,6 @@ def get_remaining_schedule(tournament_id: str,
 
     all_games = [(a, b) for a, b in permutations(all_players, 2)]
 
-    # Debug: show sample pairs from each side so mismatches are visible
-    print(f"  Sample completed pair: {list(completed_pairs)[:2]}")
-    print(f"  Sample schedule pair:  {all_games[:2]}")
     print(f"  Format: {'single' if is_single_rr else 'double'} round-robin "
           f"({total_rounds} rounds, {n} players)")
 

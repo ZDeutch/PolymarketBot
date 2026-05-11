@@ -40,7 +40,7 @@ Flow:
   1. Fetch tournament metadata from Lichess (or use synthetic pre-tournament data)
   2. Fetch completed results and current FIDE ratings
   3. Run Monte Carlo simulation (50,000 iterations)
-  4. Fetch market prices (Polymarket CLOB or Kalshi hardcoded)
+  4. Fetch market prices (Polymarket CLOB or Kalshi live API)
   5. Calculate edges (model − market)
   6. Size positions with quarter-Kelly
   7. Print edge table; append actionable bets to positions.csv
@@ -61,40 +61,12 @@ from edge_calculator import find_edges, size_positions
 from config import SIMULATIONS, BANKROLL, MIN_EDGE
 import freshness
 
-# ─── Current tournament: GCT Poland 2026 — Super Rapid & Blitz ────────────────
-# Update POLYMARKET_SLUGS and KALSHI_PRICES for each new tournament.
-# POLYMARKET_SLUGS keys are also used as the pre-tournament player list fallback.
-
-POLYMARKET_SLUGS = {
-    # GCT Poland 2026 Super Rapid & Blitz — Kalshi is the active exchange
-    "Alireza Firouzja":           "TODO",
-    "Jan-Krzysztof Duda":         "TODO",
-    "Javokhir Sindarov":          "TODO",
-    "Fabiano Caruana":            "TODO",
-    "Maxime Vachier-Lagrave":     "TODO",
-    "Wesley So":                  "TODO",
-    "Gukesh Dommaraju":           "TODO",
-    "Hans Niemann":               "TODO",
-    "Radoslaw Wojtaszek":         "TODO",
-    "Vladimir Fedoseev":          "TODO",
-}
-
-# Kalshi YES prices — GCT Poland 2026 Super Rapid & Blitz
-# Last updated: April 27, 2026 from Kalshi screenshot (Chance column midpoints).
-# URL: kalshi.com/markets/kxchesspoland/grand-chess-tour-super-rapid--blitz-poland/kxchesspoland-26
-# Update these before each run using live prices from the Kalshi market page.
-KALSHI_PRICES = {
-    "Alireza Firouzja":           0.48,
-    "Jan-Krzysztof Duda":         0.19,
-    "Javokhir Sindarov":          0.19,
-    "Fabiano Caruana":            0.14,
-    "Maxime Vachier-Lagrave":     0.05,
-    "Wesley So":                  0.05,
-    "Gukesh Dommaraju":           0.03,
-    "Hans Niemann":               0.03,
-    "Radoslaw Wojtaszek":         0.03,
-    "Vladimir Fedoseev":          0.03,
-}
+# ─── Per-tournament config ─────────────────────────────────────────────────────
+# For Polymarket tournaments: add player → slug mappings here.
+# Keys also serve as the pre-tournament player list fallback when Lichess
+# has no round 1 data yet.
+# For Kalshi tournaments: leave empty — players are sourced from the live API.
+POLYMARKET_SLUGS: dict[str, str] = {}
 
 MAX_RETRIES = 3
 BASE_DELAY  = 2   # seconds
@@ -153,35 +125,32 @@ def get_polymarket_prices() -> dict:
 
 
 def get_kalshi_prices(event_ticker: str | None = None) -> dict:
-    """Live Kalshi YES prices via the public API (auto-fetched).
+    """Live Kalshi YES prices via the public API.
 
-    If event_ticker is provided, hits the Kalshi public API. Otherwise
-    falls back to hardcoded KALSHI_PRICES (legacy path).
-
-    Returns {player_name: yes_mid_price}.
+    Requires event_ticker (auto-loaded from freshness ledger when not given).
+    Returns {player_name: yes_mid_price}, or {} on failure.
     """
-    if event_ticker:
-        from fetchers.kalshi_fetcher import KalshiClient
-        print(f"  Source: Kalshi live (event {event_ticker})")
-        try:
-            c = KalshiClient(env="prod")
-            data = c.get_event_prices(event_ticker)
-            prices: dict = {}
-            for player, p in data.items():
-                mid = p.get("mid")
-                if mid is None:
-                    print(f"  {player}: no price (skipping)")
-                    continue
-                prices[player] = round(mid, 4)
-                print(f"  {player}: {mid:.3f}  "
-                      f"(bid={p.get('yes_bid')}, ask={p.get('yes_ask')})")
-            return prices
-        except Exception as e:
-            print(f"  Live fetch failed: {e} — falling back to KALSHI_PRICES")
-    print("  Source: KALSHI_PRICES (hardcoded — update before each run)")
-    for player, price in KALSHI_PRICES.items():
-        print(f"  {player}: {price:.3f}")
-    return dict(KALSHI_PRICES)
+    if not event_ticker:
+        print("  No Kalshi event ticker — skipping price fetch.")
+        return {}
+    from fetchers.kalshi_fetcher import KalshiClient
+    print(f"  Source: Kalshi live (event {event_ticker})")
+    try:
+        c = KalshiClient(env="prod")
+        data = c.get_event_prices(event_ticker)
+        prices: dict = {}
+        for player, p in data.items():
+            mid = p.get("mid")
+            if mid is None:
+                print(f"  {player}: no price (skipping)")
+                continue
+            prices[player] = round(mid, 4)
+            print(f"  {player}: {mid:.3f}  "
+                  f"(bid={p.get('yes_bid')}, ask={p.get('yes_ask')})")
+        return prices
+    except Exception as e:
+        print(f"  Kalshi fetch failed: {e}")
+        return {}
 
 
 def get_market_prices(exchange: str,
@@ -430,7 +399,7 @@ if __name__ == "__main__":
                         help="8-char Lichess tour ID (e.g. BLA70Vds)")
     parser.add_argument("--no-broadcast", action="store_true",
                         dest="no_broadcast",
-                        help="Skip Lichess fetch; use POLYMARKET_SLUGS player list. "
+                        help="Skip Lichess fetch; use POLYMARKET_SLUGS or Kalshi player list. "
                              "Use when the broadcast isn't set up yet.")
     parser.add_argument("--total-rounds", type=int, default=None,
                         dest="total_rounds_hint",
@@ -438,8 +407,7 @@ if __name__ == "__main__":
                              "for single vs double round-robin detection)")
     parser.add_argument("--exchange", default="polymarket",
                         choices=["polymarket", "kalshi"],
-                        help="Price source: polymarket (default) or kalshi. "
-                             "Kalshi prices are read from KALSHI_PRICES in this file.")
+                        help="Price source: polymarket (default) or kalshi.")
     parser.add_argument("--polymarket", default=None,
                         help="Polymarket event slug (required when --exchange polymarket "
                              "and slugs are configured)")
@@ -458,8 +426,7 @@ if __name__ == "__main__":
     parser.add_argument("--kalshi-event", default=None,
                         dest="kalshi_event",
                         help="Kalshi event ticker (e.g. KXCHESSPOLAND-26). "
-                             "Triggers live API price fetch instead of KALSHI_PRICES. "
-                             "Auto-loaded from ledger if not specified.")
+                             "Auto-loaded from freshness ledger if not specified.")
 
     args = parser.parse_args()
     run(
