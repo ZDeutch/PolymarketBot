@@ -355,7 +355,7 @@
   <div class="sb-item"><span class="k">next_refresh:</span><span class="v" id="sb-next">—</span></div>
   <div class="sb-item"><span class="k">n_sim:</span><span class="v">50,000</span></div>
   <div class="sb-item"><span class="k">edge_min:</span><span class="v">8.0%</span></div>
-  <div class="sb-item"><span class="k">tpr_db:</span><span class="v ok">711 games · 9 tournaments</span></div>
+  <div class="sb-item"><span class="k">tpr_db:</span><span class="v ok">3,372 games · 9 tournaments · 327 players</span></div>
 </div>
 
 <!-- ── MAIN GRID ───────────────────────────────────────── -->
@@ -499,6 +499,48 @@
 
 <script>
 // ═══════════════════════════════════════════════════════════════
+// Static fallback data (used when server is not running, e.g. GitHub Pages)
+// Prices as of 2026-05-11
+// ═══════════════════════════════════════════════════════════════
+const STATIC_DATA = {
+  updated_at: "2026-05-11T00:00:00", _static: true,
+  total_invested: 1500.00, total_value: 1663.04,
+  total_pnl: 163.04, total_pnl_pct: 10.87, refresh_secs: 30,
+  positions: [
+    { date:"2026-04-23", tournament:"Norway Chess 2026", event_ticker:"KXCHESSNORWAY-26",
+      exchange:"Kalshi", player:"Magnus Carlsen", model_pct:33.1, market_pct:61.0, edge_pct:-27.9,
+      action:"NO", stake:500.00, entry_price:0.39, contracts:1282.05,
+      yes_mid:0.69, current_price:0.31, current_value:397.44,
+      unrealized_pnl:-102.56, unrealized_pnl_pct:-20.51, data_ok:true },
+    { date:"2026-04-27", tournament:"Grand Chess Tour 2026 Finals", event_ticker:"KXCHESSGRANDTOUR-26",
+      exchange:"Kalshi", player:"Maxime Vachier-Lagrave", model_pct:3.6, market_pct:18.0, edge_pct:-14.4,
+      action:"NO", stake:500.00, entry_price:0.82, contracts:609.76,
+      yes_mid:0.04, current_price:0.96, current_value:585.37,
+      unrealized_pnl:85.37, unrealized_pnl_pct:17.07, data_ok:true },
+    { date:"2026-04-28", tournament:"GCT Poland 2026 Super Rapid & Blitz", event_ticker:"KXCHESSPOLAND-26",
+      exchange:"Kalshi", player:"Alireza Firouzja", model_pct:22.2, market_pct:48.0, edge_pct:-25.8,
+      action:"NO", stake:156.71, entry_price:0.52, contracts:301.37,
+      yes_mid:0.005, current_price:0.995, current_value:299.86,
+      unrealized_pnl:143.15, unrealized_pnl_pct:91.35, data_ok:true },
+    { date:"2026-04-28", tournament:"GCT Poland 2026 Super Rapid & Blitz", event_ticker:"KXCHESSPOLAND-26",
+      exchange:"Kalshi", player:"Wesley So", model_pct:16.9, market_pct:5.0, edge_pct:11.9,
+      action:"YES", stake:36.62, entry_price:0.05, contracts:732.40,
+      yes_mid:0.005, current_price:0.005, current_value:3.66,
+      unrealized_pnl:-32.96, unrealized_pnl_pct:-90.00, data_ok:true },
+    { date:"2026-04-28", tournament:"GCT Poland 2026 Super Rapid & Blitz", event_ticker:"KXCHESSPOLAND-26",
+      exchange:"Kalshi", player:"Jan-Krzysztof Duda", model_pct:8.8, market_pct:19.0, edge_pct:-10.2,
+      action:"NO", stake:156.09, entry_price:0.81, contracts:192.70,
+      yes_mid:0.005, current_price:0.995, current_value:191.74,
+      unrealized_pnl:35.65, unrealized_pnl_pct:22.84, data_ok:true },
+    { date:"2026-04-28", tournament:"GCT Poland 2026 Super Rapid & Blitz", event_ticker:"KXCHESSPOLAND-26",
+      exchange:"Kalshi", player:"Javokhir Sindarov", model_pct:9.2, market_pct:19.0, edge_pct:-9.8,
+      action:"NO", stake:150.58, entry_price:0.81, contracts:185.90,
+      yes_mid:0.005, current_price:0.995, current_value:184.97,
+      unrealized_pnl:34.39, unrealized_pnl_pct:22.84, data_ok:true },
+  ]
+};
+
+// ═══════════════════════════════════════════════════════════════
 // State
 // ═══════════════════════════════════════════════════════════════
 let pnlChart    = null;
@@ -535,11 +577,16 @@ async function fetchPnl() {
     lastData = data;
     renderAll(data);
     countdown = data.refresh_secs || 30;
-  } catch (e) {
-    showError(e.message);
-  } finally {
     dot.classList.remove('fetching');
     dot.textContent = 'LIVE';
+  } catch (_) {
+    // Server unavailable — fall back to pre-computed static snapshot
+    lastData = STATIC_DATA;
+    renderAll(STATIC_DATA);
+    dot.classList.remove('fetching');
+    dot.style.color = 'var(--yellow)';
+    dot.textContent = 'STATIC · 2026-05-11';
+    document.querySelector('.live-dot::before') && void 0; // keep dot
   }
 }
 
